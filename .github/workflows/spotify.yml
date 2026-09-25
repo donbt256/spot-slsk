@@ -9,7 +9,6 @@ jobs:
 resolve-and-search:
 runs-on: ubuntu-latest
 
-```
 steps:
   - name: Checkout repository
     uses: actions/checkout@v4
@@ -192,4 +191,3 @@ steps:
 
       git commit -m "Search Soulseek candidates"
       git push
-```
