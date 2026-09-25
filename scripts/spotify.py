@@ -1,6 +1,7 @@
 import base64
 import os
 import re
+
 import requests
 
 
@@ -131,8 +132,8 @@ class SpotifyClient:
         images = album.get("images", [])
 
         return {
-            "spotify_id": track["id"],
-            "spotify_url": track.get("external_urls", {}).get(
+            "id": track["id"],
+            "url": track.get("external_urls", {}).get(
                 "spotify"
             ),
             "artist": artists[0] if artists else None,
@@ -179,7 +180,6 @@ def resolve_urls(urls):
         if not url or url.startswith("#"):
             continue
 
-        # Remove Spotify query parameters.
         url = url.split("?", 1)[0]
 
         kind, spotify_id = client.parse_url(url)
@@ -196,9 +196,12 @@ def resolve_urls(urls):
             resolved = client.get_playlist(spotify_id)
 
         else:
-            raise ValueError(f"Unsupported Spotify type: {kind}")
+            raise ValueError(
+                f"Unsupported Spotify type: {kind}"
+            )
 
         for track in resolved:
-            tracks[track["spotify_id"]] = track
+            tracks[track["id"]] = track
 
     return list(tracks.values())
+
