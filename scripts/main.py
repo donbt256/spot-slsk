@@ -21,20 +21,74 @@ def load_urls():
     ).splitlines()
 
 
-def build_track_state(spotify_track):
-    return {
-        "spotify": spotify_track,
-        "acquisition": {
+def load_existing_state():
+    if not TRACKS_FILE.exists():
+        return {}
+
+    try:
+        data = json.loads(
+            TRACKS_FILE.read_text(
+                encoding="utf-8"
+            )
+        )
+    except json.JSONDecodeError as exc:
+        raise ValueError(
+            f"Invalid JSON in {TRACKS_FILE}: {exc}"
+        ) from exc
+
+    existing = {}
+
+    for track in data.get("tracks", []):
+        spotify = track.get("spotify", {})
+        track_id = spotify.get("id")
+
+        if track_id:
+            existing[track_id] = track
+
+    return existing
+
+
+def build_track_state(
+    spotify_track,
+    existing=None,
+):
+    if existing:
+        acquisition = existing.get(
+            "acquisition",
+            {
+                "status": "pending",
+                "attempts": 0,
+                "match": None,
+                "file": None,
+                "library": None,
+            },
+        )
+
+        enrichment = existing.get(
+            "enrichment",
+            {
+                "artwork": None,
+                "lyrics": None,
+            },
+        )
+    else:
+        acquisition = {
             "status": "pending",
             "attempts": 0,
             "match": None,
             "file": None,
             "library": None,
-        },
-        "enrichment": {
+        }
+
+        enrichment = {
             "artwork": None,
             "lyrics": None,
-        },
+        }
+
+    return {
+        "spotify": spotify_track,
+        "acquisition": acquisition,
+        "enrichment": enrichment,
     }
 
 
@@ -43,12 +97,37 @@ def main():
 
     print(f"Found {len(urls)} input lines.")
 
+    existing_tracks = load_existing_state()
+
+    if existing_tracks:
+        print(
+            f"Loaded {len(existing_tracks)} existing tracks "
+            "from state."
+        )
+
     spotify_tracks = resolve_urls(urls)
 
-    tracks = [
-        build_track_state(track)
-        for track in spotify_tracks
-    ]
+    tracks = []
+
+    preserved = 0
+    new = 0
+
+    for spotify_track in spotify_tracks:
+        track_id = spotify_track["id"]
+
+        existing = existing_tracks.get(track_id)
+
+        if existing:
+            preserved += 1
+        else:
+            new += 1
+
+        tracks.append(
+            build_track_state(
+                spotify_track,
+                existing=existing,
+            )
+        )
 
     STATE_DIR.mkdir(
         parents=True,
@@ -74,9 +153,14 @@ def main():
     print(
         f"Resolved {len(tracks)} unique tracks."
     )
+    print(
+        f"Preserved state for {preserved} existing tracks."
+    )
+    print(
+        f"Created state for {new} new tracks."
+    )
     print(f"Wrote {TRACKS_FILE}")
 
 
 if __name__ == "__main__":
     main()
-
