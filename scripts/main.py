@@ -21,17 +21,42 @@ def load_urls():
     ).splitlines()
 
 
+def build_track_state(spotify_track):
+    return {
+        "spotify": spotify_track,
+        "acquisition": {
+            "status": "pending",
+            "attempts": 0,
+            "match": None,
+            "file": None,
+            "library": None,
+        },
+        "enrichment": {
+            "artwork": None,
+            "lyrics": None,
+        },
+    }
+
+
 def main():
     urls = load_urls()
 
     print(f"Found {len(urls)} input lines.")
 
-    tracks = resolve_urls(urls)
+    spotify_tracks = resolve_urls(urls)
 
-    STATE_DIR.mkdir(parents=True, exist_ok=True)
+    tracks = [
+        build_track_state(track)
+        for track in spotify_tracks
+    ]
+
+    STATE_DIR.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
     output = {
-        "version": 1,
+        "version": 2,
         "tracks": tracks,
     }
 
@@ -46,9 +71,12 @@ def main():
     )
 
     print()
-    print(f"Resolved {len(tracks)} unique tracks.")
+    print(
+        f"Resolved {len(tracks)} unique tracks."
+    )
     print(f"Wrote {TRACKS_FILE}")
 
 
 if __name__ == "__main__":
     main()
+
