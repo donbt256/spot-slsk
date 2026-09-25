@@ -27,6 +27,7 @@ jobs:
         env:
           SPOTIFY_CLIENT_ID: ${{ secrets.SPOTIFY_CLIENT_ID }}
           SPOTIFY_CLIENT_SECRET: ${{ secrets.SPOTIFY_CLIENT_SECRET }}
+          SLSKD_API_KEY: ${{ secrets.SLSKD_API_KEY }}
         run: |
           python scripts/main.py
 
@@ -44,6 +45,7 @@ jobs:
             --publish 50300:50300 \
             --env "SLSKD_SLSK_USERNAME=$SOULSEEK_USERNAME" \
             --env "SLSKD_SLSK_PASSWORD=$SOULSEEK_PASSWORD" \
+            --env "SLSKD_API_KEY=$SLSKD_API_KEY" \
             --env "SLSKD_REMOTE_CONFIGURATION=false" \
             --volume "$RUNNER_TEMP/slskd:/app" \
             slskd/slskd:latest
@@ -108,6 +110,7 @@ jobs:
       - name: Search Soulseek
         env:
           SLSKD_URL: http://127.0.0.1:5030
+          SLSKD_API_KEY: ${{ secrets.SLSKD_API_KEY }}
         run: |
           python scripts/search.py
 
