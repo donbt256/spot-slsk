@@ -1,862 +1,1291 @@
 {
-  "version": 1,
+  "version": 2,
   "tracks": [
     {
-      "spotify_id": "15geVctY3jvUuDkEAaQPdV",
-      "spotify_url": "https://open.spotify.com/track/15geVctY3jvUuDkEAaQPdV",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "O My Heart",
-      "track_number": 1,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 211453,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "15geVctY3jvUuDkEAaQPdV",
+        "url": "https://open.spotify.com/track/15geVctY3jvUuDkEAaQPdV",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "O My Heart",
+        "track_number": 1,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 211453,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "5ZpAU5f4jxj6i9XoKK0RaI",
-      "spotify_url": "https://open.spotify.com/track/5ZpAU5f4jxj6i9XoKK0RaI",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Burning Pile",
-      "track_number": 2,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 262173,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "5ZpAU5f4jxj6i9XoKK0RaI",
+        "url": "https://open.spotify.com/track/5ZpAU5f4jxj6i9XoKK0RaI",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Burning Pile",
+        "track_number": 2,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 262173,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "6q5wsa7S7wyyFyvTXECtTg",
-      "spotify_url": "https://open.spotify.com/track/6q5wsa7S7wyyFyvTXECtTg",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Body Of Years",
-      "track_number": 3,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 278400,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "6q5wsa7S7wyyFyvTXECtTg",
+        "url": "https://open.spotify.com/track/6q5wsa7S7wyyFyvTXECtTg",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Body Of Years",
+        "track_number": 3,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 278400,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "0Ku088EwcUjIuDoAl77kzO",
-      "spotify_url": "https://open.spotify.com/track/0Ku088EwcUjIuDoAl77kzO",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Try To Change",
-      "track_number": 4,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 241666,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "0Ku088EwcUjIuDoAl77kzO",
+        "url": "https://open.spotify.com/track/0Ku088EwcUjIuDoAl77kzO",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Try To Change",
+        "track_number": 4,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 241666,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "4ROgUDXvfguYoNmZ5htlnw",
-      "spotify_url": "https://open.spotify.com/track/4ROgUDXvfguYoNmZ5htlnw",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Wisdom",
-      "track_number": 5,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 207960,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "4ROgUDXvfguYoNmZ5htlnw",
+        "url": "https://open.spotify.com/track/4ROgUDXvfguYoNmZ5htlnw",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Wisdom",
+        "track_number": 5,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 207960,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "2zXbLJiS5099aDVyTHIDU4",
-      "spotify_url": "https://open.spotify.com/track/2zXbLJiS5099aDVyTHIDU4",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Body",
-      "track_number": 6,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 213573,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "2zXbLJiS5099aDVyTHIDU4",
+        "url": "https://open.spotify.com/track/2zXbLJiS5099aDVyTHIDU4",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Body",
+        "track_number": 6,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 213573,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "0SyDN2bmZtpM5Kr0y1DE6G",
-      "spotify_url": "https://open.spotify.com/track/0SyDN2bmZtpM5Kr0y1DE6G",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Ghosting",
-      "track_number": 7,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 285986,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "0SyDN2bmZtpM5Kr0y1DE6G",
+        "url": "https://open.spotify.com/track/0SyDN2bmZtpM5Kr0y1DE6G",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Ghosting",
+        "track_number": 7,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 285986,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "2kKkl59fY6Cic1CmhvSEZK",
-      "spotify_url": "https://open.spotify.com/track/2kKkl59fY6Cic1CmhvSEZK",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Hayloft",
-      "track_number": 8,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 181680,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "2kKkl59fY6Cic1CmhvSEZK",
+        "url": "https://open.spotify.com/track/2kKkl59fY6Cic1CmhvSEZK",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Hayloft",
+        "track_number": 8,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 181680,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "007JQyyu6DrGza9XX6scAN",
-      "spotify_url": "https://open.spotify.com/track/007JQyyu6DrGza9XX6scAN",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Wrecking Ball",
-      "track_number": 9,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 194320,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "007JQyyu6DrGza9XX6scAN",
+        "url": "https://open.spotify.com/track/007JQyyu6DrGza9XX6scAN",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Wrecking Ball",
+        "track_number": 9,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 194320,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "5plW0IS6XNNFFvLCH15edI",
-      "spotify_url": "https://open.spotify.com/track/5plW0IS6XNNFFvLCH15edI",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Arms Tonite",
-      "track_number": 10,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 216666,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "5plW0IS6XNNFFvLCH15edI",
+        "url": "https://open.spotify.com/track/5plW0IS6XNNFFvLCH15edI",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Arms Tonite",
+        "track_number": 10,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 216666,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "35FVFBKP8QvJWURmkx3jrP",
-      "spotify_url": "https://open.spotify.com/track/35FVFBKP8QvJWURmkx3jrP",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Miles",
-      "track_number": 11,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 195973,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "35FVFBKP8QvJWURmkx3jrP",
+        "url": "https://open.spotify.com/track/35FVFBKP8QvJWURmkx3jrP",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Miles",
+        "track_number": 11,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 195973,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "36RPuGznqDprSxcjSuguZ8",
-      "spotify_url": "https://open.spotify.com/track/36RPuGznqDprSxcjSuguZ8",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "O My Heart",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Sleep Awake",
-      "track_number": 12,
-      "disc_number": 1,
-      "total_tracks": 12,
-      "duration_ms": 347306,
-      "release_date": "2008-09-23",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "36RPuGznqDprSxcjSuguZ8",
+        "url": "https://open.spotify.com/track/36RPuGznqDprSxcjSuguZ8",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "O My Heart",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Sleep Awake",
+        "track_number": 12,
+        "disc_number": 1,
+        "total_tracks": 12,
+        "duration_ms": 347306,
+        "release_date": "2008-09-23",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273bf77ec4fe60aa3163d91e767",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "4D6AfuVSDyUFmkZKPddGvY",
-      "spotify_url": "https://open.spotify.com/track/4D6AfuVSDyUFmkZKPddGvY",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Seven",
-      "track_number": 1,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 128460,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "4D6AfuVSDyUFmkZKPddGvY",
+        "url": "https://open.spotify.com/track/4D6AfuVSDyUFmkZKPddGvY",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Seven",
+        "track_number": 1,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 128460,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "5hSn8gYsyzs9ZqwmSNhMOZ",
-      "spotify_url": "https://open.spotify.com/track/5hSn8gYsyzs9ZqwmSNhMOZ",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Two",
-      "track_number": 2,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 157230,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "5hSn8gYsyzs9ZqwmSNhMOZ",
+        "url": "https://open.spotify.com/track/5hSn8gYsyzs9ZqwmSNhMOZ",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Two",
+        "track_number": 2,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 157230,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "1Ka3YT2EA2UTYXOJfXPynj",
-      "spotify_url": "https://open.spotify.com/track/1Ka3YT2EA2UTYXOJfXPynj",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Sick of The Silence",
-      "track_number": 3,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 188342,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "1Ka3YT2EA2UTYXOJfXPynj",
+        "url": "https://open.spotify.com/track/1Ka3YT2EA2UTYXOJfXPynj",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Sick of The Silence",
+        "track_number": 3,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 188342,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "5iZshBS76h2djj52INltWQ",
-      "spotify_url": "https://open.spotify.com/track/5iZshBS76h2djj52INltWQ",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Forgotten Souls",
-      "track_number": 4,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 175736,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "5iZshBS76h2djj52INltWQ",
+        "url": "https://open.spotify.com/track/5iZshBS76h2djj52INltWQ",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Forgotten Souls",
+        "track_number": 4,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 175736,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "6fPXf3Ijon1013pSvQRvfC",
-      "spotify_url": "https://open.spotify.com/track/6fPXf3Ijon1013pSvQRvfC",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Pure Love",
-      "track_number": 5,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 210496,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "6fPXf3Ijon1013pSvQRvfC",
+        "url": "https://open.spotify.com/track/6fPXf3Ijon1013pSvQRvfC",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Pure Love",
+        "track_number": 5,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 210496,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "40N7YSMqqYIZWdbZ2cd0ql",
-      "spotify_url": "https://open.spotify.com/track/40N7YSMqqYIZWdbZ2cd0ql",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Weep",
-      "track_number": 6,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 207405,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "40N7YSMqqYIZWdbZ2cd0ql",
+        "url": "https://open.spotify.com/track/40N7YSMqqYIZWdbZ2cd0ql",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Weep",
+        "track_number": 6,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 207405,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "5DPArtpuPG10zd5gxu8kBQ",
-      "spotify_url": "https://open.spotify.com/track/5DPArtpuPG10zd5gxu8kBQ",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "I Got Love",
-      "track_number": 7,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 172300,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "5DPArtpuPG10zd5gxu8kBQ",
+        "url": "https://open.spotify.com/track/5DPArtpuPG10zd5gxu8kBQ",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "I Got Love",
+        "track_number": 7,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 172300,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "6KFzbEqE23406Ltv227wis",
-      "spotify_url": "https://open.spotify.com/track/6KFzbEqE23406Ltv227wis",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Stay Behind",
-      "track_number": 8,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 306985,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "6KFzbEqE23406Ltv227wis",
+        "url": "https://open.spotify.com/track/6KFzbEqE23406Ltv227wis",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Stay Behind",
+        "track_number": 8,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 306985,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "25Uy0tSDmhgHNEIuiOLaHe",
-      "spotify_url": "https://open.spotify.com/track/25Uy0tSDmhgHNEIuiOLaHe",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "The Knack",
-      "track_number": 9,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 179604,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "25Uy0tSDmhgHNEIuiOLaHe",
+        "url": "https://open.spotify.com/track/25Uy0tSDmhgHNEIuiOLaHe",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "The Knack",
+        "track_number": 9,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 179604,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "6yDVj6pbzkIHAqpk8Tk6Hr",
-      "spotify_url": "https://open.spotify.com/track/6yDVj6pbzkIHAqpk8Tk6Hr",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Girl Alone",
-      "track_number": 10,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 204714,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "6yDVj6pbzkIHAqpk8Tk6Hr",
+        "url": "https://open.spotify.com/track/6yDVj6pbzkIHAqpk8Tk6Hr",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Girl Alone",
+        "track_number": 10,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 204714,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "2VvBGhMWyS6muxO3DBa413",
-      "spotify_url": "https://open.spotify.com/track/2VvBGhMWyS6muxO3DBa413",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Like a Child",
-      "track_number": 11,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 152890,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "2VvBGhMWyS6muxO3DBa413",
+        "url": "https://open.spotify.com/track/2VvBGhMWyS6muxO3DBa413",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Like a Child",
+        "track_number": 11,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 152890,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "26qDRsgK5kUhKQDThazp2s",
-      "spotify_url": "https://open.spotify.com/track/26qDRsgK5kUhKQDThazp2s",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Breathe",
-      "track_number": 12,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 120333,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "26qDRsgK5kUhKQDThazp2s",
+        "url": "https://open.spotify.com/track/26qDRsgK5kUhKQDThazp2s",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Breathe",
+        "track_number": 12,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 120333,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "4UkQkiQ2mCanqbDeEFnB9a",
-      "spotify_url": "https://open.spotify.com/track/4UkQkiQ2mCanqbDeEFnB9a",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Until It Doesn’t Hurt",
-      "track_number": 13,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 175174,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "4UkQkiQ2mCanqbDeEFnB9a",
+        "url": "https://open.spotify.com/track/4UkQkiQ2mCanqbDeEFnB9a",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Until It Doesn’t Hurt",
+        "track_number": 13,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 175174,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "0SEmbXmJf8gBnkMLpegQmp",
-      "spotify_url": "https://open.spotify.com/track/0SEmbXmJf8gBnkMLpegQmp",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Inside",
-      "track_number": 14,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 508855,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "0SEmbXmJf8gBnkMLpegQmp",
+        "url": "https://open.spotify.com/track/0SEmbXmJf8gBnkMLpegQmp",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Inside",
+        "track_number": 14,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 508855,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "1rvjACaF139KT9adkSonkD",
-      "spotify_url": "https://open.spotify.com/track/1rvjACaF139KT9adkSonkD",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Life",
-      "track_number": 15,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 186505,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "1rvjACaF139KT9adkSonkD",
+        "url": "https://open.spotify.com/track/1rvjACaF139KT9adkSonkD",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Life",
+        "track_number": 15,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 186505,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "0kYMwaQWABTkFff8AZjmYI",
-      "spotify_url": "https://open.spotify.com/track/0kYMwaQWABTkFff8AZjmYI",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Hayloft II",
-      "track_number": 16,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 215040,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "0kYMwaQWABTkFff8AZjmYI",
+        "url": "https://open.spotify.com/track/0kYMwaQWABTkFff8AZjmYI",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Hayloft II",
+        "track_number": 16,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 215040,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "4lhpee1xNh9VnJ3DAGytY9",
-      "spotify_url": "https://open.spotify.com/track/4lhpee1xNh9VnJ3DAGytY9",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "All the Dying",
-      "track_number": 17,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 195928,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "4lhpee1xNh9VnJ3DAGytY9",
+        "url": "https://open.spotify.com/track/4lhpee1xNh9VnJ3DAGytY9",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "All the Dying",
+        "track_number": 17,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 195928,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "07de3YRabmvUpokZRvav6J",
-      "spotify_url": "https://open.spotify.com/track/07de3YRabmvUpokZRvav6J",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Frying Pan",
-      "track_number": 18,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 129923,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "07de3YRabmvUpokZRvav6J",
+        "url": "https://open.spotify.com/track/07de3YRabmvUpokZRvav6J",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Frying Pan",
+        "track_number": 18,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 129923,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "4ZTm9poXkR1OP82lnKNntx",
-      "spotify_url": "https://open.spotify.com/track/4ZTm9poXkR1OP82lnKNntx",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Conversations",
-      "track_number": 19,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 140143,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "4ZTm9poXkR1OP82lnKNntx",
+        "url": "https://open.spotify.com/track/4ZTm9poXkR1OP82lnKNntx",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Conversations",
+        "track_number": 19,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 140143,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "69B9ygiHBi8DuBn9VqnJ3l",
-      "spotify_url": "https://open.spotify.com/track/69B9ygiHBi8DuBn9VqnJ3l",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Turpentine",
-      "track_number": 20,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 94573,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "69B9ygiHBi8DuBn9VqnJ3l",
+        "url": "https://open.spotify.com/track/69B9ygiHBi8DuBn9VqnJ3l",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Turpentine",
+        "track_number": 20,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 94573,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     },
     {
-      "spotify_id": "7wZmK348C8gLNsrnlGZP0P",
-      "spotify_url": "https://open.spotify.com/track/7wZmK348C8gLNsrnlGZP0P",
-      "artist": "Mother Mother",
-      "artists": [
-        "Mother Mother"
-      ],
-      "album": "Inside (Deluxe)",
-      "album_artist": "Mother Mother",
-      "album_artists": [
-        "Mother Mother"
-      ],
-      "title": "Like a Child - Piano Demo",
-      "track_number": 21,
-      "disc_number": 1,
-      "total_tracks": 21,
-      "duration_ms": 217368,
-      "release_date": "2022-01-28",
-      "release_date_precision": "day",
-      "isrc": null,
-      "album_art": {
-        "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
-        "width": 640,
-        "height": 640
+      "spotify": {
+        "id": "7wZmK348C8gLNsrnlGZP0P",
+        "url": "https://open.spotify.com/track/7wZmK348C8gLNsrnlGZP0P",
+        "artist": "Mother Mother",
+        "artists": [
+          "Mother Mother"
+        ],
+        "album": "Inside (Deluxe)",
+        "album_artist": "Mother Mother",
+        "album_artists": [
+          "Mother Mother"
+        ],
+        "title": "Like a Child - Piano Demo",
+        "track_number": 21,
+        "disc_number": 1,
+        "total_tracks": 21,
+        "duration_ms": 217368,
+        "release_date": "2022-01-28",
+        "release_date_precision": "day",
+        "isrc": null,
+        "album_art": {
+          "url": "https://i.scdn.co/image/ab67616d0000b273310a2e8ff7e84aa1cdbf04d2",
+          "width": 640,
+          "height": 640
+        }
+      },
+      "acquisition": {
+        "status": "pending",
+        "attempts": 0,
+        "match": null,
+        "file": null,
+        "library": null
+      },
+      "enrichment": {
+        "artwork": null,
+        "lyrics": null
       }
     }
   ]
