@@ -30,7 +30,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother O My Heart",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -72,7 +72,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Burning Pile",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -114,7 +114,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Body Of Years",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -156,7 +156,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Try To Change",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -198,7 +198,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Wisdom",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -240,7 +240,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Body",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -282,7 +282,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Ghosting",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -324,7 +324,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Hayloft",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -366,7 +366,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Wrecking Ball",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -408,7 +408,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Arms Tonite",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -450,7 +450,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Miles",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -492,7 +492,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Sleep Awake",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -534,7 +534,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Seven",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -576,7 +576,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Two",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -618,7 +618,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Sick of The Silence",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -660,7 +660,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Forgotten Souls",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -702,7 +702,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Pure Love",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -744,7 +744,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Weep",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -786,7 +786,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother I Got Love",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -828,7 +828,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Stay Behind",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -870,7 +870,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother The Knack",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -912,7 +912,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Girl Alone",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -954,7 +954,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Like a Child",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -996,7 +996,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Breathe",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1038,7 +1038,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Until It Doesn’t Hurt",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1080,7 +1080,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Inside",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1122,7 +1122,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Life",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1164,7 +1164,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Hayloft II",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1206,7 +1206,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother All the Dying",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1248,7 +1248,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Frying Pan",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1290,7 +1290,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Conversations",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1332,7 +1332,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Turpentine",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
@@ -1374,7 +1374,7 @@
       },
       "acquisition": {
         "status": "search_failed",
-        "attempts": 1,
+        "attempts": 2,
         "match": {
           "query": "Mother Mother Like a Child - Piano Demo",
           "error": "401 Client Error: Unauthorized for url: http://127.0.0.1:5030/api/v0/searches"
