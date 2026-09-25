@@ -25,6 +25,10 @@ class SoulseekClient:
     def _url(self, path):
         return f"{self.base_url}{path}"
 
+    # ------------------------------------------------------------------
+    # Search
+    # ------------------------------------------------------------------
+
     def search(
         self,
         query,
@@ -52,6 +56,7 @@ class SoulseekClient:
         )
 
         response.raise_for_status()
+
         return search_id
 
     def get_search(
@@ -72,6 +77,7 @@ class SoulseekClient:
         )
 
         response.raise_for_status()
+
         return response.json()
 
     def wait_for_search(
@@ -118,6 +124,99 @@ class SoulseekClient:
             404,
         }:
             response.raise_for_status()
+
+    # ------------------------------------------------------------------
+    # Downloads
+    # ------------------------------------------------------------------
+
+    def enqueue_download(
+        self,
+        username,
+        filename,
+        size=None,
+    ):
+        payload = [
+            {
+                "filename": filename,
+                **(
+                    {"size": size}
+                    if size is not None
+                    else {}
+                ),
+            }
+        ]
+
+        response = self.session.post(
+            self._url(
+                f"/api/v0/transfers/downloads/"
+                f"{username}"
+            ),
+            json=payload,
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        if response.content:
+            return response.json()
+
+        return None
+
+    def enqueue_downloads(
+        self,
+        username,
+        files,
+    ):
+        payload = []
+
+        for file_info in files:
+            item = {
+                "filename": file_info["filename"],
+            }
+
+            if file_info.get("size") is not None:
+                item["size"] = file_info["size"]
+
+            payload.append(item)
+
+        if not payload:
+            return None
+
+        response = self.session.post(
+            self._url(
+                f"/api/v0/transfers/downloads/"
+                f"{username}"
+            ),
+            json=payload,
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        if response.content:
+            return response.json()
+
+        return None
+
+    def get_downloads(
+        self,
+        include_removed=False,
+    ):
+        response = self.session.get(
+            self._url(
+                "/api/v0/transfers/downloads"
+            ),
+            params={
+                "includeRemoved": str(
+                    include_removed
+                ).lower()
+            },
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
 
 
 def flatten_responses(search_data):

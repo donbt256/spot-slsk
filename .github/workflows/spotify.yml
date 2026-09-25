@@ -39,16 +39,17 @@ jobs:
           mkdir -p "$RUNNER_TEMP/slskd"
 
           docker run \
-            --detach \
-            --name slskd \
-            --publish 127.0.0.1:5030:5030 \
-            --publish 127.0.0.1:50300:50300 \
-            --env "SLSKD_SLSK_USERNAME=$SOULSEEK_USERNAME" \
-            --env "SLSKD_SLSK_PASSWORD=$SOULSEEK_PASSWORD" \
-            --env "SLSKD_NO_AUTH=true" \
-            --env "SLSKD_REMOTE_CONFIGURATION=false" \
-            --volume "$RUNNER_TEMP/slskd:/app" \
-            slskd/slskd:latest
+          --detach \
+          --name slskd \
+          --publish 127.0.0.1:5030:5030 \
+          --publish 127.0.0.1:50300:50300 \
+          --env "SLSKD_SLSK_USERNAME=$SOULSEEK_USERNAME" \
+          --env "SLSKD_SLSK_PASSWORD=$SOULSEEK_PASSWORD" \
+          --env "SLSKD_NO_AUTH=true" \
+          --env "SLSKD_REMOTE_CONFIGURATION=false" \
+          --env "SLSKD_DOWNLOAD_SLOTS=8" \
+          --volume "$RUNNER_TEMP/slskd:/app" \
+          slskd/slskd:latest
 
       - name: Wait for slskd
         run: |
