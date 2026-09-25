@@ -68,7 +68,9 @@ def main():
 
     tracks = state.get("tracks", [])
 
-    print(f"Loaded {len(tracks)} tracks.")
+    print(
+        f"Loaded {len(tracks)} tracks."
+    )
 
     searched = 0
 
@@ -102,7 +104,9 @@ def main():
             )
             continue
 
-        query = build_search_query(track)
+        query = build_search_query(
+            track
+        )
 
         print()
         print(
@@ -125,7 +129,9 @@ def main():
                 response_limit=100,
             )
 
-            print(f"  Search ID: {search_id}")
+            print(
+                f"  Search ID: {search_id}"
+            )
 
             result = client.wait_for_search(
                 search_id,
@@ -170,17 +176,23 @@ def main():
                     f"from "
                     f"{best.get('username')} "
                     f"(score="
-                    f"{best['match']['score']})"
+                    f"{best['score']})"
                 )
             else:
-                print("  No candidates found.")
+                print(
+                    "  No candidates found."
+                )
 
             searched += 1
 
-            client.delete_search(search_id)
+            client.delete_search(
+                search_id
+            )
 
         except Exception as exc:
-            acquisition["status"] = "search_failed"
+            acquisition["status"] = (
+                "search_failed"
+            )
 
             acquisition["match"] = {
                 "query": query,
@@ -195,7 +207,9 @@ def main():
         save_state(state)
 
     print()
-    print(f"Searched {searched} tracks.")
+    print(
+        f"Searched {searched} tracks."
+    )
 
     save_state(state)
 

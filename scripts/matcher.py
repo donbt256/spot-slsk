@@ -98,7 +98,12 @@ def extract_track_number(filename):
     ]
 
     for pattern in patterns:
-        match = re.match(pattern, name, flags=re.IGNORECASE)
+        match = re.match(
+            pattern,
+            name,
+            flags=re.IGNORECASE,
+        )
+
         if match:
             return int(match.group(1))
 
@@ -106,7 +111,10 @@ def extract_track_number(filename):
 
 
 def is_audio_file(filename):
-    extension = os.path.splitext(filename or "")[1].lower()
+    extension = os.path.splitext(
+        filename or ""
+    )[1].lower()
+
     return extension in AUDIO_EXTENSIONS
 
 
@@ -146,7 +154,9 @@ def extract_candidate_title(filename, artist=None):
         normalized_artist = normalize(artist)
         normalized_title = normalize(title)
 
-        if normalized_title.startswith(normalized_artist + " "):
+        if normalized_title.startswith(
+            normalized_artist + " "
+        ):
             title = title[len(artist):].strip()
 
             title = re.sub(
@@ -158,7 +168,11 @@ def extract_candidate_title(filename, artist=None):
     return title.strip()
 
 
-def title_classification(target_title, candidate_filename, artist=None):
+def title_classification(
+    target_title,
+    candidate_filename,
+    artist=None,
+):
     candidate_title = extract_candidate_title(
         candidate_filename,
         artist=artist,
@@ -182,12 +196,15 @@ def title_classification(target_title, candidate_filename, artist=None):
         }
 
     # Check for obvious version/alternate suffixes.
-    alternate = contains_alternate_term(candidate_title)
+    alternate = contains_alternate_term(
+        candidate_title
+    )
 
     candidate_without_alternate = candidate_normalized
 
     for term in ALTERNATE_TERMS:
         normalized_term = normalize(term)
+
         candidate_without_alternate = re.sub(
             rf"\b{re.escape(normalized_term)}\b",
             "",
@@ -262,9 +279,6 @@ def score_candidate(track, candidate):
     if title_class == "mismatch":
         return None
 
-    candidate_artist = artist
-    candidate_album = album
-
     normalized_filename = normalize(filename)
     normalized_artist = normalize(artist)
     normalized_album = normalize(album)
@@ -275,16 +289,32 @@ def score_candidate(track, candidate):
     )
 
     # Album is inferred primarily from directory/path.
-    path_parts = re.split(r"[\\/]+", filename)
+    path_parts = re.split(
+        r"[\\/]+",
+        filename,
+    )
 
     album_similarity = 0.0
 
     for part in path_parts[:-1]:
-        part_score = similarity(album, part)
-        album_similarity = max(album_similarity, part_score)
+        part_score = similarity(
+            album,
+            part,
+        )
 
-    if normalized_album and normalized_album in normalized_filename:
-        album_similarity = max(album_similarity, 1.0)
+        album_similarity = max(
+            album_similarity,
+            part_score,
+        )
+
+    if (
+        normalized_album
+        and normalized_album in normalized_filename
+    ):
+        album_similarity = max(
+            album_similarity,
+            1.0,
+        )
 
     score = 0.0
 
@@ -304,13 +334,15 @@ def score_candidate(track, candidate):
     if normalized_artist in normalized_filename:
         score += 15.0
     else:
-        score += similarity(artist, candidate_artist) * 10.0
+        score += artist_score * 10.0
 
     # Album/path.
     score += album_similarity * 15.0
 
     # Track number.
-    candidate_track_number = extract_track_number(filename)
+    candidate_track_number = extract_track_number(
+        filename
+    )
 
     if (
         track_number is not None
@@ -341,7 +373,10 @@ def rank_candidates(track, candidates):
     scored = []
 
     for candidate in candidates:
-        result = score_candidate(track, candidate)
+        result = score_candidate(
+            track,
+            candidate,
+        )
 
         if result is not None:
             scored.append(result)
@@ -354,7 +389,12 @@ def rank_candidates(track, candidates):
                     "has_free_upload_slot"
                 )
             ),
-            -(candidate.get("peer", {}).get("queue_length") or 0),
+            -(
+                candidate.get("peer", {}).get(
+                    "queue_length"
+                )
+                or 0
+            ),
         ),
         reverse=True,
     )
