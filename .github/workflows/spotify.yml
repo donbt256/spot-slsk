@@ -42,10 +42,12 @@ jobs:
           print(f"Tracks: {len(data['tracks'])}")
 
           for track in data["tracks"]:
+              spotify = track["spotify"]
+
               print(
-                  f"{track['artist']} - "
-                  f"{track['title']} "
-                  f"({track['album']})"
+                  f"{spotify['artist']} - "
+                  f"{spotify['title']} "
+                  f"({spotify['album']})"
               )
           PY
 
