@@ -179,4 +179,3 @@ steps:
 
       git commit -m "Search Soulseek candidates"
       git push
-```
