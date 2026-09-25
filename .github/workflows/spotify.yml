@@ -57,6 +57,47 @@ jobs:
             if curl \
               --silent \
               --fail \
+              http://127.0.0.1:5030/ \
+              > /dev/null; then
+              echo "slskd HTTP server is ready."
+              break
+            fi
+
+            sleep 2
+          done
+
+          if ! curl \
+            --silent \
+            --fail \
+            http://127.0.0.1:5030/ \
+            > /dev/null; then
+
+            echo "slskd did not become ready."
+            docker logs slskd
+            exit 1
+          fi
+
+          echo "Checking Soulseek connection..."
+
+          for i in {1..60}; do
+            if docker logs slskd 2>&1 | grep -q "Logged in to the Soulseek server"; then
+              echo "slskd is connected to Soulseek."
+              exit 0
+            fi
+
+            sleep 2
+          done
+
+          echo "slskd started but did not log in to Soulseek."
+          docker logs slskd
+          exit 1
+        run: |
+          echo "Waiting for slskd..."
+
+          for i in {1..60}; do
+            if curl \
+              --silent \
+              --fail \
               http://127.0.0.1:5030/api/v0/application/state \
               > /dev/null; then
               echo "slskd is ready."
