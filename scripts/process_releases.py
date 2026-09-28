@@ -389,12 +389,30 @@ def main():
                 flush=True,
             )
 
-            print(
-                "  Failed release state was not pushed; "
-                "the next run will retry this release from the "
-                "last successful checkpoint.",
-                flush=True,
-            )
+            failed_state = load_state()
+            failed_tracks = [
+                track
+                for track in failed_state.get("tracks", [])
+                if track_id(track) in ids
+            ]
+
+            # A failed search/download should not create a checkpoint because
+            # its runner-local files disappear with the runner. However, if
+            # publishing already succeeded for any track, preserve that
+            # published state so the next run cannot upload it again.
+            if any(
+                track.get("acquisition", {}).get("status")
+                == "published"
+                for track in failed_tracks
+            ):
+                save_checkpoint(label + " (partial publish)")
+            else:
+                print(
+                    "  Failed release state was not pushed; "
+                    "the next run will retry this release from the "
+                    "last successful checkpoint.",
+                    flush=True,
+                )
 
     if failed:
         return 1
