@@ -105,6 +105,18 @@ def main():
     current_tracks = resolved["tracks"]
     current_sources = resolved["track_sources"]
 
+    # Preserve exact playlist ordering and duplicate occurrences.
+    # playlist_sources[track_id][playlist_id] = [0-based positions...]
+    playlist_positions = {}
+    for playlist in resolved.get("playlists", []):
+        playlist_id = playlist.get("id")
+        if not playlist_id:
+            continue
+        for position, track_id in enumerate(playlist.get("tracks", [])):
+            playlist_positions.setdefault(track_id, {}).setdefault(
+                playlist_id, []
+            ).append(position)
+
     # Preserve previously acquired library tracks even if they are no
     # longer present in urls.txt. This is required for playlist removal:
     # removing a track from a playlist must not delete the music.
