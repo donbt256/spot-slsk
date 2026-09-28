@@ -96,51 +96,20 @@ jobs:
             sleep 2
           done
 
-      - name: Search Soulseek
+      - name: Process releases independently
         env:
           SLSKD_URL: http://127.0.0.1:5030
           SLSKD_SEARCH_TIMEOUT_MS: "12000"
           SLSKD_SEARCH_WAIT_SECONDS: "20"
           SLSKD_RESPONSE_LIMIT: "100"
           SLSKD_FILE_LIMIT: "10000"
-        run: |
-          python scripts/search.py
-
-      - name: Screen ambiguous matches with OpenAI
-        env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MATCH_MODEL: gpt-5-nano
           OPENAI_MAX_CANDIDATES: "15"
-        run: |
-          python scripts/llm_matcher.py
-
-      - name: Download matched tracks
-        env:
-          SLSKD_URL: http://127.0.0.1:5030
           SOULSEEK_DOWNLOAD_DIR: ${{ runner.temp }}/music-downloads
-        run: |
-          python scripts/download.py
-
-      - name: Publish downloaded tracks
-        env:
           GIT_PAT: ${{ secrets.GIT_PAT }}
         run: |
-          python scripts/publish.py
-
-      - name: Commit updated state
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-
-          git add state/tracks.json
-
-          if git diff --cached --quiet; then
-            echo "No state changes to commit."
-          else
-            git commit -m "Update music acquisition state"
-            git push
-          fi
-
+          python scripts/process_releases.py
       - name: Diagnostic state summary
         if: always()
         run: |
