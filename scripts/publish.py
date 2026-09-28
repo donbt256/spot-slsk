@@ -5,6 +5,10 @@ import re
 import sys
 import time
 from pathlib import Path
+from release import release_key
+
+
+RELEASE_FILTER = os.environ.get("RELEASE_KEY")
 from urllib.parse import quote
 
 import requests
@@ -1232,6 +1236,9 @@ def publish():
         "tracks",
         [],
     )
+
+    if RELEASE_FILTER:
+        tracks = [track for track in tracks if release_key(track) == RELEASE_FILTER]
 
     items = build_items(
         tracks
