@@ -53,8 +53,20 @@ def playlist_relative_path(track_path):
     return posixpath.join("..", track_path)
 
 
+def m3u_comment(value):
+    value = str(value or "")
+    return value.replace("\r", " ").replace("\n", " ").strip()
+
+
 def build_playlist_text(playlist, track_map):
     lines = ["#EXTM3U"]
+
+    # #PLAYLIST is a widely supported extended-M3U metadata directive and
+    # gives the generated file a human-readable name while its filename
+    # remains permanently keyed by Spotify playlist ID.
+    lines.append(
+        f"#PLAYLIST:{m3u_comment(playlist.get('name') or playlist.get('id'))}"
+    )
 
     for track_id in playlist.get("tracks", []):
         track = track_map.get(track_id)
@@ -121,6 +133,11 @@ def process():
     for playlist in playlists:
         playlist_id = playlist.get("id")
         if not playlist_id:
+            continue
+
+        # Inactive playlists remain in state for history, but their
+        # generated M3U8 is intentionally removed below.
+        if not playlist.get("configured", True):
             continue
 
         track_ids = playlist.get("tracks", [])
