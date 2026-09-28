@@ -165,6 +165,11 @@ def compact_state(state):
 
         acquisition = track.get("acquisition")
         if isinstance(acquisition, dict):
+            attempts = acquisition.get("download_attempts")
+            if isinstance(attempts, list) and len(attempts) > 10:
+                acquisition["download_attempts"] = attempts[-10:]
+                changed = True
+
             match = acquisition.get("match")
             if isinstance(match, dict):
                 candidates = match.get("candidates")
