@@ -152,7 +152,7 @@ def compact_state(state):
     return changed
 
 
-def save_state():
+def save_state(state):
     with STATE_PATH.open("w", encoding="utf-8") as handle:
         json.dump(
             state,
@@ -240,7 +240,7 @@ def main():
     )
 
     if compact_state(state):
-        save_state()
+        save_state(state)
         save_checkpoint("Compact acquisition state")
 
     failed = False
