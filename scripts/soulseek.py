@@ -14,20 +14,16 @@ class SoulseekClient:
         self.session = requests.Session()
 
         if api_key:
-            self.session.headers.update({
-                "X-API-Key": api_key,
-            })
+            self.session.headers.update(
+                {"X-API-Key": api_key}
+            )
 
-        self.session.headers.update({
-            "Content-Type": "application/json",
-        })
+        self.session.headers.update(
+            {"Content-Type": "application/json"}
+        )
 
     def _url(self, path):
         return f"{self.base_url}{path}"
-
-    # ------------------------------------------------------------------
-    # Search
-    # ------------------------------------------------------------------
 
     def search(
         self,
@@ -35,29 +31,67 @@ class SoulseekClient:
         timeout_ms=15000,
         file_limit=10000,
         response_limit=100,
+        max_retries=5,
+        retry_delay=2,
     ):
-        search_id = str(uuid.uuid4())
+        """
+        Start a Soulseek search.
 
-        payload = {
-            "id": search_id,
-            "searchText": query,
-            "searchTimeout": timeout_ms,
-            "fileLimit": file_limit,
-            "responseLimit": response_limit,
-            "filterResponses": True,
-            "maximumPeerQueueLength": 100,
-            "minimumResponseFileCount": 1,
-        }
+        slskd can temporarily return HTTP 409 when its search
+        subsystem is still processing a previous request. Retry
+        those conflicts rather than aborting the workflow.
+        """
 
-        response = self.session.post(
-            self._url("/api/v0/searches"),
-            json=payload,
-            timeout=30,
+        last_response = None
+
+        for attempt in range(1, max_retries + 1):
+            search_id = str(uuid.uuid4())
+
+            payload = {
+                "id": search_id,
+                "searchText": query,
+                "searchTimeout": timeout_ms,
+                "fileLimit": file_limit,
+                "responseLimit": response_limit,
+                "filterResponses": True,
+                "maximumPeerQueueLength": 100,
+                "minimumResponseFileCount": 1,
+            }
+
+            response = self.session.post(
+                self._url("/api/v0/searches"),
+                json=payload,
+                timeout=30,
+            )
+
+            last_response = response
+
+            if response.status_code == 409:
+                if attempt >= max_retries:
+                    response.raise_for_status()
+
+                print(
+                    f"slskd returned HTTP 409 while starting "
+                    f"search; retrying "
+                    f"({attempt}/{max_retries})...",
+                    flush=True,
+                )
+
+                time.sleep(
+                    retry_delay * attempt
+                )
+                continue
+
+            response.raise_for_status()
+
+            return search_id
+
+        if last_response is not None:
+            last_response.raise_for_status()
+
+        raise RuntimeError(
+            "Failed to start Soulseek search."
         )
-
-        response.raise_for_status()
-
-        return search_id
 
     def get_search(
         self,
@@ -69,9 +103,8 @@ class SoulseekClient:
                 f"/api/v0/searches/{search_id}"
             ),
             params={
-                "includeResponses": str(
-                    include_responses
-                ).lower()
+                "includeResponses":
+                    str(include_responses).lower()
             },
             timeout=30,
         )
@@ -85,7 +118,10 @@ class SoulseekClient:
         search_id,
         timeout_seconds=30,
     ):
-        deadline = time.monotonic() + timeout_seconds
+        deadline = (
+            time.monotonic()
+            + timeout_seconds
+        )
 
         while True:
             data = self.get_search(
@@ -125,136 +161,74 @@ class SoulseekClient:
         }:
             response.raise_for_status()
 
-    # ------------------------------------------------------------------
-    # Downloads
-    # ------------------------------------------------------------------
-
-    def enqueue_download(
-        self,
-        username,
-        filename,
-        size=None,
-    ):
-        payload = [
-            {
-                "filename": filename,
-                **(
-                    {"size": size}
-                    if size is not None
-                    else {}
-                ),
-            }
-        ]
-
-        response = self.session.post(
-            self._url(
-                f"/api/v0/transfers/downloads/"
-                f"{username}"
-            ),
-            json=payload,
-            timeout=30,
-        )
-
-        response.raise_for_status()
-
-        if response.content:
-            return response.json()
-
-        return None
-
-    def enqueue_downloads(
-        self,
-        username,
-        files,
-    ):
-        payload = []
-
-        for file_info in files:
-            item = {
-                "filename": file_info["filename"],
-            }
-
-            if file_info.get("size") is not None:
-                item["size"] = file_info["size"]
-
-            payload.append(item)
-
-        if not payload:
-            return None
-
-        response = self.session.post(
-            self._url(
-                f"/api/v0/transfers/downloads/"
-                f"{username}"
-            ),
-            json=payload,
-            timeout=30,
-        )
-
-        response.raise_for_status()
-
-        if response.content:
-            return response.json()
-
-        return None
-
-    def get_downloads(
-        self,
-        include_removed=False,
-    ):
-        response = self.session.get(
-            self._url(
-                "/api/v0/transfers/downloads"
-            ),
-            params={
-                "includeRemoved": str(
-                    include_removed
-                ).lower()
-            },
-            timeout=30,
-        )
-
-        response.raise_for_status()
-
-        return response.json()
-
 
 def flatten_responses(search_data):
     candidates = []
 
-    for response in search_data.get(
+    responses = search_data.get(
         "responses",
         [],
-    ):
-        username = response.get("username")
+    )
+
+    if not isinstance(responses, list):
+        return candidates
+
+    for response in responses:
+        if not isinstance(response, dict):
+            continue
+
+        username = response.get(
+            "username"
+        )
 
         peer_info = {
             "username": username,
-            "has_free_upload_slot": response.get(
-                "hasFreeUploadSlot"
-            ),
-            "upload_speed": response.get(
-                "uploadSpeed"
-            ),
-            "queue_length": response.get(
-                "queueLength"
-            ),
+            "has_free_upload_slot":
+                response.get(
+                    "hasFreeUploadSlot"
+                ),
+            "upload_speed":
+                response.get(
+                    "uploadSpeed"
+                ),
+            "queue_length":
+                response.get(
+                    "queueLength"
+                ),
         }
 
-        for file_info in response.get(
+        files = response.get(
             "files",
             [],
-        ):
-            candidates.append({
-                "username": username,
-                "filename": file_info.get(
-                    "filename"
-                ),
-                "size": file_info.get("size"),
-                "extension": file_info.get(
-                    "extension"
-                ),
-                "peer": peer_info,
-            })
+        )
+
+        if not isinstance(files, list):
+            continue
+
+        for file_info in files:
+            if not isinstance(
+                file_info,
+                dict,
+            ):
+                continue
+
+            candidates.append(
+                {
+                    "username": username,
+                    "filename":
+                        file_info.get(
+                            "filename"
+                        ),
+                    "size":
+                        file_info.get(
+                            "size"
+                        ),
+                    "extension":
+                        file_info.get(
+                            "extension"
+                        ),
+                    "peer": peer_info,
+                }
+            )
 
     return candidates
