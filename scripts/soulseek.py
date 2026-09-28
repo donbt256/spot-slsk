@@ -37,14 +37,17 @@ class SoulseekClient:
         """
         Start a Soulseek search.
 
-        slskd can temporarily return HTTP 409 when its search
-        subsystem is still processing a previous request. Retry
-        those conflicts rather than aborting the workflow.
+        slskd can temporarily return HTTP 409 when its
+        search subsystem is still processing another
+        request. Retry those conflicts.
         """
 
         last_response = None
 
-        for attempt in range(1, max_retries + 1):
+        for attempt in range(
+            1,
+            max_retries + 1,
+        ):
             search_id = str(uuid.uuid4())
 
             payload = {
@@ -71,8 +74,8 @@ class SoulseekClient:
                     response.raise_for_status()
 
                 print(
-                    f"slskd returned HTTP 409 while starting "
-                    f"search; retrying "
+                    "slskd returned HTTP 409 while "
+                    "starting search; retrying "
                     f"({attempt}/{max_retries})...",
                     flush=True,
                 )
@@ -80,6 +83,7 @@ class SoulseekClient:
                 time.sleep(
                     retry_delay * attempt
                 )
+
                 continue
 
             response.raise_for_status()
@@ -161,6 +165,84 @@ class SoulseekClient:
         }:
             response.raise_for_status()
 
+    def enqueue_download(
+        self,
+        username,
+        filename,
+        size=None,
+    ):
+        """
+        Queue a file for download from a Soulseek user.
+
+        slskd expects POST
+        /api/v0/transfers/downloads/{username}
+
+        with a list of download requests.
+        """
+
+        payload = {
+            "filename": filename,
+        }
+
+        if size is not None:
+            payload["size"] = size
+
+        response = self.session.post(
+            self._url(
+                f"/api/v0/transfers/downloads/"
+                f"{username}"
+            ),
+            json=[payload],
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        if response.content:
+            try:
+                return response.json()
+            except ValueError:
+                return None
+
+        return None
+
+    def get_downloads(self):
+        """
+        Get all current Soulseek downloads.
+        """
+
+        response = self.session.get(
+            self._url(
+                "/api/v0/transfers/downloads"
+            ),
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
+    def get_user_downloads(
+        self,
+        username,
+    ):
+        """
+        Get downloads belonging to one
+        Soulseek username.
+        """
+
+        response = self.session.get(
+            self._url(
+                f"/api/v0/transfers/downloads/"
+                f"{username}"
+            ),
+            timeout=30,
+        )
+
+        response.raise_for_status()
+
+        return response.json()
+
 
 def flatten_responses(search_data):
     candidates = []
@@ -170,11 +252,17 @@ def flatten_responses(search_data):
         [],
     )
 
-    if not isinstance(responses, list):
+    if not isinstance(
+        responses,
+        list,
+    ):
         return candidates
 
     for response in responses:
-        if not isinstance(response, dict):
+        if not isinstance(
+            response,
+            dict,
+        ):
             continue
 
         username = response.get(
@@ -202,7 +290,10 @@ def flatten_responses(search_data):
             [],
         )
 
-        if not isinstance(files, list):
+        if not isinstance(
+            files,
+            list,
+        ):
             continue
 
         for file_info in files:
