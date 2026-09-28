@@ -179,6 +179,7 @@ def compact_candidate(candidate):
         "username",
         "filename",
         "size",
+        "score",
         "extension",
         "candidate_title",
         "candidate_track_number",
@@ -337,9 +338,12 @@ def process_album_group(client, tracks, index, total):
         for release in releases[:20]
     ]
 
-    for track in tracks:
+    for index, track in enumerate(tracks):
         state = ensure_search_state(track)
-        state["release_candidates"] = compacted_releases
+        if index == 0:
+            state["release_candidates"] = compacted_releases
+        else:
+            state["release_candidates"] = []
 
     if not releases:
         for track in tracks:
@@ -413,7 +417,7 @@ def process_album_group(client, tracks, index, total):
     elif decision == "llm":
         print("  Decision: LLM screening")
 
-        for track in tracks:
+        for index, track in enumerate(tracks):
             track.setdefault(
                 "matching",
                 {},
@@ -422,11 +426,14 @@ def process_album_group(client, tracks, index, total):
                 "mode": "album",
                 "decision": "llm",
                 "release_id": best["release_id"],
-                "release": compact_release(best),
-                "candidates": [
-                    compact_release(release)
-                    for release in releases[:15]
-                ],
+                "candidates": (
+                    [
+                        compact_release(release)
+                        for release in releases[:15]
+                    ]
+                    if index == 0
+                    else []
+                ),
             }
 
             track.setdefault(
@@ -437,7 +444,7 @@ def process_album_group(client, tracks, index, total):
     else:
         print("  Decision: reject")
 
-        for track in tracks:
+        for index, track in enumerate(tracks):
             track.setdefault(
                 "matching",
                 {},
@@ -445,10 +452,14 @@ def process_album_group(client, tracks, index, total):
                 "version": MATCHER_VERSION,
                 "mode": "album",
                 "decision": "reject",
-                "candidates": [
-                    compact_release(release)
-                    for release in releases[:15]
-                ],
+                "candidates": (
+                    [
+                        compact_release(release)
+                        for release in releases[:15]
+                    ]
+                    if index == 0
+                    else []
+                ),
             }
 
             track.setdefault(
