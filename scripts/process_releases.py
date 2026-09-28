@@ -414,6 +414,19 @@ def main():
                     flush=True,
                 )
 
+    print("", flush=True)
+    print("=== Updating Spotify playlists ===", flush=True)
+
+    try:
+        run_stage("scripts/playlists.py", os.environ.copy())
+    except Exception as exc:
+        failed = True
+        print(
+            f"PLAYLIST UPDATE FAILED: {exc}",
+            file=sys.stderr,
+            flush=True,
+        )
+
     if failed:
         return 1
 
