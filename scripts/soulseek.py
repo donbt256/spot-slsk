@@ -101,6 +101,7 @@ class SoulseekClient:
         self,
         search_id,
         include_responses=True,
+        timeout=5,
     ):
         response = self.session.get(
             self._url(
@@ -110,7 +111,7 @@ class SoulseekClient:
                 "includeResponses":
                     str(include_responses).lower()
             },
-            timeout=30,
+            timeout=timeout,
         )
 
         response.raise_for_status()
@@ -122,16 +123,41 @@ class SoulseekClient:
         search_id,
         timeout_seconds=30,
     ):
-        deadline = (
-            time.monotonic()
-            + timeout_seconds
-        )
+        # The wall-clock timeout is enforced here rather than by a single
+        # HTTP request. A hung slskd request must not extend a 20/30-second
+        # search wait indefinitely.
+        deadline = time.monotonic() + timeout_seconds
 
         while True:
-            data = self.get_search(
-                search_id,
-                include_responses=True,
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                return self.get_search(
+                    search_id,
+                    include_responses=True,
+                    timeout=5,
+                )
+
+            request_timeout = max(
+                1,
+                min(5, remaining),
             )
+
+            try:
+                data = self.get_search(
+                    search_id,
+                    include_responses=True,
+                    timeout=request_timeout,
+                )
+            except requests.Timeout:
+                if time.monotonic() >= deadline:
+                    return {
+                        "id": search_id,
+                        "isComplete": False,
+                        "state": "TimedOut",
+                        "responses": [],
+                    }
+                time.sleep(min(1, max(0, deadline - time.monotonic())))
+                continue
 
             if (
                 data.get("isComplete")
@@ -145,10 +171,11 @@ class SoulseekClient:
             ):
                 return data
 
-            if time.monotonic() >= deadline:
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
                 return data
 
-            time.sleep(1)
+            time.sleep(min(1, remaining))
 
     def delete_search(self, search_id):
         response = self.session.delete(
