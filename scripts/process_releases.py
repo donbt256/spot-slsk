@@ -31,6 +31,7 @@ def compact_candidate(candidate):
         "username",
         "filename",
         "size",
+        "score",
         "extension",
         "candidate_title",
         "candidate_track_number",
@@ -84,7 +85,25 @@ def compact_release(release):
 def compact_state(state):
     changed = False
 
+    album_seen = set()
+
     for track in state.get("tracks", []):
+        spotify = track.get("spotify", {})
+        album_key = (
+            str(
+                spotify.get("album_artist")
+                or spotify.get("artist")
+                or ""
+            ).casefold(),
+            str(
+                spotify.get("album")
+                or ""
+            ).casefold(),
+        )
+        first_album_track = album_key not in album_seen
+        if album_key != ("", ""):
+            album_seen.add(album_key)
+
         search = track.get("search")
         if isinstance(search, dict):
             if "candidates" in search:
@@ -93,10 +112,14 @@ def compact_state(state):
 
             releases = search.get("release_candidates")
             if isinstance(releases, list):
-                compacted = [
-                    compact_release(release)
-                    for release in releases[:20]
-                ]
+                compacted = (
+                    [
+                        compact_release(release)
+                        for release in releases[:20]
+                    ]
+                    if first_album_track
+                    else []
+                )
                 if compacted != releases:
                     search["release_candidates"] = compacted
                     changed = True
@@ -105,14 +128,19 @@ def compact_state(state):
         if isinstance(matching, dict):
             deterministic = matching.get("deterministic")
             if isinstance(deterministic, dict):
+                mode = deterministic.get("mode")
                 candidates = deterministic.get("candidates")
+
                 if isinstance(candidates, list):
-                    mode = deterministic.get("mode")
                     if mode == "album":
-                        compacted = [
-                            compact_release(release)
-                            for release in candidates[:15]
-                        ]
+                        compacted = (
+                            [
+                                compact_release(release)
+                                for release in candidates[:15]
+                            ]
+                            if first_album_track
+                            else []
+                        )
                     else:
                         compacted = [
                             compact_candidate(candidate)
@@ -123,7 +151,11 @@ def compact_state(state):
                         deterministic["candidates"] = compacted
                         changed = True
 
-                if isinstance(deterministic.get("release"), dict):
+                if mode == "album" and not first_album_track:
+                    if "release" in deterministic:
+                        deterministic.pop("release", None)
+                        changed = True
+                elif isinstance(deterministic.get("release"), dict):
                     compacted_release = compact_release(
                         deterministic["release"]
                     )
