@@ -34411,7 +34411,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34420,6 +34420,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34451,7 +34464,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34460,6 +34473,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34491,7 +34517,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34500,6 +34526,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34532,7 +34571,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34541,6 +34580,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34572,7 +34624,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34581,6 +34633,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34613,7 +34678,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34622,6 +34687,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34654,7 +34732,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34663,6 +34741,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34694,7 +34785,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34703,6 +34794,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34734,7 +34838,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34743,6 +34847,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34774,7 +34891,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34783,6 +34900,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34814,7 +34944,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34823,6 +34953,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34853,7 +34996,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34862,6 +35005,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34894,7 +35050,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34903,6 +35059,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34935,7 +35104,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34944,6 +35113,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -34974,7 +35156,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -34983,6 +35165,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "d3b945a3-77e6-474c-92f5-2d917ca00381",
+            "query": "Sushi Soucy Rockabye (Original Cast Recording)",
+            "candidate_count": 0,
+            "timestamp": 1790614606
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Rockabye (Original Cast Recording)"
       }
     },
     {
@@ -35013,15 +35208,701 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "6f3def8c260d8504",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+              "size": 11001041,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "Intro  Insta Famous",
+              "candidate_track_number": 1,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/01. Intro  Insta Famous.mp3",
+          "filename": "01. Intro  Insta Famous.mp3",
+          "size": 11001041
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/01 - Intro: Insta Famous.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [
+          {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          },
+          {
+            "release_id": "43b7677bffc040af",
+            "username": "pogmommy",
+            "folder": "Music/Sushi Soucy/InstaFamous (2019)",
+            "file_count": 9,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.13,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "564225dd4ef0fa6d",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\01 - Intro Insta Famous.mp3",
+                  "size": 2676550,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "Intro Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "cf3ce7955738c0dd",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\02 - Someday (The Crush Song).mp3",
+                  "size": 2117267,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "8d9fa141751c1922",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\03 - Wishes.mp3",
+                  "size": 1976388,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "cf48c5f4d2a88f35",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\04 - You Win.mp3",
+                  "size": 2004769,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "02e9fb8f57cce2a3",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\05 - Act 2 Full Inbox.mp3",
+                  "size": 1622273,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2 Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "41da2cab32810c61",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\06 - Divorce Is Fun.mp3",
+                  "size": 1783986,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "54be59da6cefa76b",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\07 - Something New.mp3",
+                  "size": 1548567,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "d548b635ffb66c51",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\08 - Therapy.mp3",
+                  "size": 1862976,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f3de6c54eaf2477e",
+                  "username": "pogmommy",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\09 - The End.mp3",
+                  "size": 369735,
+                  "score": 96.85,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          },
+          {
+            "release_id": "52f55f039136bc15",
+            "username": "Wild Rook",
+            "folder": "Music/Sushi Soucy/InstaFamous (2019)",
+            "file_count": 9,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 63.28,
+            "alternate_count": 0,
+            "decision": "llm",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "886e2bda9875e77a",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 01 - Intro - Insta Famous.flac",
+                  "size": 13653275,
+                  "score": 63.62,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 01 - Intro - Insta Famous",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "ef5f3e0ed4bfb0e9",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 02 - Someday (The Crush Song).flac",
+                  "size": 11061961,
+                  "score": 65.41,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 02 - Someday (The Crush Song)",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "46879b833bf66b05",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 03 - Wishes.flac",
+                  "size": 11502346,
+                  "score": 51.85,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 03 - Wishes",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "3ea5f1872e5b8c7a",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 04 - You Win.flac",
+                  "size": 11311369,
+                  "score": 53.58,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 04 - You Win",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "75d4a34b97bfd6ce",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 05 - Act 2 - Full Inbox.flac",
+                  "size": 9006871,
+                  "score": 62.49,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 05 - Act 2 - Full Inbox",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "76b3f39f0c5ec325",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 06 - Divorce Is Fun.flac",
+                  "size": 9587378,
+                  "score": 61.15,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 06 - Divorce Is Fun",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "c585c49a7e8839a6",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 07 - Something New.flac",
+                  "size": 8875337,
+                  "score": 60.39,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 07 - Something New",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "d7e910e46d112a49",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 08 - Therapy.flac",
+                  "size": 9052737,
+                  "score": 53.58,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 08 - Therapy",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "7282ba2ee181f20d",
+                  "username": "Wild Rook",
+                  "filename": "Music\\Sushi Soucy\\InstaFamous (2019)\\Sushi Soucy - InstaFamous - 09 - The End.flac",
+                  "size": 1677643,
+                  "score": 53.58,
+                  "extension": "flac",
+                  "candidate_title": "InstaFamous - 09 - The End",
+                  "candidate_track_number": null,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        ],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35052,15 +35933,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "30b2cf1d7e0fbeb2",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+              "size": 6236606,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "Someday (The Crush Song)",
+              "candidate_track_number": 2,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/02. Someday (The Crush Song).mp3",
+          "filename": "02. Someday (The Crush Song).mp3",
+          "size": 6236606
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/02 - Someday (The Crush Song).mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35091,15 +36183,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "39f5520044a53409",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+              "size": 6954425,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "Wishes",
+              "candidate_track_number": 3,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/03. Wishes.mp3",
+          "filename": "03. Wishes.mp3",
+          "size": 6954425
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/03 - Wishes.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35130,15 +36433,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "c5a991b7f62efcbe",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+              "size": 6429742,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "You Win",
+              "candidate_track_number": 4,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/04. You Win.mp3",
+          "filename": "04. You Win.mp3",
+          "size": 6429742
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/04 - You Win.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35169,15 +36683,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "b309923d552aa78e",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+              "size": 5280444,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "Act 2  Full Inbox",
+              "candidate_track_number": 5,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/05. Act 2  Full Inbox.mp3",
+          "filename": "05. Act 2  Full Inbox.mp3",
+          "size": 5280444
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/05 - Act 2: Full Inbox.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35208,15 +36933,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "93fa6bef1be46202",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+              "size": 7192751,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "Divorce Is Fun",
+              "candidate_track_number": 6,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/06. Divorce Is Fun.mp3",
+          "filename": "06. Divorce Is Fun.mp3",
+          "size": 7192751
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/06 - Divorce Is Fun.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35247,15 +37183,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "d4f86f58ea09f875",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+              "size": 5118999,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "Something New",
+              "candidate_track_number": 7,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/07. Something New.mp3",
+          "filename": "07. Something New.mp3",
+          "size": 5118999
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/07 - Something New.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35286,15 +37433,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "83439764e78bb0ae",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+              "size": 7579050,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "Therapy",
+              "candidate_track_number": 8,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/08. Therapy.mp3",
+          "filename": "08. Therapy.mp3",
+          "size": 7579050
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/08 - Therapy.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
@@ -35325,15 +37683,226 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "f6b512f317c4f9d2",
+              "username": "howehouse",
+              "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+              "size": 1212690,
+              "score": 100.0,
+              "extension": "mp3",
+              "candidate_title": "The End",
+              "candidate_track_number": 9,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/InstaFamous/09. The End.mp3",
+          "filename": "09. The End.mp3",
+          "size": 1212690
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/InstaFamous/09 - The End.mp3"
+        },
+        "download_attempts": [
+          {
+            "attempt": 1,
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "score": 97.16,
+            "status": "succeeded",
+            "timestamp": 1790614640
+          }
+        ]
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5cd80933-5c8f-49fc-b898-dc76d096d6ab",
+            "query": "Sushi Soucy InstaFamous",
+            "candidate_count": 45,
+            "timestamp": 1790614623
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy InstaFamous"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "album",
+          "decision": "accept",
+          "release_id": "6319729a953302c1",
+          "release": {
+            "release_id": "6319729a953302c1",
+            "username": "howehouse",
+            "folder": "music/thesocialq/Sushi Soucy/InstaFamous",
+            "file_count": 18,
+            "expected_tracks": 9,
+            "matched_tracks": 9,
+            "coverage": 1.0,
+            "score": 97.16,
+            "alternate_count": 0,
+            "decision": "accept",
+            "matches": [
+              {
+                "track_id": "3RdRggWVCsrx49QoEL8NbC",
+                "title": "Intro: Insta Famous",
+                "track_number": 1,
+                "candidate": {
+                  "candidate_id": "6f3def8c260d8504",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\01. Intro  Insta Famous.mp3",
+                  "size": 11001041,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Intro  Insta Famous",
+                  "candidate_track_number": 1,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "2lHKCUGP0YltanRNwbZKOx",
+                "title": "Someday (The Crush Song)",
+                "track_number": 2,
+                "candidate": {
+                  "candidate_id": "30b2cf1d7e0fbeb2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\02. Someday (The Crush Song).mp3",
+                  "size": 6236606,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Someday (The Crush Song)",
+                  "candidate_track_number": 2,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "4sDBBsQlH8rzIjF73JCyQm",
+                "title": "Wishes",
+                "track_number": 3,
+                "candidate": {
+                  "candidate_id": "39f5520044a53409",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\03. Wishes.mp3",
+                  "size": 6954425,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Wishes",
+                  "candidate_track_number": 3,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3ipmyY8mg15AqyUpQiyqdA",
+                "title": "You Win",
+                "track_number": 4,
+                "candidate": {
+                  "candidate_id": "c5a991b7f62efcbe",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\04. You Win.mp3",
+                  "size": 6429742,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "You Win",
+                  "candidate_track_number": 4,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "7zqvXdetwU1814w9DvBOhl",
+                "title": "Act 2: Full Inbox",
+                "track_number": 5,
+                "candidate": {
+                  "candidate_id": "b309923d552aa78e",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\05. Act 2  Full Inbox.mp3",
+                  "size": 5280444,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Act 2  Full Inbox",
+                  "candidate_track_number": 5,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "1C7Uhq310udFILerKehUUk",
+                "title": "Divorce Is Fun",
+                "track_number": 6,
+                "candidate": {
+                  "candidate_id": "93fa6bef1be46202",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\06. Divorce Is Fun.mp3",
+                  "size": 7192751,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Divorce Is Fun",
+                  "candidate_track_number": 6,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "3iTYKNTk0HjXEaHrd6BNUU",
+                "title": "Something New",
+                "track_number": 7,
+                "candidate": {
+                  "candidate_id": "d4f86f58ea09f875",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\07. Something New.mp3",
+                  "size": 5118999,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Something New",
+                  "candidate_track_number": 7,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Ba1ZiYYeEMaErITFpTkSq",
+                "title": "Therapy",
+                "track_number": 8,
+                "candidate": {
+                  "candidate_id": "83439764e78bb0ae",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\08. Therapy.mp3",
+                  "size": 7579050,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "Therapy",
+                  "candidate_track_number": 8,
+                  "alternate_terms": []
+                }
+              },
+              {
+                "track_id": "6Y0M7NND1TTQ7RVtKEoUJT",
+                "title": "The End",
+                "track_number": 9,
+                "candidate": {
+                  "candidate_id": "f6b512f317c4f9d2",
+                  "username": "howehouse",
+                  "filename": "music\\thesocialq\\Sushi Soucy\\InstaFamous\\09. The End.mp3",
+                  "size": 1212690,
+                  "score": 100.0,
+                  "extension": "mp3",
+                  "candidate_title": "The End",
+                  "candidate_track_number": 9,
+                  "alternate_terms": []
+                }
+              }
+            ]
+          }
+        }
       }
     },
     {
