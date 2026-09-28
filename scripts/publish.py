@@ -416,6 +416,33 @@ def is_atomic_album(item):
     )
 
 
+def is_transient_upload_error(message):
+    """Return True for GitHub upload failures that are safe to retry."""
+    retry_statuses = {
+        408,
+        429,
+        500,
+        502,
+        503,
+        504,
+    }
+
+    if any(
+        f"failed with {status}:" in message
+        for status in retry_statuses
+    ):
+        return True
+
+    # GitHub can return this as a 403 when its repository/ruleset
+    # validation service times out. This is transient, not an auth
+    # or permission failure, and GitHub explicitly asks the caller
+    # to try the request again.
+    return (
+        "failed with 403:" in message
+        and "Timed out validating rule" in message
+    )
+
+
 class GitHubClient:
     def __init__(self, token):
         if not token:
@@ -783,15 +810,6 @@ class GitHubClient:
             )
         )
 
-        retry_statuses = {
-            408,
-            429,
-            500,
-            502,
-            503,
-            504,
-        }
-
         last_error = None
 
         for attempt in range(1, max_attempts + 1):
@@ -807,10 +825,7 @@ class GitHubClient:
                 last_error = exc
                 message = str(exc)
 
-                transient = any(
-                    f"failed with {status}:" in message
-                    for status in retry_statuses
-                )
+                transient = is_transient_upload_error(message)
 
                 # GitHub can return this 403 while a repository ruleset
                 # validation request times out. It is transient; ordinary
@@ -905,7 +920,6 @@ class GitHubClient:
             payload["sha"] = existing_sha
 
         max_attempts = int(os.environ.get("GITHUB_UPLOAD_RETRIES", "5"))
-        retry_statuses = {408, 429, 500, 502, 503, 504}
 
         for attempt in range(1, max_attempts + 1):
             try:
@@ -913,10 +927,7 @@ class GitHubClient:
                 return
             except RuntimeError as exc:
                 message_text = str(exc)
-                transient = any(
-                    f"failed with {status}:" in message_text
-                    for status in retry_statuses
-                )
+                transient = is_transient_upload_error(message_text)
 
                 if (
                     "failed with 403:" in message_text
