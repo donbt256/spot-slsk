@@ -1333,7 +1333,12 @@ def cleanup_partial_albums(client, state, repos, repo_states):
 
             for track in album["tracks"]:
                 acquisition = track.setdefault("acquisition", {})
-                if acquisition.get("status") == "published":
+                library = acquisition.get("library") or {}
+                if (
+                    acquisition.get("status") == "published"
+                    and library.get("repo") == repo
+                    and normalize_path(library.get("path", "")) in removed_paths
+                ):
                     acquisition["status"] = "pending"
                     acquisition.pop("library", None)
 
