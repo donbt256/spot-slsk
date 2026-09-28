@@ -24,6 +24,10 @@ REPO_TARGET_BYTES = 900 * 1024 * 1024
 # Albums at or below this size are atomic.
 ALBUM_ATOMIC_LIMIT_BYTES = 1 * 1024 * 1024 * 1024
 
+# GitHub blocks individual Git blobs over 100 MiB. Keep a small margin
+# below the hard limit so the API cannot reject a publishable-looking file.
+GITHUB_MAX_FILE_BYTES = 100 * 1024 * 1024
+
 LIBRARY_PREFIX = os.environ.get(
     "GITHUB_LIBRARY_PREFIX",
     "music-library-",
@@ -168,6 +172,11 @@ def track_id(track):
 
 def album_key(track):
     data = spotify(track)
+    sources = track.get("sources", {})
+    album_ids = sources.get("album_ids", [])
+
+    if album_ids:
+        return ("spotify_album", str(album_ids[0]))
 
     artist = str(
         data.get("album_artist")
@@ -183,10 +192,8 @@ def album_key(track):
     if not artist or not album:
         return None
 
-    return (
-        artist.casefold(),
-        album.casefold(),
-    )
+    # Legacy state fallback.
+    return ("metadata_album", artist.casefold(), album.casefold())
 
 
 def is_downloaded(track):
@@ -1335,6 +1342,107 @@ def cleanup_partial_albums(client, state, repos, repo_states):
     if partial_count:
         save_state(state)
         log(f"Cleaned {partial_count} partial album(s).")
+def cleanup_duplicate_release(
+    client,
+    item,
+    destination_repo,
+    repos,
+    repo_states,
+):
+    """
+    After a release is safely committed to its destination repository,
+    remove any older copy of the same release from every other library
+    repository.
+
+    Albums are removed by their exact canonical directory. Individual
+    releases are removed by their exact canonical track path.
+    """
+    first = spotify(item["tracks"][0])
+    artist = sanitize_component(
+        first.get("album_artist")
+        or first.get("artist")
+        or "Unknown Artist"
+    )
+    album = sanitize_component(
+        first.get("album")
+        or "Unknown Album"
+    )
+    album_prefix = normalize_path(f"{artist}/{album}/")
+
+    target_paths = set()
+    if item["type"] == "album":
+        target_paths = {
+            normalize_path(entry.get("path", ""))
+            for entry in repo_states[destination_repo].get("files", [])
+            if normalize_path(entry.get("path", "")).startswith(album_prefix)
+        }
+    else:
+        target_paths = {
+            relative_library_path(item["tracks"][0])
+        }
+
+    if not target_paths:
+        return
+
+    for repo in list(repos):
+        if repo == destination_repo:
+            continue
+
+        repo_state = repo_states[repo]
+        if item["type"] == "album":
+            stale = [
+                entry for entry in repo_state.get("files", [])
+                if normalize_path(entry.get("path", "")).startswith(album_prefix)
+            ]
+        else:
+            stale = [
+                entry for entry in repo_state.get("files", [])
+                if normalize_path(entry.get("path", "")) in target_paths
+            ]
+
+        if not stale:
+            continue
+
+        entries = [
+            {
+                "path": entry["path"],
+                "mode": "100644",
+                "type": "blob",
+                "sha": None,
+            }
+            for entry in stale
+        ]
+
+        log(
+            f"Removing stale {item['type']} copy of "
+            f"{item_artist_name(item)} - {item_album_name(item)} "
+            f"from {repo}"
+        )
+
+        client.create_tree_commit(
+            repo=repo,
+            branch=repo_state["branch"],
+            entries=entries,
+            message=(
+                f"Remove duplicate: "
+                f"{item_artist_name(item)} - "
+                f"{item_album_name(item)}"
+            ),
+        )
+
+        removed = {
+            normalize_path(entry["path"])
+            for entry in stale
+        }
+        repo_state["files"] = [
+            entry for entry in repo_state.get("files", [])
+            if normalize_path(entry.get("path", "")) not in removed
+        ]
+        repo_state["bytes"] = sum(
+            int(entry.get("size") or 0)
+            for entry in repo_state["files"]
+        )
+
 def mark_existing_library_duplicates(tracks, repo_states):
     """
     Reuse an already-published library file when another Spotify track
@@ -1565,6 +1673,14 @@ def publish_item(
                 f"for {spotify(track).get('title')}"
             )
 
+        local_size = local_file.stat().st_size
+        if local_size > GITHUB_MAX_FILE_BYTES:
+            raise RuntimeError(
+                "Individual file exceeds GitHub's 100 MiB Git blob limit: "
+                f"{relative_library_path(track)} "
+                f"({format_bytes(local_size)})"
+            )
+
         path = relative_library_path(track)
         local_payloads.append(
             {
@@ -1699,6 +1815,13 @@ def split_large_album(
                     repo,
                     repo_state,
                 )
+                cleanup_duplicate_release(
+                    client,
+                    single_item,
+                    repo,
+                    repos,
+                    repo_states,
+                )
 
                 placed = True
                 break
@@ -1713,6 +1836,13 @@ def split_large_album(
             repo_state = repo_states[
                 repo
             ]
+
+            if track_size > GITHUB_MAX_FILE_BYTES:
+                raise RuntimeError(
+                    "Individual track exceeds GitHub's 100 MiB Git blob limit: "
+                    f"{spotify(track).get('title')} "
+                    f"({format_bytes(track_size)})"
+                )
 
             if track_size > REPO_TARGET_BYTES:
                 raise RuntimeError(
@@ -1894,6 +2024,13 @@ def publish():
                     repo,
                     repo_state,
                 )
+                cleanup_duplicate_release(
+                    client,
+                    item,
+                    repo,
+                    repos,
+                    repo_states,
+                )
 
                 placed = True
                 break
@@ -1995,6 +2132,13 @@ def publish():
                     repo,
                     repo_state,
                 )
+                cleanup_duplicate_release(
+                    client,
+                    item,
+                    repo,
+                    repos,
+                    repo_states,
+                )
             else:
                 raise RuntimeError(
                     "Atomic item cannot fit "
@@ -2009,6 +2153,13 @@ def publish():
                 item,
                 repo,
                 repo_state,
+            )
+            cleanup_duplicate_release(
+                client,
+                item,
+                repo,
+                repos,
+                repo_states,
             )
 
         save_state(
