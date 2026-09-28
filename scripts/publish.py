@@ -680,6 +680,7 @@ class GitHubClient:
                         "path"
                     ),
                     "size": size,
+                    "sha": entry.get("sha"),
                 }
             )
 
