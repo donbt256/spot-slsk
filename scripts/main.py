@@ -44,7 +44,12 @@ def default_acquisition():
     }
 
 
-def build_track_state(spotify_track, existing=None, sources=None):
+def build_track_state(
+    spotify_track,
+    existing=None,
+    sources=None,
+    playlist_sources=None,
+):
     if existing:
         acquisition = existing.get(
             "acquisition",
@@ -69,8 +74,7 @@ def build_track_state(spotify_track, existing=None, sources=None):
         "enrichment": enrichment,
     }
 
-    if existing and existing.get("playlist_sources"):
-        state["playlist_sources"] = existing["playlist_sources"]
+    state["playlist_sources"] = playlist_sources or {}
 
     return state
 
@@ -113,6 +117,7 @@ def main():
             spotify_track,
             existing=existing,
             sources=current_sources.get(track_id),
+            playlist_sources=playlist_positions.get(track_id, {}),
         )
 
         if existing:
@@ -133,9 +138,45 @@ def main():
 
     STATE_DIR.mkdir(parents=True, exist_ok=True)
 
+    previous_playlists = {
+        playlist.get("id"): playlist
+        for playlist in (
+            json.loads(
+                TRACKS_FILE.read_text(encoding="utf-8")
+            ).get("playlists", [])
+            if TRACKS_FILE.exists()
+            else []
+        )
+        if playlist.get("id")
+    }
+
+    current_playlist_ids = {
+        playlist.get("id")
+        for playlist in resolved["playlists"]
+        if playlist.get("id")
+    }
+
+    # Keep playlist identity/history even when a playlist is removed from
+    # urls.txt. It is marked inactive so the M3U8 generator can delete the
+    # generated file without deleting any music.
+    merged_playlists = []
+    for playlist in resolved["playlists"]:
+        playlist = dict(playlist)
+        playlist["configured"] = True
+        playlist["last_seen"] = True
+        merged_playlists.append(playlist)
+
+    for playlist_id, old_playlist in previous_playlists.items():
+        if playlist_id in current_playlist_ids:
+            continue
+        old_playlist = dict(old_playlist)
+        old_playlist["configured"] = False
+        old_playlist["last_seen"] = False
+        merged_playlists.append(old_playlist)
+
     output = {
-        "version": 3,
-        "playlists": resolved["playlists"],
+        "version": 4,
+        "playlists": merged_playlists,
         "tracks": tracks,
     }
 
