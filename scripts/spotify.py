@@ -3,6 +3,7 @@ import os
 import re
 
 import requests
+import time
 
 
 SPOTIFY_TOKEN_URL = "https://accounts.spotify.com/api/token"
@@ -17,7 +18,8 @@ class SpotifyClient:
         credentials = f"{client_id}:{client_secret}".encode()
         encoded = base64.b64encode(credentials).decode()
 
-        response = requests.post(
+        response = self._request_with_retry(
+            "POST",
             SPOTIFY_TOKEN_URL,
             headers={
                 "Authorization": f"Basic {encoded}",
@@ -29,13 +31,54 @@ class SpotifyClient:
         response.raise_for_status()
         self.token = response.json()["access_token"]
 
+    @staticmethod
+    def _request_with_retry(method, url, **kwargs):
+        last_response = None
+        for attempt in range(1, 6):
+            try:
+                response = requests.request(
+                    method,
+                    url,
+                    timeout=30,
+                    **kwargs,
+                )
+            except requests.RequestException:
+                if attempt >= 5:
+                    raise
+                time.sleep(2 ** (attempt - 1))
+                continue
+
+            last_response = response
+            if response.status_code not in {429, 500, 502, 503, 504}:
+                response.raise_for_status()
+                return response
+
+            if attempt >= 5:
+                response.raise_for_status()
+
+            retry_after = response.headers.get("Retry-After")
+            try:
+                delay = max(1, min(60, int(float(retry_after))))
+            except (TypeError, ValueError):
+                delay = 2 ** (attempt - 1)
+
+            print(
+                f"Spotify returned HTTP {response.status_code}; "
+                f"retrying in {delay}s...",
+                flush=True,
+            )
+            time.sleep(delay)
+
+        if last_response is not None:
+            last_response.raise_for_status()
+        raise RuntimeError("Spotify request failed.")
+
     def request(self, endpoint):
-        response = requests.get(
+        response = self._request_with_retry(
+            "GET",
             f"{SPOTIFY_API_URL}{endpoint}",
             headers={"Authorization": f"Bearer {self.token}"},
-            timeout=30,
         )
-        response.raise_for_status()
         return response.json()
 
     @staticmethod
