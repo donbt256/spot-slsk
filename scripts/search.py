@@ -422,7 +422,7 @@ def process_album_group(client, tracks, index, total):
                 "mode": "album",
                 "decision": "llm",
                 "release_id": best["release_id"],
-                "release": best,
+                "release": compact_release(best),
                 "candidates": [
                     compact_release(release)
                     for release in releases[:15]
@@ -445,7 +445,10 @@ def process_album_group(client, tracks, index, total):
                 "version": MATCHER_VERSION,
                 "mode": "album",
                 "decision": "reject",
-                "candidates": releases[:20],
+                "candidates": [
+                    compact_release(release)
+                    for release in releases[:15]
+                ],
             }
 
             track.setdefault(
