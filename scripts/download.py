@@ -6,6 +6,10 @@ from pathlib import Path
 
 
 from soulseek import SoulseekClient
+from release import release_key
+
+
+RELEASE_FILTER = os.environ.get("RELEASE_KEY")
 
 
 STATE_FILE = Path("state/tracks.json")
@@ -791,10 +795,7 @@ def album_groups_from_state(
 ):
     groups = {}
 
-    for track in state.get(
-        "tracks",
-        [],
-    ):
+    for track in processing_tracks:
         spotify = track.get(
             "spotify",
             {},
@@ -1819,8 +1820,15 @@ def main():
         ),
     )
 
+    processing_tracks = state.get("tracks", [])
+
+    if RELEASE_FILTER:
+        processing_tracks = [track for track in processing_tracks if release_key(track) == RELEASE_FILTER]
+
+    processing_state = {"tracks": processing_tracks}
+
     groups = album_groups_from_state(
-        state
+        processing_state
     )
 
     album_groups = {
