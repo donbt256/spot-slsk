@@ -812,6 +812,15 @@ class GitHubClient:
                     for status in retry_statuses
                 )
 
+                # GitHub can return this 403 while a repository ruleset
+                # validation request times out. It is transient; ordinary
+                # permission/authentication 403s must still fail immediately.
+                if (
+                    "failed with 403:" in message
+                    and "Timed out validating rule" in message
+                ):
+                    transient = True
+
                 if not transient or attempt >= max_attempts:
                     raise
 
@@ -908,6 +917,13 @@ class GitHubClient:
                     f"failed with {status}:" in message_text
                     for status in retry_statuses
                 )
+
+                if (
+                    "failed with 403:" in message_text
+                    and "Timed out validating rule" in message_text
+                ):
+                    transient = True
+
                 if not transient or attempt >= max_attempts:
                     raise
                 delay = 2 ** attempt
