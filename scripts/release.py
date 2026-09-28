@@ -21,6 +21,9 @@ def release_key(track):
     album_ids = sources.get("album_ids", [])
 
     if album_ids:
+        # Spotify album ID is the primary release identity. Artist/album
+        # metadata remains in the key only as a guard against malformed
+        # state containing a mismatched album ID.
         artist, album = release_identity(track)
         raw = f"album:{album_ids[0]}\x1f{artist}\x1f{album}".encode(
             "utf-8", errors="replace"
