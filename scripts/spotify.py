@@ -26,7 +26,6 @@ class SpotifyClient:
                 "Content-Type": "application/x-www-form-urlencoded",
             },
             data={"grant_type": "client_credentials"},
-            timeout=30,
         )
         response.raise_for_status()
         self.token = response.json()["access_token"]
