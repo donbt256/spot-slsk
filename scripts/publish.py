@@ -1448,19 +1448,65 @@ def cleanup_duplicate_release(
             for entry in repo_state["files"]
         )
 
+def track_identity_fingerprint(track):
+    data = spotify(track)
+    return (
+        str(
+            data.get("artist")
+            or ""
+        ).strip().casefold(),
+        tuple(
+            str(value).strip().casefold()
+            for value in data.get("artists", [])
+            if value is not None
+        ),
+        str(
+            data.get("album_artist")
+            or ""
+        ).strip().casefold(),
+        str(
+            data.get("album")
+            or ""
+        ).strip().casefold(),
+        str(
+            data.get("title")
+            or ""
+        ).strip().casefold(),
+        data.get("track_number"),
+        data.get("disc_number"),
+        data.get("duration_ms"),
+        str(
+            data.get("isrc")
+            or ""
+        ).strip().casefold(),
+    )
+
+
 def mark_existing_library_duplicates(tracks, repo_states):
     """
-    Reuse an already-published library file when another Spotify track
-    resolves to the same library path. This handles the same recording
-    appearing under different Spotify IDs without overwriting it.
+    Reuse an existing library file only when the stored Spotify metadata
+    identifies the same recording. A path collision with different metadata
+    is an error rather than an implicit overwrite/deduplication.
     """
-    path_to_repo = {}
+    path_to_existing = {}
 
+    for track in tracks:
+        acquisition = track.get("acquisition", {})
+        if acquisition.get("status") != "published":
+            continue
+
+        library = acquisition.get("library") or {}
+        path = normalize_path(library.get("path", ""))
+        if path:
+            path_to_existing.setdefault(path, []).append(track)
+
+    # Include library files that are not represented in current state so
+    # accidental path collisions cannot silently overwrite them.
     for repo, repo_state in repo_states.items():
         for entry in repo_state.get("files", []):
             path = normalize_path(entry.get("path", ""))
             if path:
-                path_to_repo.setdefault(path, repo)
+                path_to_existing.setdefault(path, [])
 
     changed = 0
 
@@ -1474,17 +1520,37 @@ def mark_existing_library_duplicates(tracks, repo_states):
         except RuntimeError:
             continue
 
-        repo = path_to_repo.get(path)
-        if not repo:
+        existing_tracks = path_to_existing.get(path)
+        if existing_tracks is None:
             continue
 
-        acquisition["status"] = "published"
-        acquisition["library"] = {
-            "repo": repo,
-            "path": path,
-            "deduplicated": True,
-        }
-        changed += 1
+        fingerprint = track_identity_fingerprint(track)
+        matching = [
+            existing
+            for existing in existing_tracks
+            if track_identity_fingerprint(existing) == fingerprint
+        ]
+
+        if matching:
+            existing = matching[0]
+            existing_library = existing.get("acquisition", {}).get("library", {})
+            acquisition["status"] = "published"
+            acquisition["library"] = {
+                "repo": existing_library.get("repo"),
+                "path": path,
+                "deduplicated": True,
+            }
+            changed += 1
+            continue
+
+        # A path occupied by a file with no matching state record is also
+        # unsafe to overwrite. The caller must resolve the collision rather
+        # than silently destroying an unrelated recording.
+        raise RuntimeError(
+            "Library path collision: "
+            f"{path} already exists but does not match the "
+            "current Spotify track metadata."
+        )
 
     if changed:
         log(
@@ -1493,7 +1559,6 @@ def mark_existing_library_duplicates(tracks, repo_states):
         )
 
     return changed
-
 
 def relative_library_path(track):
     data = spotify(track)
