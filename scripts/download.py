@@ -19,9 +19,20 @@ POLL_SECONDS = 5
 TIMEOUT_SECONDS = 60 * 60
 
 
+def log(message=""):
+    print(message, flush=True)
+
+
 def load_state():
+    log("Loading acquisition state...")
     with STATE_FILE.open("r", encoding="utf-8") as handle:
-        return json.load(handle)
+        state = json.load(handle)
+
+    log(
+        f"Loaded {len(state.get('tracks', []))} tracks."
+    )
+
+    return state
 
 
 def save_state(state):
@@ -138,6 +149,77 @@ def transfer_state(transfer):
     return str(state or "")
 
 
+def transfer_progress(transfer):
+    total = (
+        transfer.get("size")
+        or transfer.get("fileSize")
+        or transfer.get("totalBytes")
+        or transfer.get("totalSize")
+    )
+
+    downloaded = (
+        transfer.get("bytesTransferred")
+        or transfer.get("bytesDownloaded")
+        or transfer.get("transferred")
+        or transfer.get("downloaded")
+        or 0
+    )
+
+    speed = (
+        transfer.get("averageSpeed")
+        or transfer.get("speed")
+        or transfer.get("downloadSpeed")
+        or 0
+    )
+
+    try:
+        total = int(total or 0)
+    except (TypeError, ValueError):
+        total = 0
+
+    try:
+        downloaded = int(downloaded or 0)
+    except (TypeError, ValueError):
+        downloaded = 0
+
+    try:
+        speed = float(speed or 0)
+    except (TypeError, ValueError):
+        speed = 0
+
+    return total, downloaded, speed
+
+
+def format_bytes(value):
+    try:
+        value = float(value)
+    except (TypeError, ValueError):
+        return "?"
+
+    units = (
+        "B",
+        "KiB",
+        "MiB",
+        "GiB",
+        "TiB",
+    )
+
+    for unit in units:
+        if abs(value) < 1024:
+            return f"{value:.1f} {unit}"
+
+        value /= 1024
+
+    return f"{value:.1f} PiB"
+
+
+def format_speed(value):
+    if not value:
+        return "?"
+
+    return f"{format_bytes(value)}/s"
+
+
 def find_downloaded_file(username, remote_filename):
     remote_name = Path(
         str(remote_filename).replace("\\", "/")
@@ -173,7 +255,11 @@ def find_downloaded_file(username, remote_filename):
 
 
 def main():
+    log("Starting download stage.")
+
     state = load_state()
+
+    log("Connecting to slskd...")
 
     client = SoulseekClient(
         base_url=os.environ.get(
@@ -183,33 +269,46 @@ def main():
         api_key=os.environ.get("SLSKD_API_KEY"),
     )
 
+    log("Selecting matched tracks...")
+
     matches = selected_matches(state)
 
-    print(
-        f"Found {len(matches)} matched track(s) ready for download."
+    log(
+        f"Found {len(matches)} matched track(s) "
+        "ready for download."
     )
 
     if not matches:
-        print("No matched tracks need downloading.")
+        log("No matched tracks need downloading.")
         return 0
 
-    print(f"Queueing {len(matches)} downloads...")
+    log("")
+    log(f"Queueing {len(matches)} downloads...")
+    log("")
 
     queued = []
 
-    for track, match in matches:
+    for index, (track, match) in enumerate(
+        matches,
+        start=1,
+    ):
         username = match["username"]
         filename = match["filename"]
         size = match.get("size")
 
         title = track["spotify"]["title"]
 
-        print(f"Queueing: {title}")
-        print(f"  User: {username}")
-        print(f"  File: {filename}")
+        log(
+            f"[{index}/{len(matches)}] "
+            f"Queueing: {title}"
+        )
+        log(f"  User: {username}")
+        log(f"  File: {filename}")
 
         if size is not None:
-            print(f"  Size: {size}")
+            log(
+                f"  Size: {format_bytes(size)}"
+            )
 
         try:
             client.enqueue_download(
@@ -218,26 +317,42 @@ def main():
                 size=size,
             )
 
-            track["acquisition"]["status"] = "downloading"
+            track["acquisition"]["status"] = (
+                "downloading"
+            )
 
             queued.append((track, match))
 
-        except Exception as exc:
-            print(f"  FAILED: {exc}")
+            log("  Queued.")
 
-            track["acquisition"]["status"] = "download_failed"
-            track["acquisition"]["download_error"] = str(exc)
+        except Exception as exc:
+            log(f"  FAILED: {exc}")
+
+            track["acquisition"]["status"] = (
+                "download_failed"
+            )
+
+            track["acquisition"][
+                "download_error"
+            ] = str(exc)
 
     save_state(state)
 
     if not queued:
-        print("No downloads were successfully queued.")
+        log("No downloads were successfully queued.")
         return 1
 
-    print(f"Queued {len(queued)} downloads.")
-    print("Waiting for Soulseek transfers...")
+    log("")
+    log(
+        f"Queued {len(queued)} downloads."
+    )
+    log("Waiting for Soulseek transfers...")
+    log("")
 
-    deadline = time.monotonic() + TIMEOUT_SECONDS
+    deadline = (
+        time.monotonic()
+        + TIMEOUT_SECONDS
+    )
 
     wanted = {
         transfer_key(
@@ -248,19 +363,24 @@ def main():
     }
 
     completed = set()
+    failed = set()
+    last_progress = {}
 
     while time.monotonic() < deadline:
         try:
             data = client.get_downloads()
 
         except Exception as exc:
-            print(
-                f"Unable to read download status: {exc}"
+            log(
+                f"Unable to read download status: "
+                f"{exc}"
             )
             time.sleep(POLL_SECONDS)
             continue
 
         transfers = extract_transfers(data)
+
+        active_keys = set()
 
         for transfer in transfers:
             username = transfer_username(transfer)
@@ -274,17 +394,76 @@ def main():
                 filename,
             )
 
-            if key not in wanted or key in completed:
+            if key not in wanted:
                 continue
+
+            if key in completed or key in failed:
+                continue
+
+            active_keys.add(key)
 
             current_state = transfer_state(
                 transfer
             ).lower()
 
-            print(
-                f"Transfer: {filename} "
-                f"[{current_state or 'unknown'}]"
+            total, downloaded, speed = (
+                transfer_progress(transfer)
             )
+
+            progress_key = (
+                current_state,
+                total,
+                downloaded,
+                int(speed),
+            )
+
+            if (
+                last_progress.get(key)
+                != progress_key
+            ):
+                if total:
+                    percent = (
+                        downloaded / total * 100
+                        if total
+                        else 0
+                    )
+
+                    log(
+                        f"Transfer: {filename}"
+                    )
+                    log(
+                        f"  State: "
+                        f"{current_state or 'unknown'}"
+                    )
+                    log(
+                        f"  Progress: "
+                        f"{format_bytes(downloaded)} / "
+                        f"{format_bytes(total)} "
+                        f"({percent:.1f}%)"
+                    )
+                    log(
+                        f"  Speed: "
+                        f"{format_speed(speed)}"
+                    )
+
+                else:
+                    log(
+                        f"Transfer: {filename}"
+                    )
+                    log(
+                        f"  State: "
+                        f"{current_state or 'unknown'}"
+                    )
+                    log(
+                        f"  Progress: "
+                        f"{format_bytes(downloaded)}"
+                    )
+                    log(
+                        f"  Speed: "
+                        f"{format_speed(speed)}"
+                    )
+
+                last_progress[key] = progress_key
 
             track, match = wanted[key]
 
@@ -295,13 +474,16 @@ def main():
                 )
 
                 if path is None:
-                    print(
-                        "  Transfer succeeded, but the "
-                        "downloaded file was not found yet."
+                    log(
+                        "  Transfer succeeded, "
+                        "but the downloaded file "
+                        "was not found yet."
                     )
                     continue
 
-                track["acquisition"]["status"] = "downloaded"
+                track["acquisition"]["status"] = (
+                    "downloaded"
+                )
 
                 track["acquisition"]["file"] = {
                     "path": str(path),
@@ -312,7 +494,9 @@ def main():
                 completed.add(key)
                 save_state(state)
 
-                print(f"  Downloaded: {path}")
+                log(
+                    f"  Downloaded: {path}"
+                )
 
             elif any(
                 failure in current_state
@@ -327,34 +511,46 @@ def main():
                     "download_failed"
                 )
 
-                track["acquisition"]["download_error"] = (
-                    current_state
-                )
+                track["acquisition"][
+                    "download_error"
+                ] = current_state
 
-                completed.add(key)
+                failed.add(key)
                 save_state(state)
 
-                print(
+                log(
                     f"  Download failed: "
                     f"{current_state}"
                 )
 
-        if len(completed) == len(wanted):
-            break
-
-        print(
-            f"Progress: "
-            f"{len(completed)}/{len(wanted)} complete"
+        finished = (
+            len(completed)
+            + len(failed)
         )
+
+        log(
+            f"Overall progress: "
+            f"{finished}/{len(wanted)} finished "
+            f"({len(completed)} downloaded, "
+            f"{len(failed)} failed)"
+        )
+
+        if finished == len(wanted):
+            break
 
         time.sleep(POLL_SECONDS)
 
-    unresolved = len(wanted) - len(completed)
+    unresolved = (
+        len(wanted)
+        - len(completed)
+        - len(failed)
+    )
 
     if unresolved:
-        print(
-            f"{unresolved} download(s) did not finish "
-            f"before timeout."
+        log("")
+        log(
+            f"{unresolved} download(s) did not "
+            "finish before timeout."
         )
 
         for track, match in queued:
@@ -363,7 +559,10 @@ def main():
                 match["filename"],
             )
 
-            if key not in completed:
+            if (
+                key not in completed
+                and key not in failed
+            ):
                 track["acquisition"]["status"] = (
                     "download_timeout"
                 )
@@ -372,7 +571,12 @@ def main():
 
         return 1
 
-    print("All queued downloads finished.")
+    log("")
+    log(
+        f"Download stage finished: "
+        f"{len(completed)} downloaded, "
+        f"{len(failed)} failed."
+    )
 
     return 0
 
