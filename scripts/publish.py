@@ -852,6 +852,86 @@ class GitHubClient:
             raise last_error
 
 
+    def put_bytes(
+        self,
+        repo,
+        path,
+        content,
+        branch,
+        message,
+    ):
+        api_path = (
+            f"/repos/"
+            f"{quote(self.owner, safe='')}/"
+            f"{quote(repo, safe='')}/"
+            f"contents/"
+            f"{quote(normalize_path(path), safe='/')}"
+        )
+
+        response = self.session.get(
+            f"{GITHUB_API}{api_path}",
+            params={"ref": branch},
+            timeout=REQUEST_TIMEOUT,
+        )
+
+        existing_sha = None
+        if response.status_code == 200:
+            existing_sha = response.json().get("sha")
+        elif response.status_code != 404:
+            try:
+                detail = response.json()
+            except Exception:
+                detail = response.text
+            raise RuntimeError(
+                f"Unable to inspect {repo}/{path}: "
+                f"{response.status_code}: {detail}"
+            )
+
+        payload = {
+            "message": message,
+            "content": base64.b64encode(content).decode("ascii"),
+            "branch": branch,
+        }
+        if existing_sha:
+            payload["sha"] = existing_sha
+
+        max_attempts = int(os.environ.get("GITHUB_UPLOAD_RETRIES", "5"))
+        retry_statuses = {408, 429, 500, 502, 503, 504}
+
+        for attempt in range(1, max_attempts + 1):
+            try:
+                self.request("PUT", api_path, json=payload)
+                return
+            except RuntimeError as exc:
+                message_text = str(exc)
+                transient = any(
+                    f"failed with {status}:" in message_text
+                    for status in retry_statuses
+                )
+                if not transient or attempt >= max_attempts:
+                    raise
+                delay = 2 ** attempt
+                log(
+                    f"  GitHub upload failed transiently "
+                    f"(attempt {attempt}/{max_attempts}): {message_text}"
+                )
+                log(f"  Retrying upload in {delay} seconds...")
+                time.sleep(delay)
+            except requests.RequestException as exc:
+                if attempt >= max_attempts:
+                    raise RuntimeError(
+                        f"GitHub upload failed after "
+                        f"{max_attempts} attempts: {exc}"
+                    ) from exc
+                delay = 2 ** attempt
+                log(
+                    f"  GitHub upload connection error "
+                    f"(attempt {attempt}/{max_attempts}): {exc}"
+                )
+                log(f"  Retrying upload in {delay} seconds...")
+                time.sleep(delay)
+
+
 def library_repo_number(repo):
     suffix = repo[
         len(LIBRARY_PREFIX):
@@ -1252,6 +1332,52 @@ def publish_item(
     )
 
     uploaded = 0
+
+    first_data = spotify(tracks[0])
+    album_art = first_data.get("album_art")
+
+    if isinstance(album_art, dict) and album_art.get("url"):
+        artist = sanitize_component(
+            first_data.get("album_artist")
+            or first_data.get("artist")
+            or "Unknown Artist"
+        )
+        album = sanitize_component(
+            first_data.get("album")
+            or "Unknown Album"
+        )
+        artwork_path = normalize_path(
+            f"{artist}/{album}/cover.jpg"
+        )
+
+        if not any(
+            normalize_path(entry.get("path", "")) == artwork_path
+            for entry in repo_state.get("files", [])
+        ):
+            log(f"  Uploading album art: {artwork_path}")
+            artwork_response = requests.get(
+                album_art["url"],
+                timeout=REQUEST_TIMEOUT,
+            )
+            artwork_response.raise_for_status()
+            client.put_bytes(
+                repo=repo,
+                path=artwork_path,
+                content=artwork_response.content,
+                branch=repo_state["branch"],
+                message=(
+                    f"Add album art: "
+                    f"{item_artist_name(item)} - "
+                    f"{item_album_name(item)}"
+                ),
+            )
+            repo_state["bytes"] += len(artwork_response.content)
+            repo_state.setdefault("files", []).append(
+                {
+                    "path": artwork_path,
+                    "size": len(artwork_response.content),
+                }
+            )
 
     for track in tracks:
         local_file = get_local_file(
