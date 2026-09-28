@@ -9,7 +9,10 @@ from soulseek import SoulseekClient
 
 STATE_FILE = Path("state/tracks.json")
 DOWNLOAD_ROOT = Path(
-    os.environ.get("SOULSEEK_DOWNLOAD_DIR", "/home/runner/music-downloads")
+    os.environ.get(
+        "SOULSEEK_DOWNLOAD_DIR",
+        "/home/runner/music-downloads",
+    )
 )
 
 POLL_SECONDS = 5
@@ -26,7 +29,12 @@ def save_state(state):
     temporary = STATE_FILE.with_suffix(".tmp")
 
     with temporary.open("w", encoding="utf-8") as handle:
-        json.dump(state, handle, indent=2, ensure_ascii=False)
+        json.dump(
+            state,
+            handle,
+            indent=2,
+            ensure_ascii=False,
+        )
         handle.write("\n")
 
     temporary.replace(STATE_FILE)
@@ -43,16 +51,26 @@ def selected_matches(state):
 
         match = acquisition.get("match")
 
-        if not match:
+        if not isinstance(match, dict):
             continue
 
-        username = match.get("username")
-        filename = match.get("filename")
+        candidates = match.get("candidates")
+
+        if not isinstance(candidates, list) or not candidates:
+            continue
+
+        selected = candidates[0]
+
+        if not isinstance(selected, dict):
+            continue
+
+        username = selected.get("username")
+        filename = selected.get("filename")
 
         if not username or not filename:
             continue
 
-        matches.append((track, match))
+        matches.append((track, selected))
 
     return matches
 
@@ -121,9 +139,14 @@ def transfer_state(transfer):
 
 
 def find_downloaded_file(username, remote_filename):
-    remote_name = Path(str(remote_filename).replace("\\", "/")).name
+    remote_name = Path(
+        str(remote_filename).replace("\\", "/")
+    ).name
 
     exact_matches = []
+
+    if not DOWNLOAD_ROOT.exists():
+        return None
 
     for path in DOWNLOAD_ROOT.rglob("*"):
         if not path.is_file():
@@ -162,6 +185,10 @@ def main():
 
     matches = selected_matches(state)
 
+    print(
+        f"Found {len(matches)} matched track(s) ready for download."
+    )
+
     if not matches:
         print("No matched tracks need downloading.")
         return 0
@@ -181,6 +208,9 @@ def main():
         print(f"  User: {username}")
         print(f"  File: {filename}")
 
+        if size is not None:
+            print(f"  Size: {size}")
+
         try:
             client.enqueue_download(
                 username=username,
@@ -189,6 +219,7 @@ def main():
             )
 
             track["acquisition"]["status"] = "downloading"
+
             queued.append((track, match))
 
         except Exception as exc:
@@ -209,7 +240,10 @@ def main():
     deadline = time.monotonic() + TIMEOUT_SECONDS
 
     wanted = {
-        transfer_key(match["username"], match["filename"]): (track, match)
+        transfer_key(
+            match["username"],
+            match["filename"],
+        ): (track, match)
         for track, match in queued
     }
 
@@ -218,8 +252,11 @@ def main():
     while time.monotonic() < deadline:
         try:
             data = client.get_downloads()
+
         except Exception as exc:
-            print(f"Unable to read download status: {exc}")
+            print(
+                f"Unable to read download status: {exc}"
+            )
             time.sleep(POLL_SECONDS)
             continue
 
@@ -232,12 +269,17 @@ def main():
             if not username or not filename:
                 continue
 
-            key = transfer_key(username, filename)
+            key = transfer_key(
+                username,
+                filename,
+            )
 
             if key not in wanted or key in completed:
                 continue
 
-            current_state = transfer_state(transfer).lower()
+            current_state = transfer_state(
+                transfer
+            ).lower()
 
             print(
                 f"Transfer: {filename} "
@@ -247,12 +289,20 @@ def main():
             track, match = wanted[key]
 
             if "succeeded" in current_state:
-                path = find_downloaded_file(username, filename)
+                path = find_downloaded_file(
+                    username,
+                    filename,
+                )
 
                 if path is None:
+                    print(
+                        "  Transfer succeeded, but the "
+                        "downloaded file was not found yet."
+                    )
                     continue
 
                 track["acquisition"]["status"] = "downloaded"
+
                 track["acquisition"]["file"] = {
                     "path": str(path),
                     "filename": path.name,
@@ -273,7 +323,10 @@ def main():
                     "failed",
                 )
             ):
-                track["acquisition"]["status"] = "download_failed"
+                track["acquisition"]["status"] = (
+                    "download_failed"
+                )
+
                 track["acquisition"]["download_error"] = (
                     current_state
                 )
@@ -281,13 +334,17 @@ def main():
                 completed.add(key)
                 save_state(state)
 
-                print(f"  Download failed: {current_state}")
+                print(
+                    f"  Download failed: "
+                    f"{current_state}"
+                )
 
         if len(completed) == len(wanted):
             break
 
         print(
-            f"Progress: {len(completed)}/{len(wanted)} complete"
+            f"Progress: "
+            f"{len(completed)}/{len(wanted)} complete"
         )
 
         time.sleep(POLL_SECONDS)
@@ -296,7 +353,8 @@ def main():
 
     if unresolved:
         print(
-            f"{unresolved} download(s) did not finish before timeout."
+            f"{unresolved} download(s) did not finish "
+            f"before timeout."
         )
 
         for track, match in queued:
@@ -306,7 +364,9 @@ def main():
             )
 
             if key not in completed:
-                track["acquisition"]["status"] = "download_timeout"
+                track["acquisition"]["status"] = (
+                    "download_timeout"
+                )
 
         save_state(state)
 
