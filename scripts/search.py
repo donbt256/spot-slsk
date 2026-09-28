@@ -1,9 +1,14 @@
+import hashlib
 import json
 import os
 import sys
+from datetime import datetime, timezone
 from pathlib import Path
 
-from matcher import rank_candidates
+from matcher import (
+    MATCHER_VERSION,
+    classify_candidates,
+)
 from soulseek import (
     SoulseekClient,
     flatten_responses,
@@ -12,6 +17,12 @@ from soulseek import (
 
 ROOT = Path(__file__).resolve().parent.parent
 TRACKS_FILE = ROOT / "state" / "tracks.json"
+
+
+def now():
+    return datetime.now(
+        timezone.utc
+    ).isoformat()
 
 
 def load_state():
@@ -36,16 +47,104 @@ def save_state(data):
         encoding="utf-8",
     )
 
-    temporary.replace(TRACKS_FILE)
+    temporary.replace(
+        TRACKS_FILE
+    )
 
 
 def build_search_query(track):
     spotify = track["spotify"]
 
-    artist = spotify.get("artist") or ""
-    title = spotify.get("title") or ""
+    artist = spotify.get(
+        "artist"
+    ) or ""
+
+    title = spotify.get(
+        "title"
+    ) or ""
 
     return f"{artist} {title}".strip()
+
+
+def stable_candidate_id(candidate):
+    value = "|".join(
+        [
+            str(
+                candidate.get(
+                    "username"
+                )
+                or ""
+            ),
+            str(
+                candidate.get(
+                    "filename"
+                )
+                or ""
+            ),
+            str(
+                candidate.get(
+                    "size"
+                )
+                or ""
+            ),
+            str(
+                candidate.get(
+                    "extension"
+                )
+                or ""
+            ),
+        ]
+    )
+
+    return (
+        "c_"
+        + hashlib.sha256(
+            value.encode(
+                "utf-8"
+            )
+        ).hexdigest()[:16]
+    )
+
+
+def normalize_raw_candidate(
+    candidate
+):
+    result = dict(candidate)
+
+    result["candidate_id"] = (
+        stable_candidate_id(
+            candidate
+        )
+    )
+
+    return result
+
+
+def ensure_track_state(track):
+    track.setdefault(
+        "search",
+        {},
+    )
+
+    track.setdefault(
+        "matching",
+        {},
+    )
+
+    track.setdefault(
+        "acquisition",
+        {},
+    )
+
+    track.setdefault(
+        "enrichment",
+        {},
+    )
+
+    track.setdefault(
+        "library",
+        {},
+    )
 
 
 def main():
@@ -66,7 +165,10 @@ def main():
         ),
     )
 
-    tracks = state.get("tracks", [])
+    tracks = state.get(
+        "tracks",
+        [],
+    )
 
     print(
         f"Loaded {len(tracks)} tracks."
@@ -78,22 +180,29 @@ def main():
         tracks,
         start=1,
     ):
-        spotify = track["spotify"]
-
-        acquisition = track.setdefault(
-            "acquisition",
-            {},
+        ensure_track_state(
+            track
         )
+
+        spotify = track[
+            "spotify"
+        ]
+
+        acquisition = track[
+            "acquisition"
+        ]
 
         status = acquisition.get(
             "status",
             "pending",
         )
 
-        if status not in {
-            "pending",
-            "searching",
-            "search_failed",
+        # Already successfully acquired/published tracks
+        # do not need another search.
+        if status in {
+            "downloaded",
+            "ready_to_publish",
+            "published",
         }:
             print(
                 f"[{index}/{len(tracks)}] "
@@ -114,10 +223,22 @@ def main():
             f"Searching: {query}"
         )
 
-        acquisition["status"] = "searching"
-        acquisition["attempts"] = (
-            acquisition.get("attempts", 0) + 1
+        search_state = track[
+            "search"
+        ]
+
+        search_state.setdefault(
+            "attempts",
+            0,
         )
+
+        search_state[
+            "attempts"
+        ] += 1
+
+        search_state[
+            "status"
+        ] = "searching"
 
         save_state(state)
 
@@ -138,49 +259,220 @@ def main():
                 timeout_seconds=30,
             )
 
-            candidates = flatten_responses(
-                result
+            raw_candidates = (
+                flatten_responses(
+                    result
+                )
             )
+
+            candidates = [
+                normalize_raw_candidate(
+                    candidate
+                )
+                for candidate in raw_candidates
+            ]
 
             print(
                 f"  Raw candidates: "
                 f"{len(candidates)}"
             )
 
-            ranked = rank_candidates(
-                track,
-                candidates,
+            # Persist the complete search result.
+            search_state[
+                "status"
+            ] = "complete"
+
+            search_state[
+                "completed_at"
+            ] = now()
+
+            search_state[
+                "queries"
+            ] = search_state.get(
+                "queries",
+                [],
             )
 
-            top_candidates = ranked[:20]
-
-            acquisition["status"] = (
-                "matched"
-                if top_candidates
-                else "search_failed"
+            search_state[
+                "queries"
+            ].append(
+                {
+                    "query": query,
+                    "search_id": search_id,
+                    "status": "complete",
+                    "candidate_count":
+                        len(candidates),
+                    "searched_at": now(),
+                }
             )
 
-            acquisition["match"] = {
-                "query": query,
-                "search_id": search_id,
-                "candidate_count": len(ranked),
-                "candidates": top_candidates,
+            search_state[
+                "candidates"
+            ] = candidates
+
+            # Run deterministic matching.
+            classification = (
+                classify_candidates(
+                    track,
+                    candidates,
+                )
+            )
+
+            matching = track[
+                "matching"
+            ]
+
+            matching[
+                "status"
+            ] = "complete"
+
+            matching[
+                "matcher_version"
+            ] = MATCHER_VERSION
+
+            matching[
+                "deterministic"
+            ] = {
+                "accepted":
+                    classification[
+                        "accepted"
+                    ],
+                "llm_candidates":
+                    classification[
+                        "llm_candidates"
+                    ],
+                "rejected_count":
+                    len(
+                        classification[
+                            "rejected"
+                        ]
+                    ),
+                "ranked_count":
+                    len(
+                        classification[
+                            "all_ranked"
+                        ]
+                    ),
             }
 
-            if top_candidates:
-                best = top_candidates[0]
+            # Keep the deterministic accepted candidates in the
+            # legacy acquisition location for compatibility.
+            accepted = (
+                classification[
+                    "accepted"
+                ]
+            )
+
+            llm_candidates = (
+                classification[
+                    "llm_candidates"
+                ]
+            )
+
+            if accepted:
+                acquisition[
+                    "status"
+                ] = "matched"
+
+                acquisition[
+                    "match"
+                ] = {
+                    "query": query,
+                    "search_id":
+                        search_id,
+                    "candidate_count":
+                        len(
+                            classification[
+                                "all_ranked"
+                            ]
+                        ),
+                    "candidates":
+                        accepted,
+                    "selection_source":
+                        "deterministic",
+                }
+
+            elif llm_candidates:
+                # Do not download these yet. The LLM stage will
+                # select from them.
+                acquisition[
+                    "status"
+                ] = "llm_screening"
+
+                acquisition[
+                    "match"
+                ] = {
+                    "query": query,
+                    "search_id":
+                        search_id,
+                    "candidate_count":
+                        len(
+                            classification[
+                                "all_ranked"
+                            ]
+                        ),
+                    "candidates":
+                        llm_candidates,
+                    "selection_source":
+                        "llm_pending",
+                }
+
+            else:
+                acquisition[
+                    "status"
+                ] = "search_failed"
+
+                acquisition[
+                    "match"
+                ] = {
+                    "query": query,
+                    "search_id":
+                        search_id,
+                    "candidate_count":
+                        len(
+                            classification[
+                                "all_ranked"
+                            ]
+                        ),
+                    "candidates": [],
+                    "selection_source":
+                        "none",
+                }
+
+            if accepted:
+                best = accepted[0]
 
                 print(
-                    f"  Best: "
+                    f"  Deterministic best: "
                     f"{best.get('filename')} "
                     f"from "
                     f"{best.get('username')} "
                     f"(score="
                     f"{best['score']})"
                 )
+
+            elif llm_candidates:
+                print(
+                    f"  LLM screening: "
+                    f"{len(llm_candidates)} "
+                    f"candidate(s)"
+                )
+
+                for candidate in (
+                    llm_candidates[:5]
+                ):
+                    print(
+                        f"    "
+                        f"{candidate.get('filename')} "
+                        f"from "
+                        f"{candidate.get('username')} "
+                        f"(score="
+                        f"{candidate['score']})"
+                    )
+
             else:
                 print(
-                    "  No candidates found."
+                    "  No viable candidates."
                 )
 
             searched += 1
@@ -190,13 +482,24 @@ def main():
             )
 
         except Exception as exc:
-            acquisition["status"] = (
-                "search_failed"
-            )
+            search_state[
+                "status"
+            ] = "failed"
 
-            acquisition["match"] = {
+            search_state[
+                "error"
+            ] = str(exc)
+
+            acquisition[
+                "status"
+            ] = "search_failed"
+
+            acquisition[
+                "match"
+            ] = {
                 "query": query,
                 "error": str(exc),
+                "candidates": [],
             }
 
             print(
