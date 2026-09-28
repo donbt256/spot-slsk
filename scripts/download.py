@@ -795,7 +795,10 @@ def album_groups_from_state(
 ):
     groups = {}
 
-    for track in processing_tracks:
+    for track in state.get(
+        "tracks",
+        [],
+    ):
         spotify = track.get(
             "spotify",
             {},
@@ -1894,10 +1897,7 @@ def main():
 
     pending_individual = []
 
-    for track in state.get(
-        "tracks",
-        [],
-    ):
+    for track in processing_tracks:
         track_id = str(
             track.get(
                 "spotify",
