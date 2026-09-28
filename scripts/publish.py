@@ -776,11 +776,80 @@ class GitHubClient:
         if existing_sha:
             payload["sha"] = existing_sha
 
-        self.request(
-            "PUT",
-            api_path,
-            json=payload,
+        max_attempts = int(
+            os.environ.get(
+                "GITHUB_UPLOAD_RETRIES",
+                "5",
+            )
         )
+
+        retry_statuses = {
+            408,
+            429,
+            500,
+            502,
+            503,
+            504,
+        }
+
+        last_error = None
+
+        for attempt in range(1, max_attempts + 1):
+            try:
+                self.request(
+                    "PUT",
+                    api_path,
+                    json=payload,
+                )
+                return
+
+            except RuntimeError as exc:
+                last_error = exc
+                message = str(exc)
+
+                transient = any(
+                    f"failed with {status}:" in message
+                    for status in retry_statuses
+                )
+
+                if not transient or attempt >= max_attempts:
+                    raise
+
+                delay = 2 ** attempt
+
+                log(
+                    f"  GitHub upload failed transiently "
+                    f"(attempt {attempt}/{max_attempts}): "
+                    f"{message}"
+                )
+                log(
+                    f"  Retrying upload in {delay} seconds..."
+                )
+                time.sleep(delay)
+
+            except requests.RequestException as exc:
+                last_error = exc
+
+                if attempt >= max_attempts:
+                    raise RuntimeError(
+                        f"GitHub upload failed after "
+                        f"{max_attempts} attempts: {exc}"
+                    ) from exc
+
+                delay = 2 ** attempt
+
+                log(
+                    f"  GitHub upload connection error "
+                    f"(attempt {attempt}/{max_attempts}): "
+                    f"{exc}"
+                )
+                log(
+                    f"  Retrying upload in {delay} seconds..."
+                )
+                time.sleep(delay)
+
+        if last_error is not None:
+            raise last_error
 
 
 def library_repo_number(repo):
