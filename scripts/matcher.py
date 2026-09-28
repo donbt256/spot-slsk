@@ -642,7 +642,8 @@ def score_release(album_tracks, release):
     )
 
     if (
-        coverage >= 0.90
+        matched == expected
+        and coverage >= 0.90
         and score >= 80.0
     ):
         decision = "accept"
