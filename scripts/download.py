@@ -94,82 +94,56 @@ def transfer_key(username, filename):
 
 
 def extract_transfers(data):
-    print(
-        "DEBUG: slskd downloads response type:",
-        type(data).__name__,
-        flush=True,
-    )
-
-    if isinstance(data, dict):
-        print(
-            "DEBUG: slskd downloads response keys:",
-            list(data.keys()),
-            flush=True,
-        )
-
-    print(
-        "DEBUG: slskd downloads response:",
-        json.dumps(
-            data,
-            indent=2,
-            ensure_ascii=False,
-        )[:20000],
-        flush=True,
-    )
-
     transfers = []
 
-    if isinstance(data, list):
-        for entry in data:
-            if isinstance(entry, dict):
-                transfers.append(entry)
-
+    if not isinstance(data, list):
         return transfers
 
-    if not isinstance(data, dict):
-        return transfers
+    for user_entry in data:
+        if not isinstance(user_entry, dict):
+            continue
 
-    for username, entries in data.items():
-        if isinstance(entries, list):
-            for entry in entries:
-                if not isinstance(entry, dict):
+        username = user_entry.get("username")
+
+        directories = user_entry.get(
+            "directories",
+            [],
+        )
+
+        if not isinstance(directories, list):
+            continue
+
+        for directory in directories:
+            if not isinstance(directory, dict):
+                continue
+
+            files = directory.get(
+                "files",
+                [],
+            )
+
+            if not isinstance(files, list):
+                continue
+
+            for transfer in files:
+                if not isinstance(
+                    transfer,
+                    dict,
+                ):
                     continue
 
-                item = dict(entry)
+                item = dict(transfer)
+
                 item.setdefault(
                     "username",
                     username,
                 )
 
                 transfers.append(item)
-
-        elif isinstance(entries, dict):
-            # Some slskd responses may use transfer IDs
-            # as keys underneath each username.
-            for transfer_id, entry in entries.items():
-                if not isinstance(entry, dict):
-                    continue
-
-                item = dict(entry)
-
-                item.setdefault(
-                    "username",
-                    username,
-                )
-
-                item.setdefault(
-                    "id",
-                    transfer_id,
-                )
-
-                transfers.append(item)
-
-    print(
-        f"DEBUG: extracted {len(transfers)} transfers.",
-        flush=True,
-    )
 
     return transfers
+
+
 
 def transfer_filename(transfer):
     return (
