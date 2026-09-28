@@ -259,13 +259,17 @@ def get_download_size(track):
 
 
 def album_groups(tracks):
+    """
+    Group every non-published track by album.
+
+    Including not-yet-downloaded tracks is important: it lets the
+    publisher detect an incomplete album instead of publishing only
+    the subset that happened to download successfully.
+    """
     groups = {}
 
     for index, track in enumerate(tracks):
         if already_published(track):
-            continue
-
-        if not is_downloaded(track):
             continue
 
         key = album_key(track)
@@ -283,14 +287,10 @@ def album_groups(tracks):
 
         groups[key]["tracks"].append(track)
 
-    ordered = list(
-        groups.values()
-    )
+    ordered = list(groups.values())
 
     ordered.sort(
-        key=lambda item: item[
-            "first_index"
-        ]
+        key=lambda item: item["first_index"]
     )
 
     return ordered
@@ -300,70 +300,69 @@ def build_items(tracks):
     """
     Build the publishing queue in original track order.
 
-    Albums are represented as one item when all of their
-    currently publishable tracks belong to the same album.
+    Multi-track albums are atomic: every non-published track in the
+    album must be downloaded before any track from that album enters
+    the publishing queue.
 
-    A one-track album remains an individual item.
+    A one-track release remains an individual item.
     """
-
-    groups = album_groups(
-        tracks
-    )
+    groups = album_groups(tracks)
 
     track_to_group = {}
 
     for group in groups:
         for track in group["tracks"]:
-            track_to_group[
-                id(track)
-            ] = group
+            track_to_group[id(track)] = group
 
     items = []
     consumed = set()
 
-    for index, track in enumerate(
-        tracks
-    ):
+    for index, track in enumerate(tracks):
         if id(track) in consumed:
             continue
 
         if already_published(track):
             continue
 
-        if not is_downloaded(track):
-            continue
+        group = track_to_group.get(id(track))
 
-        group = track_to_group.get(
-            id(track)
-        )
+        if group is not None and len(group["tracks"]) >= 2:
+            group_tracks = group["tracks"]
 
-        if (
-            group is not None
-            and len(group["tracks"]) >= 2
-        ):
-            group_tracks = group[
-                "tracks"
-            ]
+            if not all(
+                is_downloaded(member)
+                for member in group_tracks
+            ):
+                downloaded_count = sum(
+                    is_downloaded(member)
+                    for member in group_tracks
+                )
+
+                log(
+                    f"Skipping incomplete album: "
+                    f"{item_artist_name({'tracks': group_tracks})} - "
+                    f"{item_album_name({'tracks': group_tracks})} "
+                    f"({downloaded_count}/{len(group_tracks)} tracks downloaded)"
+                )
+
+                for member in group_tracks:
+                    consumed.add(id(member))
+
+                continue
 
             for member in group_tracks:
-                consumed.add(
-                    id(member)
-                )
+                consumed.add(id(member))
 
             items.append(
                 {
                     "type": "album",
-                    "first_index": group[
-                        "first_index"
-                    ],
+                    "first_index": group["first_index"],
                     "tracks": group_tracks,
                 }
             )
 
-        else:
-            consumed.add(
-                id(track)
-            )
+        elif is_downloaded(track):
+            consumed.add(id(track))
 
             items.append(
                 {
@@ -374,13 +373,10 @@ def build_items(tracks):
             )
 
     items.sort(
-        key=lambda item: item[
-            "first_index"
-        ]
+        key=lambda item: item["first_index"]
     )
 
     return items
-
 
 def item_size(item):
     return sum(
