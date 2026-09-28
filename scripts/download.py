@@ -6,7 +6,7 @@ from pathlib import Path
 
 
 from soulseek import SoulseekClient
-from release import release_key
+from release import release_key as spotify_release_key
 
 
 RELEASE_FILTER = os.environ.get("RELEASE_KEY")
@@ -174,7 +174,7 @@ def album_release_candidates(tracks):
     ]
 
 
-def release_key(release):
+def release_candidate_key(release):
     return (
         str(
             release.get("username")
@@ -1826,7 +1826,7 @@ def main():
     processing_tracks = state.get("tracks", [])
 
     if RELEASE_FILTER:
-        processing_tracks = [track for track in processing_tracks if release_key(track) == RELEASE_FILTER]
+        processing_tracks = [track for track in processing_tracks if spotify_release_key(track) == RELEASE_FILTER]
 
     processing_state = {"tracks": processing_tracks}
 
