@@ -21,6 +21,148 @@ def load_state():
         return json.load(handle)
 
 
+
+def compact_candidate(candidate):
+    if not isinstance(candidate, dict):
+        return candidate
+
+    keys = (
+        "candidate_id",
+        "username",
+        "filename",
+        "size",
+        "extension",
+        "candidate_title",
+        "candidate_track_number",
+        "alternate_terms",
+    )
+
+    return {
+        key: candidate[key]
+        for key in keys
+        if key in candidate
+    }
+
+
+def compact_release(release):
+    if not isinstance(release, dict):
+        return release
+
+    compacted = {
+        key: release[key]
+        for key in (
+            "release_id",
+            "username",
+            "folder",
+            "file_count",
+            "expected_tracks",
+            "matched_tracks",
+            "coverage",
+            "score",
+            "alternate_count",
+            "decision",
+        )
+        if key in release
+    }
+
+    compacted["matches"] = [
+        {
+            "track_id": item.get("track_id"),
+            "title": item.get("title"),
+            "track_number": item.get("track_number"),
+            "candidate": compact_candidate(
+                item.get("candidate", {})
+            ),
+        }
+        for item in release.get("matches", [])
+        if isinstance(item, dict)
+    ]
+
+    return compacted
+
+
+def compact_state(state):
+    changed = False
+
+    for track in state.get("tracks", []):
+        search = track.get("search")
+        if isinstance(search, dict):
+            if "candidates" in search:
+                search.pop("candidates", None)
+                changed = True
+
+            releases = search.get("release_candidates")
+            if isinstance(releases, list):
+                compacted = [
+                    compact_release(release)
+                    for release in releases[:20]
+                ]
+                if compacted != releases:
+                    search["release_candidates"] = compacted
+                    changed = True
+
+        matching = track.get("matching")
+        if isinstance(matching, dict):
+            deterministic = matching.get("deterministic")
+            if isinstance(deterministic, dict):
+                candidates = deterministic.get("candidates")
+                if isinstance(candidates, list):
+                    mode = deterministic.get("mode")
+                    if mode == "album":
+                        compacted = [
+                            compact_release(release)
+                            for release in candidates[:15]
+                        ]
+                    else:
+                        compacted = [
+                            compact_candidate(candidate)
+                            for candidate in candidates[:15]
+                        ]
+
+                    if compacted != candidates:
+                        deterministic["candidates"] = compacted
+                        changed = True
+
+                if isinstance(deterministic.get("release"), dict):
+                    compacted_release = compact_release(
+                        deterministic["release"]
+                    )
+                    if compacted_release != deterministic["release"]:
+                        deterministic["release"] = compacted_release
+                        changed = True
+
+        acquisition = track.get("acquisition")
+        if isinstance(acquisition, dict):
+            match = acquisition.get("match")
+            if isinstance(match, dict):
+                candidates = match.get("candidates")
+                if isinstance(candidates, list):
+                    compacted = [
+                        compact_candidate(candidate)
+                        for candidate in candidates[:1]
+                    ]
+                    if compacted != candidates:
+                        match["candidates"] = compacted
+                        changed = True
+
+                if "release" in match:
+                    match.pop("release", None)
+                    changed = True
+
+    return changed
+
+
+def save_state():
+    with STATE_PATH.open("w", encoding="utf-8") as handle:
+        json.dump(
+            state,
+            handle,
+            indent=2,
+            ensure_ascii=False,
+        )
+        handle.write("\n")
+
+
 def save_checkpoint(label):
     subprocess.run(
         ["git", "config", "user.name", "github-actions[bot]"],
@@ -96,6 +238,10 @@ def main():
         f"{len(releases)} release(s).",
         flush=True,
     )
+
+    if compact_state(state):
+        save_state()
+        save_checkpoint("Compact acquisition state")
 
     failed = False
 
@@ -211,14 +357,12 @@ def main():
                 flush=True,
             )
 
-            try:
-                save_checkpoint(label + " (failed)")
-            except Exception as checkpoint_exc:
-                print(
-                    f"Checkpoint after failure also failed: {checkpoint_exc}",
-                    file=sys.stderr,
-                    flush=True,
-                )
+            print(
+                "  Failed release state was not pushed; "
+                "the next run will retry this release from the "
+                "last successful checkpoint.",
+                flush=True,
+            )
 
     if failed:
         return 1
