@@ -378,11 +378,19 @@ def build_items(tracks):
 
     return items
 
+ALBUM_ART_RESERVE_BYTES = 2 * 1024 * 1024
+
+
 def item_size(item):
-    return sum(
+    size = sum(
         get_download_size(track)
         for track in item["tracks"]
     )
+
+    if item.get("type") == "album":
+        size += ALBUM_ART_RESERVE_BYTES
+
+    return size
 
 
 def item_album_name(item):
@@ -739,6 +747,86 @@ class GitHubClient:
             ],
         }
 
+    def get_branch_head(self, repo, branch):
+        repo_path = (
+            f"/repos/"
+            f"{quote(self.owner, safe='')}/"
+            f"{quote(repo, safe='')}"
+        )
+        ref = self.request(
+            "GET",
+            f"{repo_path}/git/ref/heads/{quote(branch, safe='')}",
+        )
+        sha = ref.get("object", {}).get("sha")
+        if not sha:
+            raise RuntimeError(
+                f"Could not determine {repo}/{branch} HEAD."
+            )
+        return sha
+
+    def create_blob(self, repo, content):
+        repo_path = (
+            f"/repos/"
+            f"{quote(self.owner, safe='')}/"
+            f"{quote(repo, safe='')}"
+        )
+        data = self.request(
+            "POST",
+            f"{repo_path}/git/blobs",
+            json={
+                "content": base64.b64encode(content).decode("ascii"),
+                "encoding": "base64",
+            },
+        )
+        sha = data.get("sha")
+        if not sha:
+            raise RuntimeError("GitHub did not return a blob SHA.")
+        return sha
+
+    def create_tree_commit(self, repo, branch, entries, message):
+        repo_path = (
+            f"/repos/"
+            f"{quote(self.owner, safe='')}/"
+            f"{quote(repo, safe='')}"
+        )
+        parent_sha = self.get_branch_head(repo, branch)
+        parent_commit = self.request(
+            "GET",
+            f"{repo_path}/git/commits/{parent_sha}",
+        )
+        base_tree = parent_commit["tree"]["sha"]
+
+        tree = self.request(
+            "POST",
+            f"{repo_path}/git/trees",
+            json={
+                "base_tree": base_tree,
+                "tree": entries,
+            },
+        )
+
+        commit = self.request(
+            "POST",
+            f"{repo_path}/git/commits",
+            json={
+                "message": message,
+                "tree": tree["sha"],
+                "parents": [parent_sha],
+            },
+        )
+
+        commit_sha = commit.get("sha")
+        if not commit_sha:
+            raise RuntimeError("GitHub did not return a commit SHA.")
+
+        self.request(
+            "PATCH",
+            f"{repo_path}/git/refs/heads/{quote(branch, safe='')}",
+            json={"sha": commit_sha},
+        )
+
+        return commit_sha
+
     def put_file(
         self,
         repo,
@@ -1093,9 +1181,9 @@ def cleanup_partial_albums(client, state, repos, repo_states):
     """
     Remove incomplete multi-track albums left by older runs.
 
-    An album is partial when Spotify metadata contains multiple tracks,
-    the corresponding Artist/Album directory contains at least one
-    audio file, but fewer audio files than the Spotify release.
+    The deletion is committed and the branch ref is advanced in the same
+    operation. Artwork and any other files under a partial album directory
+    are removed along with the audio files.
     """
     expected = {}
 
@@ -1131,78 +1219,53 @@ def cleanup_partial_albums(client, state, repos, repo_states):
 
         for repo in list(repos):
             repo_state = repo_states[repo]
-
-            existing = [
-                entry
-                for entry in repo_state.get("files", [])
+            existing_audio = [
+                entry for entry in repo_state.get("files", [])
                 if is_audio_library_path(entry.get("path", ""))
                 and normalize_path(entry.get("path", "")).startswith(prefix)
             ]
 
-            if not existing or len(existing) >= expected_count:
+            if not existing_audio or len(existing_audio) >= expected_count:
                 continue
+
+            existing_all = [
+                entry for entry in repo_state.get("files", [])
+                if normalize_path(entry.get("path", "")).startswith(prefix)
+            ]
 
             log(
                 f"Cleaning partial album: "
                 f"{album['artist']} - {album['album']} "
-                f"({len(existing)}/{expected_count} tracks) "
+                f"({len(existing_audio)}/{expected_count} tracks) "
                 f"from {repo}"
             )
 
-            branch = repo_state["branch"]
-            repo_path = f"/repos/{quote(client.owner, safe='')}/{quote(repo, safe='')}"
-            ref = client.request(
-                "GET",
-                f"{repo_path}/git/refs/heads/{quote(branch, safe='')}",
-            )
-            parent_sha = ref["object"]["sha"]
-
-            commit = client.request(
-                "GET",
-                f"{repo_path}/git/commits/{parent_sha}",
-            )
-            base_tree_sha = commit["tree"]["sha"]
-
-            removals = [
+            entries = [
                 {
                     "path": entry["path"],
                     "mode": "100644",
                     "type": "blob",
                     "sha": None,
                 }
-                for entry in existing
+                for entry in existing_all
             ]
 
-            tree = client.request(
-                "POST",
-                f"{repo_path}/git/trees",
-                json={
-                    "base_tree": base_tree_sha,
-                    "tree": removals,
-                },
-            )
-
-            client.request(
-                "POST",
-                f"{repo_path}/git/commits",
-                json={
-                    "message": (
-                        f"Remove partial album: "
-                        f"{album['artist']} - {album['album']}"
-                    ),
-                    "tree": tree["sha"],
-                    "parents": [parent_sha],
-                },
+            client.create_tree_commit(
+                repo=repo,
+                branch=repo_state["branch"],
+                entries=entries,
+                message=(
+                    f"Remove partial album: "
+                    f"{album['artist']} - {album['album']}"
+                ),
             )
 
             removed_paths = {
                 normalize_path(entry["path"])
-                for entry in existing
+                for entry in existing_all
             }
-
             repo_state["files"] = [
-                entry
-                for entry in repo_state.get("files", [])
+                entry for entry in repo_state.get("files", [])
                 if normalize_path(entry.get("path", ""))
                 not in removed_paths
             ]
@@ -1222,8 +1285,6 @@ def cleanup_partial_albums(client, state, repos, repo_states):
     if partial_count:
         save_state(state)
         log(f"Cleaned {partial_count} partial album(s).")
-
-
 def relative_library_path(track):
     data = spotify(track)
 
@@ -1337,33 +1398,33 @@ def publish_item(
 ):
     tracks = item["tracks"]
 
-    total_size = item_size(
-        item
-    )
-
-    log(
-        f"Publishing "
-        f"{item['type']}: "
-        f"{item_artist_name(item)} - "
-        f"{item_album_name(item)}"
-    )
-
-    log(
-        f"  Size: "
-        f"{format_bytes(total_size)}"
-    )
-
-    log(
-        f"  Repository: "
-        f"{repo}"
-    )
-
-    uploaded = 0
-
+    audio_entries = []
+    local_payloads = []
     first_data = spotify(tracks[0])
-    album_art = first_data.get("album_art")
 
+    log(
+        f"Publishing {item['type']}: "
+        f"{item_artist_name(item)} - {item_album_name(item)}"
+    )
+
+    log(f"  Size: {format_bytes(item_size(item))}")
+    log(f"  Repository: {repo}")
+
+    existing_paths = {
+        normalize_path(entry.get("path", ""))
+        for entry in repo_state.get("files", [])
+    }
+
+    # Fetch all payloads before creating any Git objects. If a download or
+    # artwork request fails, no partial library commit is created.
+    album_art = first_data.get("album_art")
     if isinstance(album_art, dict) and album_art.get("url"):
+        artwork_response = requests.get(
+            album_art["url"],
+            timeout=REQUEST_TIMEOUT,
+        )
+        artwork_response.raise_for_status()
+
         artist = sanitize_component(
             first_data.get("album_artist")
             or first_data.get("artist")
@@ -1377,106 +1438,90 @@ def publish_item(
             f"{artist}/{album}/cover.jpg"
         )
 
-        if not any(
-            normalize_path(entry.get("path", "")) == artwork_path
-            for entry in repo_state.get("files", [])
-        ):
-            log(f"  Uploading album art: {artwork_path}")
-            artwork_response = requests.get(
-                album_art["url"],
-                timeout=REQUEST_TIMEOUT,
-            )
-            artwork_response.raise_for_status()
-            client.put_bytes(
-                repo=repo,
-                path=artwork_path,
-                content=artwork_response.content,
-                branch=repo_state["branch"],
-                message=(
-                    f"Add album art: "
-                    f"{item_artist_name(item)} - "
-                    f"{item_album_name(item)}"
-                ),
-            )
-            repo_state["bytes"] += len(artwork_response.content)
-            repo_state.setdefault("files", []).append(
+        if artwork_path not in existing_paths:
+            local_payloads.append(
                 {
                     "path": artwork_path,
-                    "size": len(artwork_response.content),
+                    "content": artwork_response.content,
+                    "kind": "art",
                 }
             )
 
     for track in tracks:
-        local_file = get_local_file(
-            track
-        )
-
+        local_file = get_local_file(track)
         if local_file is None:
             raise RuntimeError(
                 "Downloaded file is missing "
                 f"for {spotify(track).get('title')}"
             )
 
-        path = relative_library_path(
-            track
-        )
-
-        size = local_file.stat().st_size
-
-        log(
-            f"  Uploading: "
-            f"{path} "
-            f"({format_bytes(size)})"
-        )
-
-        client.put_file(
-            repo=repo,
-            path=path,
-            local_file=local_file,
-            branch=repo_state[
-                "branch"
-            ],
-            message=(
-                f"Add "
-                f"{spotify(track).get('artist', 'track')} - "
-                f"{spotify(track).get('title', 'track')}"
-            ),
-        )
-
-        repo_state[
-            "bytes"
-        ] += size
-
-        repo_state.setdefault(
-            "files",
-            [],
-        ).append(
+        path = relative_library_path(track)
+        local_payloads.append(
             {
                 "path": path,
-                "size": size,
+                "content": local_file.read_bytes(),
+                "kind": "track",
+                "track": track,
             }
         )
 
-        mark_published(
-            track,
+    log(f"  Creating atomic Git commit with {len(local_payloads)} file(s)...")
+
+    tree_entries = []
+    blob_info = []
+
+    for payload in local_payloads:
+        blob_sha = client.create_blob(
             repo,
-            path,
+            payload["content"],
         )
+        tree_entries.append(
+            {
+                "path": payload["path"],
+                "mode": "100644",
+                "type": "blob",
+                "sha": blob_sha,
+            }
+        )
+        blob_info.append((payload, blob_sha))
 
-        uploaded += 1
-
-    log(
-        f"  Published {uploaded} "
-        f"file(s)."
+    client.create_tree_commit(
+        repo=repo,
+        branch=repo_state["branch"],
+        entries=tree_entries,
+        message=(
+            f"Add {item_artist_name(item)} - "
+            f"{item_album_name(item)}"
+        ),
     )
 
+    for payload, blob_sha in blob_info:
+        size = len(payload["content"])
+        repo_state.setdefault("files", []).append(
+            {
+                "path": payload["path"],
+                "size": size,
+                "sha": blob_sha,
+            }
+        )
+        repo_state["bytes"] += size
+
+        if payload["kind"] == "track":
+            mark_published(
+                payload["track"],
+                repo,
+                payload["path"],
+            )
+
+    log(
+        f"  Published {len(tracks)} track(s) "
+        f"in one atomic commit."
+    )
     log(
         f"  Repository usage: "
         f"{format_bytes(repo_state['bytes'])} / "
         f"{format_bytes(REPO_TARGET_BYTES)}"
     )
-
-
 def item_fits_atomically(
     item,
     repo_state,
