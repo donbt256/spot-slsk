@@ -3,6 +3,10 @@ name: Spotify Music Acquisition
 on:
   workflow_dispatch:
 
+concurrency:
+  group: spotify-music-acquisition
+  cancel-in-progress: false
+
 permissions:
   contents: write
 
