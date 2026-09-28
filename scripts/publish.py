@@ -764,13 +764,58 @@ class GitHubClient:
             )
         return sha
 
+    def _write_request(self, method, path, **kwargs):
+        max_attempts = int(
+            os.environ.get("GITHUB_UPLOAD_RETRIES", "5")
+        )
+
+        for attempt in range(1, max_attempts + 1):
+            try:
+                return self.request(
+                    method,
+                    path,
+                    **kwargs,
+                )
+            except RuntimeError as exc:
+                message = str(exc)
+                if (
+                    not is_transient_upload_error(message)
+                    or attempt >= max_attempts
+                ):
+                    raise
+
+                delay = 2 ** attempt
+                log(
+                    f"  GitHub Git-data write failed transiently "
+                    f"(attempt {attempt}/{max_attempts}): {message}"
+                )
+                log(f"  Retrying Git-data write in {delay} seconds...")
+                time.sleep(delay)
+
+            except requests.RequestException as exc:
+                if attempt >= max_attempts:
+                    raise RuntimeError(
+                        f"GitHub Git-data write failed after "
+                        f"{max_attempts} attempts: {exc}"
+                    ) from exc
+
+                delay = 2 ** attempt
+                log(
+                    f"  GitHub Git-data connection error "
+                    f"(attempt {attempt}/{max_attempts}): {exc}"
+                )
+                log(f"  Retrying Git-data write in {delay} seconds...")
+                time.sleep(delay)
+
+        raise RuntimeError("GitHub Git-data write failed.")
+
     def create_blob(self, repo, content):
         repo_path = (
             f"/repos/"
             f"{quote(self.owner, safe='')}/"
             f"{quote(repo, safe='')}"
         )
-        data = self.request(
+        data = self._write_request(
             "POST",
             f"{repo_path}/git/blobs",
             json={
@@ -796,7 +841,7 @@ class GitHubClient:
         )
         base_tree = parent_commit["tree"]["sha"]
 
-        tree = self.request(
+        tree = self._write_request(
             "POST",
             f"{repo_path}/git/trees",
             json={
@@ -805,7 +850,7 @@ class GitHubClient:
             },
         )
 
-        commit = self.request(
+        commit = self._write_request(
             "POST",
             f"{repo_path}/git/commits",
             json={
@@ -819,7 +864,10 @@ class GitHubClient:
         if not commit_sha:
             raise RuntimeError("GitHub did not return a commit SHA.")
 
-        self.request(
+        # Retry the ref update independently. If GitHub accepted the commit
+        # but the ref request timed out, we must retry the same commit rather
+        # than create another commit.
+        self._write_request(
             "PATCH",
             f"{repo_path}/git/refs/heads/{quote(branch, safe='')}",
             json={"sha": commit_sha},
