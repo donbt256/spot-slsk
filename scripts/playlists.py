@@ -116,6 +116,7 @@ def process():
     # destroying a previously valid playlist.
     desired = {}
     skipped = False
+    skipped_paths = set()
 
     for playlist in playlists:
         playlist_id = playlist.get("id")
@@ -131,6 +132,7 @@ def process():
 
         if missing:
             skipped = True
+            skipped_paths.add(playlist_path(playlist_id))
             print(
                 f"Skipping playlist {playlist_id}: "
                 f"{len(missing)} current track(s) are not published yet."
@@ -177,11 +179,10 @@ def process():
     desired_paths = set(desired)
 
     for path in existing:
-        if path in desired_paths:
+        if path in desired_paths or path in skipped_paths:
             continue
-        # If a currently configured playlist was skipped because acquisition
-        # is incomplete, preserve its old M3U8. Only remove playlists that
-        # are no longer configured at all.
+        # A configured playlist that could not be rebuilt is preserved.
+        # Only playlists removed from urls.txt are deleted.
         entries.append(
             {
                 "path": path,
