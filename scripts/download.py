@@ -94,10 +94,37 @@ def transfer_key(username, filename):
 
 
 def extract_transfers(data):
+    print(
+        "DEBUG: slskd downloads response type:",
+        type(data).__name__,
+        flush=True,
+    )
+
+    if isinstance(data, dict):
+        print(
+            "DEBUG: slskd downloads response keys:",
+            list(data.keys()),
+            flush=True,
+        )
+
+    print(
+        "DEBUG: slskd downloads response:",
+        json.dumps(
+            data,
+            indent=2,
+            ensure_ascii=False,
+        )[:20000],
+        flush=True,
+    )
+
     transfers = []
 
     if isinstance(data, list):
-        return data
+        for entry in data:
+            if isinstance(entry, dict):
+                transfers.append(entry)
+
+        return transfers
 
     if not isinstance(data, dict):
         return transfers
@@ -105,20 +132,44 @@ def extract_transfers(data):
     for username, entries in data.items():
         if isinstance(entries, list):
             for entry in entries:
-                if isinstance(entry, dict):
-                    item = dict(entry)
-                    item.setdefault("username", username)
-                    transfers.append(item)
+                if not isinstance(entry, dict):
+                    continue
+
+                item = dict(entry)
+                item.setdefault(
+                    "username",
+                    username,
+                )
+
+                transfers.append(item)
 
         elif isinstance(entries, dict):
-            for entry in entries.values():
-                if isinstance(entry, dict):
-                    item = dict(entry)
-                    item.setdefault("username", username)
-                    transfers.append(item)
+            # Some slskd responses may use transfer IDs
+            # as keys underneath each username.
+            for transfer_id, entry in entries.items():
+                if not isinstance(entry, dict):
+                    continue
+
+                item = dict(entry)
+
+                item.setdefault(
+                    "username",
+                    username,
+                )
+
+                item.setdefault(
+                    "id",
+                    transfer_id,
+                )
+
+                transfers.append(item)
+
+    print(
+        f"DEBUG: extracted {len(transfers)} transfers.",
+        flush=True,
+    )
 
     return transfers
-
 
 def transfer_filename(transfer):
     return (
