@@ -1285,6 +1285,53 @@ def cleanup_partial_albums(client, state, repos, repo_states):
     if partial_count:
         save_state(state)
         log(f"Cleaned {partial_count} partial album(s).")
+def mark_existing_library_duplicates(tracks, repo_states):
+    """
+    Reuse an already-published library file when another Spotify track
+    resolves to the same library path. This handles the same recording
+    appearing under different Spotify IDs without overwriting it.
+    """
+    path_to_repo = {}
+
+    for repo, repo_state in repo_states.items():
+        for entry in repo_state.get("files", []):
+            path = normalize_path(entry.get("path", ""))
+            if path:
+                path_to_repo.setdefault(path, repo)
+
+    changed = 0
+
+    for track in tracks:
+        acquisition = track.setdefault("acquisition", {})
+        if acquisition.get("status") == "published":
+            continue
+
+        try:
+            path = relative_library_path(track)
+        except RuntimeError:
+            continue
+
+        repo = path_to_repo.get(path)
+        if not repo:
+            continue
+
+        acquisition["status"] = "published"
+        acquisition["library"] = {
+            "repo": repo,
+            "path": path,
+            "deduplicated": True,
+        }
+        changed += 1
+
+    if changed:
+        log(
+            f"Reused {changed} existing library file(s) "
+            "instead of uploading duplicate Spotify tracks."
+        )
+
+    return changed
+
+
 def relative_library_path(track):
     data = spotify(track)
 
@@ -1328,11 +1375,24 @@ def relative_library_path(track):
                 track_number
             )
 
-            filename = (
-                f"{track_number:02d} - "
-                f"{title}"
-                f"{extension}"
-            )
+            disc_number = data.get("disc_number")
+            try:
+                disc_number = int(disc_number)
+            except (TypeError, ValueError):
+                disc_number = 1
+
+            if disc_number > 1:
+                filename = (
+                    f"{disc_number:02d}-{track_number:02d} - "
+                    f"{title}"
+                    f"{extension}"
+                )
+            else:
+                filename = (
+                    f"{track_number:02d} - "
+                    f"{title}"
+                    f"{extension}"
+                )
 
         except (
             TypeError,
@@ -1716,7 +1776,12 @@ def publish():
         repo_states,
     )
 
-    # Rebuild the state-derived publishing queue after cleanup.
+    # Reuse existing library files before building the queue. This is
+    # especially useful when two Spotify IDs represent the same recording.
+    if mark_existing_library_duplicates(tracks, repo_states):
+        save_state(state)
+
+    # Rebuild the state-derived publishing queue after cleanup/deduplication.
     items = build_items(
         tracks
     )
