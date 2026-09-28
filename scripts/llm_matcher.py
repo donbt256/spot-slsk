@@ -3,6 +3,10 @@ import os
 from pathlib import Path
 
 from openai import OpenAI
+from release import release_key
+
+
+RELEASE_FILTER = os.environ.get("RELEASE_KEY")
 
 STATE_PATH = Path("state/tracks.json")
 
@@ -611,6 +615,9 @@ def main():
         "tracks",
         [],
     )
+
+    if RELEASE_FILTER:
+        tracks = [track for track in tracks if release_key(track) == RELEASE_FILTER]
 
     client = OpenAI(
         api_key=api_key
