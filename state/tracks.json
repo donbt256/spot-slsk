@@ -38738,15 +38738,102 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "7574ad87077094f7",
+              "username": "squazify",
+              "filename": "music\\Sushi Soucy\\2021 • Average\\01 Average.mp3",
+              "size": 4983802,
+              "score": 95.53,
+              "extension": "mp3",
+              "candidate_title": "Average",
+              "candidate_track_number": 1,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/2021 • Average/01 Average.mp3",
+          "filename": "01 Average.mp3",
+          "size": 4983802
+        },
+        "library": {
+          "repo": "music-library-002",
+          "path": "Sushi Soucy/Average/01 - Average.mp3"
+        }
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "track",
+        "queries": [
+          {
+            "search_id": "973054a9-338e-4731-b770-5b69b6848871",
+            "query": "Sushi Soucy Average",
+            "candidate_count": 7,
+            "timestamp": 1790615038
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Average"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "track",
+          "decision": "accept",
+          "candidates": [
+            {
+              "candidate_id": "7574ad87077094f7",
+              "username": "squazify",
+              "filename": "music\\Sushi Soucy\\2021 • Average\\01 Average.mp3",
+              "size": 4983802,
+              "score": 95.53,
+              "extension": "mp3",
+              "candidate_title": "Average",
+              "candidate_track_number": 1,
+              "alternate_terms": []
+            },
+            {
+              "candidate_id": "69ceb7248cec96be",
+              "username": "pogmommy",
+              "filename": "Music\\Sushi Soucy\\Average (2021)\\01 - Average.m4a",
+              "size": 5215217,
+              "score": 95.53,
+              "extension": "m4a",
+              "candidate_title": "Average",
+              "candidate_track_number": 1,
+              "alternate_terms": []
+            },
+            {
+              "candidate_id": "3051bfe60821b114",
+              "username": "indixo",
+              "filename": "music\\Sushi Soucy\\Sushi Soucy - Average\\01 - Average.mp3",
+              "size": 2237943,
+              "score": 92.15,
+              "extension": "mp3",
+              "candidate_title": "Average",
+              "candidate_track_number": 1,
+              "alternate_terms": []
+            },
+            {
+              "candidate_id": "d173680e23f926cc",
+              "username": "StonyTark",
+              "filename": "music\\Sushi Soucy\\Average (2021)\\Sushi Soucy - Average - 01 - Average.mp3",
+              "size": 5148844,
+              "score": 55.73,
+              "extension": "mp3",
+              "candidate_title": "Average - 01 - Average",
+              "candidate_track_number": null,
+              "alternate_terms": []
+            }
+          ]
+        }
       }
     },
     {
