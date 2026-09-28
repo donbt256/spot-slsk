@@ -168,6 +168,67 @@ def ensure_search_state(track):
     )
 
 
+
+
+def compact_candidate(candidate):
+    if not isinstance(candidate, dict):
+        return candidate
+
+    keys = (
+        "candidate_id",
+        "username",
+        "filename",
+        "size",
+        "extension",
+        "candidate_title",
+        "candidate_track_number",
+        "alternate_terms",
+    )
+
+    return {
+        key: candidate[key]
+        for key in keys
+        if key in candidate
+    }
+
+
+def compact_release(release):
+    if not isinstance(release, dict):
+        return release
+
+    compacted = {
+        key: release[key]
+        for key in (
+            "release_id",
+            "username",
+            "folder",
+            "file_count",
+            "expected_tracks",
+            "matched_tracks",
+            "coverage",
+            "score",
+            "alternate_count",
+            "decision",
+        )
+        if key in release
+    }
+
+    compacted["matches"] = [
+        {
+            "track_id": item.get("track_id"),
+            "title": item.get("title"),
+            "track_number": item.get("track_number"),
+            "candidate": compact_candidate(
+                item.get("candidate", {})
+            ),
+        }
+        for item in release.get("matches", [])
+        if isinstance(item, dict)
+    ]
+
+    return compacted
+
+
 def set_acquisition_match(
     track,
     candidate,
@@ -181,7 +242,7 @@ def set_acquisition_match(
     acquisition["status"] = status
 
     acquisition["match"] = {
-        "candidates": [candidate],
+        "candidates": [compact_candidate(candidate)],
     }
 
 
@@ -249,9 +310,11 @@ def process_album_group(client, tracks, index, total):
             }
         )
 
-        # Preserve the complete latest result set.
-        state["candidates"] = raw_candidates
-
+        # Do not persist the raw Soulseek result set. It can contain
+        # thousands of redundant file records and can make state/tracks.json
+        # enormous. The ranked release list below contains everything needed
+        # for download/retry.
+        state.pop("candidates", None)
         state["release_candidates"] = []
 
     if not raw_candidates:
@@ -269,9 +332,14 @@ def process_album_group(client, tracks, index, total):
         raw_candidates,
     )
 
+    compacted_releases = [
+        compact_release(release)
+        for release in releases[:20]
+    ]
+
     for track in tracks:
         state = ensure_search_state(track)
-        state["release_candidates"] = releases
+        state["release_candidates"] = compacted_releases
 
     if not releases:
         for track in tracks:
@@ -339,7 +407,7 @@ def process_album_group(client, tracks, index, total):
                 "mode": "album",
                 "decision": "accept",
                 "release_id": best["release_id"],
-                "release": best,
+                "release": compact_release(best),
             }
 
     elif decision == "llm":
@@ -355,7 +423,10 @@ def process_album_group(client, tracks, index, total):
                 "decision": "llm",
                 "release_id": best["release_id"],
                 "release": best,
-                "candidates": releases[:20],
+                "candidates": [
+                    compact_release(release)
+                    for release in releases[:15]
+                ],
             }
 
             track.setdefault(
@@ -440,7 +511,7 @@ def process_individual_track(
         }
     )
 
-    search_state["candidates"] = raw_candidates
+    search_state.pop("candidates", None)
     search_state["release_candidates"] = []
 
     if not raw_candidates:
@@ -468,7 +539,10 @@ def process_individual_track(
         "version": MATCHER_VERSION,
         "mode": "track",
         "decision": classification["decision"],
-        "candidates": scored[:50],
+        "candidates": [
+            compact_candidate(candidate)
+            for candidate in scored[:15]
+        ],
     }
 
     decision = classification["decision"]
