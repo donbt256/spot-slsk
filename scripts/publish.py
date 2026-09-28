@@ -387,7 +387,9 @@ def item_size(item):
         for track in item["tracks"]
     )
 
-    if item.get("type") == "album":
+    first = spotify(item["tracks"][0])
+    album_art = first.get("album_art")
+    if isinstance(album_art, dict) and album_art.get("url"):
         size += ALBUM_ART_RESERVE_BYTES
 
     return size
