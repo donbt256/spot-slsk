@@ -230,10 +230,37 @@ def save_checkpoint(label):
             check=True,
         )
 
-        subprocess.run(
-            ["git", "push", "origin", "HEAD:main"],
-            check=True,
-        )
+        pushed = False
+        for attempt in range(1, 4):
+            result = subprocess.run(
+                ["git", "push", "origin", "HEAD:main"],
+            )
+            if result.returncode == 0:
+                pushed = True
+                break
+
+            print(
+                f"Checkpoint push rejected (attempt {attempt}/3); "
+                "rebasing onto the current remote main...",
+                flush=True,
+            )
+            fetch = subprocess.run(
+                ["git", "fetch", "origin", "main"],
+            )
+            if fetch.returncode != 0:
+                break
+
+            rebase = subprocess.run(
+                ["git", "rebase", "origin/main"],
+            )
+            if rebase.returncode != 0:
+                subprocess.run(["git", "rebase", "--abort"])
+                break
+
+        if not pushed:
+            raise RuntimeError(
+                f"Could not push checkpoint after 3 attempts: {label}"
+            )
 
         print(f"Checkpoint pushed: {label}", flush=True)
     else:
