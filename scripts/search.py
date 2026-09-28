@@ -11,6 +11,10 @@ from matcher import (
     rank_releases,
 )
 from soulseek import SoulseekClient, flatten_responses
+from release import release_key
+
+
+RELEASE_FILTER = os.environ.get("RELEASE_KEY")
 
 
 STATE_PATH = Path("state/tracks.json")
@@ -519,9 +523,10 @@ def main():
 
     tracks = state.get("tracks", [])
 
-    print(
-        f"Loaded {len(tracks)} tracks."
-    )
+    if RELEASE_FILTER:
+        tracks = [track for track in tracks if release_key(track) == RELEASE_FILTER]
+
+    print(f"Loaded {len(tracks)} tracks for this release.")
 
     if not tracks:
         return
