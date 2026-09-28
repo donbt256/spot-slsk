@@ -37936,7 +37936,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -37945,6 +37945,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "track",
+        "queries": [
+          {
+            "search_id": "900b6267-2875-4918-aa36-f213f20adf9c",
+            "query": "Sushi Soucy Hey, You!.mov",
+            "candidate_count": 0,
+            "timestamp": 1790614692
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Hey, You!.mov"
       }
     },
     {
@@ -37975,7 +37988,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -37984,6 +37997,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "track",
+        "queries": [
+          {
+            "search_id": "1e77c50a-4164-4630-9b52-26ed9a2a6575",
+            "query": "Sushi Soucy Almost Perfect",
+            "candidate_count": 0,
+            "timestamp": 1790614705
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Almost Perfect"
       }
     },
     {
@@ -38014,7 +38040,7 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "unmatched",
         "attempts": 0,
         "match": null,
         "file": null,
@@ -38023,6 +38049,19 @@
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "track",
+        "queries": [
+          {
+            "search_id": "1d5639b9-384f-4bf1-b16c-94e9c5ffe765",
+            "query": "Sushi Soucy Almost Perfect - Acoustic",
+            "candidate_count": 0,
+            "timestamp": 1790614718
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy Almost Perfect - Acoustic"
       }
     },
     {
@@ -38053,15 +38092,80 @@
         }
       },
       "acquisition": {
-        "status": "pending",
+        "status": "published",
         "attempts": 0,
-        "match": null,
-        "file": null,
-        "library": null
+        "match": {
+          "candidates": [
+            {
+              "candidate_id": "09cffa53072c5521",
+              "username": "pogmommy",
+              "filename": "Music\\Sushi Soucy\\The Hard Way (2024)\\01 - The Hard Way.m4a",
+              "size": 7347036,
+              "score": 97.07,
+              "extension": "m4a",
+              "candidate_title": "The Hard Way",
+              "candidate_track_number": 1,
+              "alternate_terms": []
+            }
+          ]
+        },
+        "file": {
+          "path": "/home/runner/work/_temp/music-downloads/The Hard Way (2024)/01 - The Hard Way.m4a",
+          "filename": "01 - The Hard Way.m4a",
+          "size": 7347036
+        },
+        "library": {
+          "repo": "music-library-001",
+          "path": "Sushi Soucy/The Hard Way/01 - The Hard Way.m4a"
+        }
       },
       "enrichment": {
         "artwork": null,
         "lyrics": null
+      },
+      "search": {
+        "mode": "track",
+        "queries": [
+          {
+            "search_id": "53f7bc35-9a46-47be-975f-5acc0b04eb73",
+            "query": "Sushi Soucy The Hard Way",
+            "candidate_count": 3,
+            "timestamp": 1790614740
+          }
+        ],
+        "release_candidates": [],
+        "query": "Sushi Soucy The Hard Way"
+      },
+      "matching": {
+        "deterministic": {
+          "version": 4,
+          "mode": "track",
+          "decision": "accept",
+          "candidates": [
+            {
+              "candidate_id": "09cffa53072c5521",
+              "username": "pogmommy",
+              "filename": "Music\\Sushi Soucy\\The Hard Way (2024)\\01 - The Hard Way.m4a",
+              "size": 7347036,
+              "score": 97.07,
+              "extension": "m4a",
+              "candidate_title": "The Hard Way",
+              "candidate_track_number": 1,
+              "alternate_terms": []
+            },
+            {
+              "candidate_id": "93bab9c1af172e59",
+              "username": "Wild Rook",
+              "filename": "Music\\Sushi Soucy\\The Hard Way (2024)\\Sushi Soucy - The Hard Way - 01 - The Hard Way.m4a",
+              "size": 6920518,
+              "score": 59.07,
+              "extension": "m4a",
+              "candidate_title": "The Hard Way - 01 - The Hard Way",
+              "candidate_track_number": null,
+              "alternate_terms": []
+            }
+          ]
+        }
       }
     },
     {
