@@ -424,6 +424,13 @@ def main():
 
     try:
         run_stage("scripts/playlists.py", os.environ.copy())
+
+        # Persist playlist identity, snapshot IDs, configuration state, and
+        # current playlist membership after the playlist stage succeeds.
+        playlist_state = load_state()
+        save_state(playlist_state)
+        save_checkpoint("Playlist state")
+
     except Exception as exc:
         failed = True
         print(
