@@ -906,6 +906,148 @@ def ensure_next_repo(
     return repo
 
 
+def is_audio_library_path(path):
+    return Path(path).suffix.lower() in {
+        ".mp3", ".flac", ".m4a", ".aac", ".ogg",
+        ".opus", ".wav", ".alac", ".aiff", ".ape", ".wma",
+    }
+
+
+def cleanup_partial_albums(client, state, repos, repo_states):
+    """
+    Remove incomplete multi-track albums left by older runs.
+
+    An album is partial when Spotify metadata contains multiple tracks,
+    the corresponding Artist/Album directory contains at least one
+    audio file, but fewer audio files than the Spotify release.
+    """
+    expected = {}
+
+    for track in state.get("tracks", []):
+        data = spotify(track)
+        artist = str(
+            data.get("album_artist")
+            or data.get("artist")
+            or ""
+        ).strip()
+        album = str(data.get("album") or "").strip()
+
+        if not artist or not album:
+            continue
+
+        key = (artist.casefold(), album.casefold())
+        expected.setdefault(
+            key,
+            {"artist": artist, "album": album, "tracks": []},
+        )["tracks"].append(track)
+
+    partial_count = 0
+
+    for album in expected.values():
+        expected_count = len(album["tracks"])
+        if expected_count < 2:
+            continue
+
+        prefix = normalize_path(
+            f"{sanitize_component(album['artist'])}/"
+            f"{sanitize_component(album['album'])}/"
+        )
+
+        for repo in list(repos):
+            repo_state = repo_states[repo]
+
+            existing = [
+                entry
+                for entry in repo_state.get("files", [])
+                if is_audio_library_path(entry.get("path", ""))
+                and normalize_path(entry.get("path", "")).startswith(prefix)
+            ]
+
+            if not existing or len(existing) >= expected_count:
+                continue
+
+            log(
+                f"Cleaning partial album: "
+                f"{album['artist']} - {album['album']} "
+                f"({len(existing)}/{expected_count} tracks) "
+                f"from {repo}"
+            )
+
+            branch = repo_state["branch"]
+            repo_path = f"/repos/{quote(client.owner, safe='')}/{quote(repo, safe='')}"
+            ref = client.request(
+                "GET",
+                f"{repo_path}/git/refs/heads/{quote(branch, safe='')}",
+            )
+            parent_sha = ref["object"]["sha"]
+
+            commit = client.request(
+                "GET",
+                f"{repo_path}/git/commits/{parent_sha}",
+            )
+            base_tree_sha = commit["tree"]["sha"]
+
+            removals = [
+                {
+                    "path": entry["path"],
+                    "mode": "100644",
+                    "type": "blob",
+                    "sha": None,
+                }
+                for entry in existing
+            ]
+
+            tree = client.request(
+                "POST",
+                f"{repo_path}/git/trees",
+                json={
+                    "base_tree": base_tree_sha,
+                    "tree": removals,
+                },
+            )
+
+            client.request(
+                "POST",
+                f"{repo_path}/git/commits",
+                json={
+                    "message": (
+                        f"Remove partial album: "
+                        f"{album['artist']} - {album['album']}"
+                    ),
+                    "tree": tree["sha"],
+                    "parents": [parent_sha],
+                },
+            )
+
+            removed_paths = {
+                normalize_path(entry["path"])
+                for entry in existing
+            }
+
+            repo_state["files"] = [
+                entry
+                for entry in repo_state.get("files", [])
+                if normalize_path(entry.get("path", ""))
+                not in removed_paths
+            ]
+            repo_state["bytes"] = sum(
+                int(entry.get("size") or 0)
+                for entry in repo_state["files"]
+            )
+
+            for track in album["tracks"]:
+                acquisition = track.setdefault("acquisition", {})
+                if acquisition.get("status") == "published":
+                    acquisition["status"] = "pending"
+                    acquisition.pop("library", None)
+
+            partial_count += 1
+
+    if partial_count:
+        save_state(state)
+        log(f"Cleaned {partial_count} partial album(s).")
+
+
 def relative_library_path(track):
     data = spotify(track)
 
@@ -1299,6 +1441,18 @@ def publish():
         f"{format_bytes(ALBUM_ATOMIC_LIMIT_BYTES)}"
     )
     log("")
+
+    cleanup_partial_albums(
+        client,
+        state,
+        repos,
+        repo_states,
+    )
+
+    # Rebuild the state-derived publishing queue after cleanup.
+    items = build_items(
+        tracks
+    )
 
     pending_atomic = []
 
