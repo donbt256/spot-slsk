@@ -82,6 +82,13 @@ class SpotifyClient:
             "name": playlist.get("name") or playlist_id,
             "url": playlist.get("external_urls", {}).get("spotify"),
             "snapshot_id": playlist.get("snapshot_id"),
+            "description": playlist.get("description"),
+            "public": playlist.get("public"),
+            "collaborative": playlist.get("collaborative"),
+            "owner": (
+                playlist.get("owner", {}).get("display_name")
+                or playlist.get("owner", {}).get("id")
+            ),
             "image": (
                 {
                     "url": playlist["images"][0]["url"],
