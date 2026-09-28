@@ -244,40 +244,57 @@ def format_speed(value):
 
     return f"{format_bytes(value)}/s"
 
+def find_downloaded_file(
+    download_dir,
+    remote_filename,
+):
+    """
+    Find a completed download anywhere under the
+    configured slskd download directory.
 
-def find_downloaded_file(username, remote_filename):
-    remote_name = Path(
-        str(remote_filename).replace("\\", "/")
-    ).name
+    slskd normally places completed files under the
+    source file's immediate parent directory, so the
+    remote path cannot safely be reconstructed from
+    the transfer filename.
+    """
 
-    exact_matches = []
+    root = Path(download_dir)
 
-    if not DOWNLOAD_ROOT.exists():
+    if not root.exists():
         return None
 
-    for path in DOWNLOAD_ROOT.rglob("*"):
+    # Soulseek paths use backslashes even though slskd
+    # is running inside a Linux container.
+    normalized = remote_filename.replace(
+        "\\",
+        "/",
+    )
+
+    basename = Path(normalized).name
+
+    if not basename:
+        return None
+
+    # First try an exact basename match.
+    matches = []
+
+    for path in root.rglob("*"):
         if not path.is_file():
             continue
 
-        if path.name != remote_name:
-            continue
+        if path.name == basename:
+            matches.append(path)
 
-        exact_matches.append(path)
-
-    if not exact_matches:
+    if not matches:
         return None
 
-    if len(exact_matches) == 1:
-        return exact_matches[0]
+    # Prefer an exact filename match. If multiple files
+    # somehow exist, return the first deterministic result.
+    matches.sort(
+        key=lambda path: str(path)
+    )
 
-    username_text = str(username).lower()
-
-    for path in exact_matches:
-        if username_text in str(path).lower():
-            return path
-
-    return exact_matches[0]
-
+    return matches[0]
 
 def main():
     log("Starting download stage.")
