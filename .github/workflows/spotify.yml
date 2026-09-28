@@ -97,6 +97,10 @@ jobs:
       - name: Search Soulseek
         env:
           SLSKD_URL: http://127.0.0.1:5030
+          SLSKD_SEARCH_TIMEOUT_MS: "12000"
+          SLSKD_SEARCH_WAIT_SECONDS: "20"
+          SLSKD_RESPONSE_LIMIT: "100"
+          SLSKD_FILE_LIMIT: "10000"
         run: |
           python scripts/search.py
 
@@ -104,6 +108,7 @@ jobs:
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           OPENAI_MATCH_MODEL: gpt-5-nano
+          OPENAI_MAX_CANDIDATES: "15"
         run: |
           python scripts/llm_matcher.py
 
@@ -152,43 +157,111 @@ jobs:
 
           print(f"Tracks: {len(tracks)}")
 
+          statuses = {}
+
           for track in tracks:
               spotify = track.get("spotify", {})
               acquisition = track.get("acquisition", {})
               search = track.get("search", {})
               matching = track.get("matching", {})
 
+              status = acquisition.get(
+                  "status",
+                  "unknown",
+              )
+
+              statuses[status] = (
+                  statuses.get(status, 0) + 1
+              )
+
               print()
               print(
                   f"{spotify.get('artist', '?')} - "
                   f"{spotify.get('title', '?')}"
               )
-              print(f"Status: {acquisition.get('status')}")
+
+              print(f"Status: {status}")
+
+              print(
+                  f"Search mode: "
+                  f"{search.get('mode')}"
+              )
+
+              print(
+                  f"Search query: "
+                  f"{search.get('query')}"
+              )
+
               print(
                   f"Search candidates: "
                   f"{len(search.get('candidates', []))}"
               )
 
-              deterministic = matching.get("deterministic", {})
+              print(
+                  f"Release candidates: "
+                  f"{len(search.get('release_candidates', []))}"
+              )
+
+              deterministic = matching.get(
+                  "deterministic",
+                  {},
+              )
+
               if deterministic:
                   print(
                       f"Deterministic decision: "
                       f"{deterministic.get('decision')}"
                   )
 
-                  candidates = deterministic.get("candidates", [])
+                  release = deterministic.get(
+                      "release"
+                  )
+
+                  if release:
+                      print(
+                          f"Release: "
+                          f"{release.get('folder')}"
+                      )
+
+                      print(
+                          f"Release user: "
+                          f"{release.get('username')}"
+                      )
+
+                      print(
+                          f"Release score: "
+                          f"{release.get('score')}"
+                      )
+
+                      print(
+                          f"Release coverage: "
+                          f"{release.get('matched_tracks')}/"
+                          f"{release.get('expected_tracks')}"
+                      )
+
+                  candidates = deterministic.get(
+                      "candidates",
+                      [],
+                  )
 
                   if candidates:
                       best = candidates[0]
-                      print(
-                          f"Best: {best.get('filename')}"
-                      )
-                      print(
-                          f"User: {best.get('username')}"
-                      )
-                      print(
-                          f"Score: {best.get('score')}"
-                      )
+
+                      if "filename" in best:
+                          print(
+                              f"Best candidate: "
+                              f"{best.get('filename')}"
+                          )
+
+                          print(
+                              f"Best user: "
+                              f"{best.get('username')}"
+                          )
+
+                          print(
+                              f"Best score: "
+                              f"{best.get('score')}"
+                          )
 
               llm = matching.get("llm")
 
@@ -197,28 +270,66 @@ jobs:
                       f"LLM decision: "
                       f"{llm.get('decision')}"
                   )
+
                   print(
                       f"LLM confidence: "
                       f"{llm.get('confidence')}"
                   )
-                  print(
-                      f"LLM candidate: "
-                      f"{llm.get('candidate_id')}"
+
+                  candidate_id = llm.get(
+                      "candidate_id"
                   )
 
-              match = acquisition.get("match")
+                  release_id = llm.get(
+                      "release_id"
+                  )
+
+                  if candidate_id:
+                      print(
+                          f"LLM candidate: "
+                          f"{candidate_id}"
+                      )
+
+                  if release_id:
+                      print(
+                          f"LLM release: "
+                          f"{release_id}"
+                      )
+
+                  reason = llm.get("reason")
+
+                  if reason:
+                      print(
+                          f"LLM reason: "
+                          f"{reason}"
+                      )
+
+              match = acquisition.get(
+                  "match"
+              )
 
               if match:
-                  candidates = match.get("candidates", [])
+                  candidates = match.get(
+                      "candidates",
+                      [],
+                  )
 
                   if candidates:
                       selected = candidates[0]
+
                       print(
                           f"Selected: "
                           f"{selected.get('filename')}"
                       )
 
-              file_info = acquisition.get("file")
+                      print(
+                          f"Selected user: "
+                          f"{selected.get('username')}"
+                      )
+
+              file_info = acquisition.get(
+                  "file"
+              )
 
               if file_info:
                   print(
@@ -226,17 +337,30 @@ jobs:
                       f"{file_info.get('path')}"
                   )
 
-              library = acquisition.get("library")
+              library = acquisition.get(
+                  "library"
+              )
 
               if library:
                   print(
                       f"Library: "
                       f"{library.get('repo')}"
                   )
+
                   print(
                       f"Library path: "
                       f"{library.get('path')}"
                   )
+
+          print()
+          print("=== Status summary ===")
+
+          for status, count in sorted(
+              statuses.items()
+          ):
+              print(
+                  f"{status}: {count}"
+              )
           PY
 
       - name: Show slskd logs on failure

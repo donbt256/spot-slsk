@@ -1,521 +1,626 @@
-import hashlib
 import json
 import os
 import sys
-from datetime import datetime, timezone
+import time
 from pathlib import Path
 
 from matcher import (
     MATCHER_VERSION,
     classify_candidates,
+    rank_candidates,
+    rank_releases,
 )
-from soulseek import (
-    SoulseekClient,
-    flatten_responses,
+from soulseek import SoulseekClient, flatten_responses
+
+STATE_PATH = Path("state/tracks.json")
+
+SEARCH_TIMEOUT_MS = int(
+    os.environ.get("SLSKD_SEARCH_TIMEOUT_MS", "12000")
 )
 
+SEARCH_WAIT_SECONDS = int(
+    os.environ.get("SLSKD_SEARCH_WAIT_SECONDS", "20")
+)
 
-ROOT = Path(__file__).resolve().parent.parent
-TRACKS_FILE = ROOT / "state" / "tracks.json"
+RESPONSE_LIMIT = int(
+    os.environ.get("SLSKD_RESPONSE_LIMIT", "100")
+)
 
-
-def now():
-    return datetime.now(
-        timezone.utc
-    ).isoformat()
+FILE_LIMIT = int(
+    os.environ.get("SLSKD_FILE_LIMIT", "10000")
+)
 
 
 def load_state():
-    with TRACKS_FILE.open(
-        encoding="utf-8"
-    ) as handle:
+    if not STATE_PATH.exists():
+        raise SystemExit(f"Missing {STATE_PATH}")
+
+    with STATE_PATH.open("r", encoding="utf-8") as handle:
         return json.load(handle)
 
 
-def save_state(data):
-    temporary = TRACKS_FILE.with_suffix(
-        ".tmp"
-    )
+def save_state(state):
+    STATE_PATH.parent.mkdir(parents=True, exist_ok=True)
 
-    temporary.write_text(
-        json.dumps(
-            data,
+    temporary = STATE_PATH.with_suffix(".tmp")
+
+    with temporary.open("w", encoding="utf-8") as handle:
+        json.dump(
+            state,
+            handle,
             indent=2,
             ensure_ascii=False,
         )
-        + "\n",
-        encoding="utf-8",
+        handle.write("\n")
+
+    temporary.replace(STATE_PATH)
+
+
+def spotify(track):
+    return track.get("spotify", track)
+
+
+def track_key(track):
+    data = spotify(track)
+
+    return data.get("id") or (
+        f"{data.get('artist','')}\x1f"
+        f"{data.get('album','')}\x1f"
+        f"{data.get('title','')}"
     )
 
-    temporary.replace(
-        TRACKS_FILE
-    )
+
+def acquisition_status(track):
+    return track.setdefault(
+        "acquisition",
+        {},
+    ).get("status", "pending")
 
 
-def build_search_query(track):
-    spotify = track["spotify"]
+def should_skip_track(track):
+    status = acquisition_status(track)
 
-    artist = spotify.get(
-        "artist"
-    ) or ""
-
-    title = spotify.get(
-        "title"
-    ) or ""
-
-    return f"{artist} {title}".strip()
+    return status in {
+        "downloaded",
+        "ready_to_publish",
+        "published",
+    }
 
 
-def stable_candidate_id(candidate):
-    value = "|".join(
-        [
-            str(
-                candidate.get(
-                    "username"
-                )
-                or ""
-            ),
-            str(
-                candidate.get(
-                    "filename"
-                )
-                or ""
-            ),
-            str(
-                candidate.get(
-                    "size"
-                )
-                or ""
-            ),
-            str(
-                candidate.get(
-                    "extension"
-                )
-                or ""
-            ),
-        ]
-    )
+def album_key(track):
+    data = spotify(track)
+
+    artist = str(
+        data.get("album_artist")
+        or data.get("artist")
+        or ""
+    ).strip()
+
+    album = str(
+        data.get("album")
+        or ""
+    ).strip()
+
+    if not artist or not album:
+        return None
 
     return (
-        "c_"
-        + hashlib.sha256(
-            value.encode(
-                "utf-8"
-            )
-        ).hexdigest()[:16]
+        artist.casefold(),
+        album.casefold(),
     )
 
 
-def normalize_raw_candidate(
-    candidate
-):
-    result = dict(candidate)
+def build_album_groups(tracks):
+    groups = {}
 
-    result["candidate_id"] = (
-        stable_candidate_id(
-            candidate
-        )
+    for track in tracks:
+        if should_skip_track(track):
+            continue
+
+        key = album_key(track)
+
+        if key is None:
+            continue
+
+        if key not in groups:
+            groups[key] = []
+
+        groups[key].append(track)
+
+    return groups
+
+
+def search_one(client, query):
+    search_id = client.search(
+        query,
+        timeout_ms=SEARCH_TIMEOUT_MS,
+        file_limit=FILE_LIMIT,
+        response_limit=RESPONSE_LIMIT,
     )
 
-    return result
+    data = client.wait_for_search(
+        search_id,
+        timeout_seconds=SEARCH_WAIT_SECONDS,
+    )
+
+    try:
+        client.delete_search(search_id)
+    except Exception:
+        pass
+
+    return search_id, data
 
 
-def ensure_track_state(track):
-    track.setdefault(
+def ensure_search_state(track):
+    return track.setdefault(
         "search",
+        {
+            "mode": None,
+            "queries": [],
+            "candidates": [],
+            "release_candidates": [],
+        },
+    )
+
+
+def set_acquisition_match(
+    track,
+    candidate,
+    status="matched",
+):
+    acquisition = track.setdefault(
+        "acquisition",
         {},
+    )
+
+    acquisition["status"] = status
+
+    acquisition["match"] = {
+        "candidates": [candidate],
+    }
+
+
+def process_album_group(client, tracks, index, total):
+    first = spotify(tracks[0])
+
+    artist = first.get("album_artist") or first.get(
+        "artist",
+        "",
+    )
+
+    album = first.get("album", "")
+
+    query = f"{artist} {album}".strip()
+
+    print()
+    print(
+        f"Album [{index}/{total}]: "
+        f"{artist} - {album}"
+    )
+    print(
+        f"  Tracks in request: {len(tracks)}"
+    )
+    print(
+        f"  Search: {query}"
+    )
+
+    search_state = ensure_search_state(tracks[0])
+
+    search_state["mode"] = "album"
+    search_state["query"] = query
+
+    search_id, data = search_one(
+        client,
+        query,
+    )
+
+    raw_candidates = flatten_responses(data)
+
+    print(
+        f"  Search ID: {search_id}"
+    )
+    print(
+        f"  Raw candidates: {len(raw_candidates)}"
+    )
+
+    for track in tracks:
+        state = ensure_search_state(track)
+
+        state["mode"] = "album"
+        state["query"] = query
+        state["queries"] = state.get(
+            "queries",
+            [],
+        )
+
+        state["queries"].append(
+            {
+                "search_id": search_id,
+                "query": query,
+                "candidate_count": len(raw_candidates),
+                "timestamp": int(time.time()),
+            }
+        )
+
+        # Preserve the complete latest result set.
+        state["candidates"] = raw_candidates
+
+        state["release_candidates"] = []
+
+    if not raw_candidates:
+        for track in tracks:
+            track.setdefault(
+                "acquisition",
+                {},
+            )["status"] = "unmatched"
+
+        print("  No candidates found.")
+        return False
+
+    releases = rank_releases(
+        tracks,
+        raw_candidates,
+    )
+
+    for track in tracks:
+        state = ensure_search_state(track)
+        state["release_candidates"] = releases
+
+    if not releases:
+        for track in tracks:
+            track.setdefault(
+                "acquisition",
+                {},
+            )["status"] = "unmatched"
+
+        print("  No viable releases.")
+        return False
+
+    best = releases[0]
+
+    print(
+        f"  Release candidates: {len(releases)}"
+    )
+    print(
+        f"  Best release: "
+        f"{best['folder']} "
+        f"from {best['username']}"
+    )
+    print(
+        f"  Matched: "
+        f"{best['matched_tracks']}/"
+        f"{best['expected_tracks']} tracks"
+    )
+    print(
+        f"  Score: {best['score']}"
+    )
+
+    decision = best["decision"]
+
+    if decision == "accept":
+        print("  Decision: accept")
+
+        matches_by_track = {
+            match.get("track_id"): match["candidate"]
+            for match in best.get("matches", [])
+        }
+
+        for track in tracks:
+            data = spotify(track)
+            track_id = data.get("id")
+
+            candidate = matches_by_track.get(track_id)
+
+            if candidate is None:
+                track.setdefault(
+                    "acquisition",
+                    {},
+                )["status"] = "unmatched"
+                continue
+
+            set_acquisition_match(
+                track,
+                candidate,
+                "matched",
+            )
+
+            track.setdefault(
+                "matching",
+                {},
+            )["deterministic"] = {
+                "version": MATCHER_VERSION,
+                "mode": "album",
+                "decision": "accept",
+                "release_id": best["release_id"],
+                "release": best,
+            }
+
+    elif decision == "llm":
+        print("  Decision: LLM screening")
+
+        for track in tracks:
+            track.setdefault(
+                "matching",
+                {},
+            )["deterministic"] = {
+                "version": MATCHER_VERSION,
+                "mode": "album",
+                "decision": "llm",
+                "release_id": best["release_id"],
+                "release": best,
+                "candidates": releases[:20],
+            }
+
+            track.setdefault(
+                "acquisition",
+                {},
+            )["status"] = "llm_screening"
+
+    else:
+        print("  Decision: reject")
+
+        for track in tracks:
+            track.setdefault(
+                "matching",
+                {},
+            )["deterministic"] = {
+                "version": MATCHER_VERSION,
+                "mode": "album",
+                "decision": "reject",
+                "candidates": releases[:20],
+            }
+
+            track.setdefault(
+                "acquisition",
+                {},
+            )["status"] = "unmatched"
+
+    return True
+
+
+def process_individual_track(
+    client,
+    track,
+    index,
+    total,
+):
+    data = spotify(track)
+
+    artist = data.get("artist", "")
+    title = data.get("title", "")
+
+    query = f"{artist} {title}".strip()
+
+    print()
+    print(
+        f"Track [{index}/{total}]: "
+        f"{artist} - {title}"
+    )
+    print(
+        f"  Search: {query}"
+    )
+
+    search_state = ensure_search_state(track)
+
+    search_state["mode"] = "track"
+    search_state["query"] = query
+
+    search_id, result = search_one(
+        client,
+        query,
+    )
+
+    raw_candidates = flatten_responses(result)
+
+    print(
+        f"  Search ID: {search_id}"
+    )
+    print(
+        f"  Raw candidates: {len(raw_candidates)}"
+    )
+
+    search_state["queries"] = search_state.get(
+        "queries",
+        [],
+    )
+
+    search_state["queries"].append(
+        {
+            "search_id": search_id,
+            "query": query,
+            "candidate_count": len(raw_candidates),
+            "timestamp": int(time.time()),
+        }
+    )
+
+    search_state["candidates"] = raw_candidates
+    search_state["release_candidates"] = []
+
+    if not raw_candidates:
+        track.setdefault(
+            "acquisition",
+            {},
+        )["status"] = "unmatched"
+
+        print("  No candidates found.")
+        return False
+
+    scored = rank_candidates(
+        track,
+        raw_candidates,
+    )
+
+    classification = classify_candidates(
+        scored
     )
 
     track.setdefault(
         "matching",
         {},
-    )
+    )["deterministic"] = {
+        "version": MATCHER_VERSION,
+        "mode": "track",
+        "decision": classification["decision"],
+        "candidates": scored[:50],
+    }
 
-    track.setdefault(
-        "acquisition",
-        {},
-    )
+    decision = classification["decision"]
 
-    track.setdefault(
-        "enrichment",
-        {},
-    )
+    if decision == "accept":
+        best = scored[0]
 
-    track.setdefault(
-        "library",
-        {},
-    )
+        print(
+            f"  Best: "
+            f"{best['filename']} "
+            f"from {best['username']} "
+            f"(score={best['score']})"
+        )
+
+        set_acquisition_match(
+            track,
+            best,
+            "matched",
+        )
+
+    elif decision == "llm":
+        print(
+            f"  LLM screening: "
+            f"{len(scored[:20])} candidate(s)"
+        )
+
+        for candidate in scored[:5]:
+            print(
+                f"    {candidate['filename']} "
+                f"from {candidate['username']} "
+                f"(score={candidate['score']})"
+            )
+
+        track.setdefault(
+            "acquisition",
+            {},
+        )["status"] = "llm_screening"
+
+    else:
+        print("  No viable candidates.")
+
+        track.setdefault(
+            "acquisition",
+            {},
+        )["status"] = "unmatched"
+
+    return True
 
 
 def main():
-    if not TRACKS_FILE.exists():
-        raise FileNotFoundError(
-            f"Missing {TRACKS_FILE}"
-        )
-
     state = load_state()
 
-    client = SoulseekClient(
-        base_url=os.environ.get(
-            "SLSKD_URL",
-            "http://127.0.0.1:5030",
-        ),
-        api_key=os.environ.get(
-            "SLSKD_API_KEY"
-        ),
-    )
-
-    tracks = state.get(
-        "tracks",
-        [],
-    )
+    tracks = state.get("tracks", [])
 
     print(
         f"Loaded {len(tracks)} tracks."
     )
 
-    searched = 0
+    if not tracks:
+        return
 
-    for index, track in enumerate(
-        tracks,
+    base_url = os.environ.get(
+        "SLSKD_URL",
+        "http://127.0.0.1:5030",
+    )
+
+    api_key = os.environ.get(
+        "SLSKD_API_KEY"
+    )
+
+    client = SoulseekClient(
+        base_url=base_url,
+        api_key=api_key,
+    )
+
+    album_groups = build_album_groups(
+        tracks
+    )
+
+    # Only use album-level searching when at least
+    # two tracks from that album are present.
+    album_groups = {
+        key: group
+        for key, group in album_groups.items()
+        if len(group) >= 2
+    }
+
+    album_track_ids = {
+        track_key(track)
+        for group in album_groups.values()
+        for track in group
+    }
+
+    pending_individual = [
+        track
+        for track in tracks
+        if (
+            not should_skip_track(track)
+            and track_key(track)
+            not in album_track_ids
+        )
+    ]
+
+    album_total = len(album_groups)
+
+    for index, group in enumerate(
+        album_groups.values(),
         start=1,
     ):
-        ensure_track_state(
-            track
+        process_album_group(
+            client,
+            group,
+            index,
+            album_total,
         )
-
-        spotify = track[
-            "spotify"
-        ]
-
-        acquisition = track[
-            "acquisition"
-        ]
-
-        status = acquisition.get(
-            "status",
-            "pending",
-        )
-
-        # Already successfully acquired/published tracks
-        # do not need another search.
-        if status in {
-            "downloaded",
-            "ready_to_publish",
-            "published",
-        }:
-            print(
-                f"[{index}/{len(tracks)}] "
-                f"Skipping "
-                f"{spotify['artist']} - "
-                f"{spotify['title']} "
-                f"(status={status})"
-            )
-            continue
-
-        query = build_search_query(
-            track
-        )
-
-        print()
-        print(
-            f"[{index}/{len(tracks)}] "
-            f"Searching: {query}"
-        )
-
-        search_state = track[
-            "search"
-        ]
-
-        search_state.setdefault(
-            "attempts",
-            0,
-        )
-
-        search_state[
-            "attempts"
-        ] += 1
-
-        search_state[
-            "status"
-        ] = "searching"
-
-        save_state(state)
-
-        try:
-            search_id = client.search(
-                query=query,
-                timeout_ms=15000,
-                file_limit=10000,
-                response_limit=100,
-            )
-
-            print(
-                f"  Search ID: {search_id}"
-            )
-
-            result = client.wait_for_search(
-                search_id,
-                timeout_seconds=30,
-            )
-
-            raw_candidates = (
-                flatten_responses(
-                    result
-                )
-            )
-
-            candidates = [
-                normalize_raw_candidate(
-                    candidate
-                )
-                for candidate in raw_candidates
-            ]
-
-            print(
-                f"  Raw candidates: "
-                f"{len(candidates)}"
-            )
-
-            # Persist the complete search result.
-            search_state[
-                "status"
-            ] = "complete"
-
-            search_state[
-                "completed_at"
-            ] = now()
-
-            search_state[
-                "queries"
-            ] = search_state.get(
-                "queries",
-                [],
-            )
-
-            search_state[
-                "queries"
-            ].append(
-                {
-                    "query": query,
-                    "search_id": search_id,
-                    "status": "complete",
-                    "candidate_count":
-                        len(candidates),
-                    "searched_at": now(),
-                }
-            )
-
-            search_state[
-                "candidates"
-            ] = candidates
-
-            # Run deterministic matching.
-            classification = (
-                classify_candidates(
-                    track,
-                    candidates,
-                )
-            )
-
-            matching = track[
-                "matching"
-            ]
-
-            matching[
-                "status"
-            ] = "complete"
-
-            matching[
-                "matcher_version"
-            ] = MATCHER_VERSION
-
-            matching[
-                "deterministic"
-            ] = {
-                "accepted":
-                    classification[
-                        "accepted"
-                    ],
-                "llm_candidates":
-                    classification[
-                        "llm_candidates"
-                    ],
-                "rejected_count":
-                    len(
-                        classification[
-                            "rejected"
-                        ]
-                    ),
-                "ranked_count":
-                    len(
-                        classification[
-                            "all_ranked"
-                        ]
-                    ),
-            }
-
-            # Keep the deterministic accepted candidates in the
-            # legacy acquisition location for compatibility.
-            accepted = (
-                classification[
-                    "accepted"
-                ]
-            )
-
-            llm_candidates = (
-                classification[
-                    "llm_candidates"
-                ]
-            )
-
-            if accepted:
-                acquisition[
-                    "status"
-                ] = "matched"
-
-                acquisition[
-                    "match"
-                ] = {
-                    "query": query,
-                    "search_id":
-                        search_id,
-                    "candidate_count":
-                        len(
-                            classification[
-                                "all_ranked"
-                            ]
-                        ),
-                    "candidates":
-                        accepted,
-                    "selection_source":
-                        "deterministic",
-                }
-
-            elif llm_candidates:
-                # Do not download these yet. The LLM stage will
-                # select from them.
-                acquisition[
-                    "status"
-                ] = "llm_screening"
-
-                acquisition[
-                    "match"
-                ] = {
-                    "query": query,
-                    "search_id":
-                        search_id,
-                    "candidate_count":
-                        len(
-                            classification[
-                                "all_ranked"
-                            ]
-                        ),
-                    "candidates":
-                        llm_candidates,
-                    "selection_source":
-                        "llm_pending",
-                }
-
-            else:
-                acquisition[
-                    "status"
-                ] = "search_failed"
-
-                acquisition[
-                    "match"
-                ] = {
-                    "query": query,
-                    "search_id":
-                        search_id,
-                    "candidate_count":
-                        len(
-                            classification[
-                                "all_ranked"
-                            ]
-                        ),
-                    "candidates": [],
-                    "selection_source":
-                        "none",
-                }
-
-            if accepted:
-                best = accepted[0]
-
-                print(
-                    f"  Deterministic best: "
-                    f"{best.get('filename')} "
-                    f"from "
-                    f"{best.get('username')} "
-                    f"(score="
-                    f"{best['score']})"
-                )
-
-            elif llm_candidates:
-                print(
-                    f"  LLM screening: "
-                    f"{len(llm_candidates)} "
-                    f"candidate(s)"
-                )
-
-                for candidate in (
-                    llm_candidates[:5]
-                ):
-                    print(
-                        f"    "
-                        f"{candidate.get('filename')} "
-                        f"from "
-                        f"{candidate.get('username')} "
-                        f"(score="
-                        f"{candidate['score']})"
-                    )
-
-            else:
-                print(
-                    "  No viable candidates."
-                )
-
-            searched += 1
-
-            client.delete_search(
-                search_id
-            )
-
-        except Exception as exc:
-            search_state[
-                "status"
-            ] = "failed"
-
-            search_state[
-                "error"
-            ] = str(exc)
-
-            acquisition[
-                "status"
-            ] = "search_failed"
-
-            acquisition[
-                "match"
-            ] = {
-                "query": query,
-                "error": str(exc),
-                "candidates": [],
-            }
-
-            print(
-                f"  ERROR: {exc}",
-                file=sys.stderr,
-            )
 
         save_state(state)
 
     print()
     print(
-        f"Searched {searched} tracks."
+        f"Album searches completed: "
+        f"{album_total}"
+    )
+
+    individual_total = len(pending_individual)
+
+    for index, track in enumerate(
+        pending_individual,
+        start=1,
+    ):
+        process_individual_track(
+            client,
+            track,
+            index,
+            individual_total,
+        )
+
+        save_state(state)
+
+    print()
+    print(
+        f"Individual track searches completed: "
+        f"{individual_total}"
     )
 
     save_state(state)
 
+    print()
+    print(
+        "Search stage complete."
+    )
+
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(
+            "\nInterrupted.",
+            file=sys.stderr,
+        )
+        raise

@@ -1,193 +1,218 @@
 import json
 import os
-import sys
-from datetime import datetime, timezone
 from pathlib import Path
 
 from openai import OpenAI
 
-
-ROOT = Path(__file__).resolve().parent.parent
-TRACKS_FILE = ROOT / "state" / "tracks.json"
+STATE_PATH = Path("state/tracks.json")
 
 MODEL = os.environ.get(
     "OPENAI_MATCH_MODEL",
     "gpt-5-nano",
 )
 
-LLM_VERSION = 1
-
-AUTO_ACCEPT_CONFIDENCE = 85
-
-
-def now():
-    return datetime.now(
-        timezone.utc
-    ).isoformat()
+MAX_CANDIDATES = int(
+    os.environ.get(
+        "OPENAI_MAX_CANDIDATES",
+        "15",
+    )
+)
 
 
 def load_state():
-    with TRACKS_FILE.open(
-        encoding="utf-8"
+    with STATE_PATH.open(
+        "r",
+        encoding="utf-8",
     ) as handle:
         return json.load(handle)
 
 
-def save_state(data):
-    temporary = TRACKS_FILE.with_suffix(
-        ".tmp"
-    )
+def save_state(state):
+    temporary = STATE_PATH.with_suffix(".tmp")
 
-    temporary.write_text(
-        json.dumps(
-            data,
+    with temporary.open(
+        "w",
+        encoding="utf-8",
+    ) as handle:
+        json.dump(
+            state,
+            handle,
             indent=2,
             ensure_ascii=False,
         )
-        + "\n",
-        encoding="utf-8",
+        handle.write("\n")
+
+    temporary.replace(STATE_PATH)
+
+
+def spotify(track):
+    return track.get(
+        "spotify",
+        track,
     )
 
-    temporary.replace(
-        TRACKS_FILE
-    )
 
-
-def build_prompt(track, candidates):
-    spotify = track[
-        "spotify"
-    ]
-
-    target = {
-        "artist": spotify.get(
-            "artist"
+def candidate_summary(candidate):
+    return {
+        "candidate_id": candidate.get(
+            "candidate_id",
+            "",
         ),
-        "artists": spotify.get(
-            "artists"
+        "username": candidate.get(
+            "username",
+            "",
         ),
-        "album": spotify.get(
-            "album"
+        "filename": candidate.get(
+            "filename",
+            "",
         ),
-        "album_artist":
-            spotify.get(
-                "album_artist"
-            ),
-        "title": spotify.get(
-            "title"
+        "size": candidate.get(
+            "size",
         ),
-        "track_number":
-            spotify.get(
-                "track_number"
-            ),
-        "disc_number":
-            spotify.get(
-                "disc_number"
-            ),
-        "duration_ms":
-            spotify.get(
-                "duration_ms"
-            ),
-        "release_date":
-            spotify.get(
-                "release_date"
-            ),
-        "isrc":
-            spotify.get(
-                "isrc"
-            ),
+        "extension": candidate.get(
+            "extension",
+            "",
+        ),
+        "score": candidate.get(
+            "score",
+            0,
+        ),
+        "candidate_title": candidate.get(
+            "candidate_title",
+            "",
+        ),
+        "candidate_track_number": candidate.get(
+            "candidate_track_number",
+        ),
+        "alternate_terms": candidate.get(
+            "alternate_terms",
+            [],
+        ),
     }
 
-    compact_candidates = []
 
-    for candidate in candidates:
-        compact_candidates.append(
+def release_summary(release):
+    return {
+        "release_id": release.get(
+            "release_id",
+            "",
+        ),
+        "username": release.get(
+            "username",
+            "",
+        ),
+        "folder": release.get(
+            "folder",
+            "",
+        ),
+        "file_count": release.get(
+            "file_count",
+            0,
+        ),
+        "expected_tracks": release.get(
+            "expected_tracks",
+            0,
+        ),
+        "matched_tracks": release.get(
+            "matched_tracks",
+            0,
+        ),
+        "coverage": release.get(
+            "coverage",
+            0,
+        ),
+        "score": release.get(
+            "score",
+            0,
+        ),
+        "alternate_count": release.get(
+            "alternate_count",
+            0,
+        ),
+        "matches": [
             {
-                "candidate_id":
-                    candidate.get(
-                        "candidate_id"
-                    ),
-                "username":
-                    candidate.get(
-                        "username"
-                    ),
-                "filename":
-                    candidate.get(
-                        "filename"
-                    ),
-                "extension":
-                    candidate.get(
-                        "extension"
-                    ),
-                "size":
-                    candidate.get(
-                        "size"
-                    ),
-                "peer":
-                    candidate.get(
-                        "peer"
-                    ),
-                "deterministic_score":
-                    candidate.get(
-                        "score"
-                    ),
-                "deterministic_match":
-                    candidate.get(
-                        "match"
-                    ),
+                "track_id": item.get(
+                    "track_id"
+                ),
+                "title": item.get(
+                    "title"
+                ),
+                "track_number": item.get(
+                    "track_number"
+                ),
+                "candidate": candidate_summary(
+                    item.get(
+                        "candidate",
+                        {},
+                    )
+                ),
             }
-        )
-
-    return f"""
-You are selecting a music file from Soulseek search results.
-
-Determine which candidate most likely represents the exact target
-recording described by the Spotify metadata.
-
-Important rules:
-
-- Artist identity matters.
-- Track title identity matters.
-- Album identity matters.
-- Track and disc numbers are useful evidence.
-- Live recordings are not the same as studio recordings unless the
-  target itself indicates a live recording.
-- Acoustic versions are not the same as the normal recording.
-- Demos are not the same as the normal recording.
-- Piano demos are not the same as the normal recording.
-- Remixes are not the same as the normal recording.
-- Remasters may represent the same composition, but distinguish them
-  from the target when the evidence indicates a materially different
-  release.
-- A directory containing the target artist is evidence, but do not
-  assume the track is correct merely because the artist matches.
-- A filename containing the target title is not sufficient by itself.
-- Do not invent information that is not present in the supplied data.
-- If no candidate is sufficiently convincing, choose reject.
-- Return exactly one candidate_id when accepting or rejecting based on
-  the candidate set.
-- Confidence must represent confidence in the selected decision.
-
-TARGET:
-{json.dumps(
-    target,
-    ensure_ascii=False,
-    indent=2,
-)}
-
-CANDIDATES:
-{json.dumps(
-    compact_candidates,
-    ensure_ascii=False,
-    indent=2,
-)}
-""".strip()
+            for item in release.get(
+                "matches",
+                [],
+            )
+        ],
+    }
 
 
-def screen_candidates(
+def call_llm_for_track(
     client,
     track,
     candidates,
 ):
+    data = spotify(track)
+
+    prompt = {
+        "task": (
+            "Determine which Soulseek candidate, if any, "
+            "is most likely to be the exact Spotify recording. "
+            "Do not select live, acoustic, demo, remix, piano, "
+            "instrumental, karaoke, radio edit, tribute, or "
+            "other alternate versions unless the Spotify target "
+            "itself is explicitly that version."
+        ),
+        "spotify": {
+            "artist": data.get("artist", ""),
+            "artists": data.get("artists", []),
+            "album": data.get("album", ""),
+            "album_artist": data.get(
+                "album_artist",
+                "",
+            ),
+            "title": data.get("title", ""),
+            "track_number": data.get(
+                "track_number"
+            ),
+            "disc_number": data.get(
+                "disc_number"
+            ),
+            "duration_ms": data.get(
+                "duration_ms"
+            ),
+            "release_date": data.get(
+                "release_date",
+                "",
+            ),
+            "isrc": data.get(
+                "isrc",
+                "",
+            ),
+        },
+        "candidates": [
+            candidate_summary(candidate)
+            for candidate in candidates[:MAX_CANDIDATES]
+        ],
+        "rules": [
+            "Only choose a candidate_id that appears in candidates.",
+            "Prefer exact title matches.",
+            "Prefer matching artist and album directories.",
+            "Prefer matching track numbers.",
+            "Treat live, acoustic, demo, remix, piano, and similar terms as strong evidence of a different recording.",
+            "Do not assume that a high deterministic score proves an exact recording.",
+            "If none is sufficiently convincing, reject.",
+        ],
+    }
+
     schema = {
         "type": "object",
         "properties": {
@@ -199,25 +224,22 @@ def screen_candidates(
                 ],
             },
             "candidate_id": {
-                "type": [
-                    "string",
-                    "null",
-                ],
+                "type": "string",
             },
             "confidence": {
-                "type": "integer",
-                "minimum": 0,
-                "maximum": 100,
+                "type": "number",
             },
             "version_classification": {
                 "type": "string",
                 "enum": [
-                    "normal",
+                    "standard",
                     "live",
                     "acoustic",
                     "demo",
                     "remix",
-                    "remaster",
+                    "instrumental",
+                    "piano",
+                    "edit",
                     "other_alternate",
                     "unknown",
                 ],
@@ -242,54 +264,346 @@ def screen_candidates(
             {
                 "role": "system",
                 "content": (
-                    "You are a conservative music-file "
-                    "identity classifier."
+                    "You are a music metadata matching system. "
+                    "You are screening existing Soulseek search "
+                    "results. Never invent a candidate."
                 ),
             },
             {
                 "role": "user",
-                "content": build_prompt(
-                    track,
-                    candidates,
+                "content": json.dumps(
+                    prompt,
+                    ensure_ascii=False,
                 ),
             },
         ],
         text={
             "format": {
                 "type": "json_schema",
-                "name": "music_match",
+                "name": "track_match",
                 "strict": True,
                 "schema": schema,
             }
         },
-        max_output_tokens=300,
     )
 
-    parsed = json.loads(
+    return json.loads(
         response.output_text
     )
 
-    return parsed
+
+def call_llm_for_album(
+    client,
+    tracks,
+    releases,
+):
+    first = spotify(tracks[0])
+
+    album_tracks = []
+
+    for track in tracks:
+        data = spotify(track)
+
+        album_tracks.append(
+            {
+                "track_id": data.get("id"),
+                "title": data.get("title", ""),
+                "track_number": data.get(
+                    "track_number"
+                ),
+                "disc_number": data.get(
+                    "disc_number"
+                ),
+            }
+        )
+
+    prompt = {
+        "task": (
+            "Select the Soulseek release that most likely "
+            "corresponds to the exact Spotify album. The "
+            "release should contain the expected tracks in "
+            "the expected order and should not be a live, "
+            "acoustic, demo, remix, piano, or other alternate "
+            "release unless Spotify's target album explicitly "
+            "indicates that version."
+        ),
+        "spotify_album": {
+            "artist": first.get("artist", ""),
+            "album_artist": first.get(
+                "album_artist",
+                "",
+            ),
+            "album": first.get("album", ""),
+            "release_date": first.get(
+                "release_date",
+                "",
+            ),
+            "tracks": album_tracks,
+        },
+        "release_candidates": [
+            release_summary(release)
+            for release in releases[:MAX_CANDIDATES]
+        ],
+        "rules": [
+            "Only choose a release_id from the supplied candidates.",
+            "Prefer complete tracklists.",
+            "Prefer exact track titles.",
+            "Prefer matching track numbers.",
+            "Prefer matching album and artist names.",
+            "Penalize live, acoustic, demo, remix, piano, and similar alternate versions.",
+            "Reject if no release is sufficiently convincing.",
+        ],
+    }
+
+    schema = {
+        "type": "object",
+        "properties": {
+            "decision": {
+                "type": "string",
+                "enum": [
+                    "accept",
+                    "reject",
+                ],
+            },
+            "release_id": {
+                "type": "string",
+            },
+            "confidence": {
+                "type": "number",
+            },
+            "reason": {
+                "type": "string",
+            },
+        },
+        "required": [
+            "decision",
+            "release_id",
+            "confidence",
+            "reason",
+        ],
+        "additionalProperties": False,
+    }
+
+    response = client.responses.create(
+        model=MODEL,
+        input=[
+            {
+                "role": "system",
+                "content": (
+                    "You are a music release matching system. "
+                    "You are screening existing Soulseek results. "
+                    "Never invent a release."
+                ),
+            },
+            {
+                "role": "user",
+                "content": json.dumps(
+                    prompt,
+                    ensure_ascii=False,
+                ),
+            },
+        ],
+        text={
+            "format": {
+                "type": "json_schema",
+                "name": "album_match",
+                "strict": True,
+                "schema": schema,
+            }
+        },
+    )
+
+    return json.loads(
+        response.output_text
+    )
+
+
+def apply_track_result(
+    track,
+    result,
+):
+    matching = track.setdefault(
+        "matching",
+        {},
+    )
+
+    matching["llm"] = result
+
+    acquisition = track.setdefault(
+        "acquisition",
+        {},
+    )
+
+    deterministic = matching.get(
+        "deterministic",
+        {},
+    )
+
+    candidates = deterministic.get(
+        "candidates",
+        [],
+    )
+
+    selected = None
+
+    candidate_id = result.get(
+        "candidate_id",
+        "",
+    )
+
+    for candidate in candidates:
+        if candidate.get(
+            "candidate_id"
+        ) == candidate_id:
+            selected = candidate
+            break
+
+    if (
+        result.get("decision") == "accept"
+        and float(
+            result.get("confidence", 0)
+        ) >= 85
+        and selected is not None
+    ):
+        acquisition["status"] = "matched"
+        acquisition["match"] = {
+            "candidates": [
+                selected
+            ]
+        }
+
+        return True
+
+    acquisition["status"] = "needs_review"
+
+    return False
+
+
+def apply_album_result(
+    tracks,
+    result,
+):
+    first = tracks[0]
+
+    matching = first.setdefault(
+        "matching",
+        {},
+    )
+
+    matching["llm"] = result
+
+    if (
+        result.get("decision") != "accept"
+        or float(
+            result.get("confidence", 0)
+        ) < 85
+    ):
+        for track in tracks:
+            track.setdefault(
+                "acquisition",
+                {},
+            )["status"] = "needs_review"
+
+        return False
+
+    release_id = result.get(
+        "release_id",
+        "",
+    )
+
+    deterministic = matching.get(
+        "deterministic",
+        {},
+    )
+
+    releases = deterministic.get(
+        "candidates",
+        [],
+    )
+
+    selected_release = None
+
+    for release in releases:
+        if release.get(
+            "release_id"
+        ) == release_id:
+            selected_release = release
+            break
+
+    if selected_release is None:
+        for track in tracks:
+            track.setdefault(
+                "acquisition",
+                {},
+            )["status"] = "needs_review"
+
+        return False
+
+    matches_by_track = {
+        item.get("track_id"): item.get(
+            "candidate"
+        )
+        for item in selected_release.get(
+            "matches",
+            [],
+        )
+    }
+
+    all_matched = True
+
+    for track in tracks:
+        data = spotify(track)
+        track_id = data.get("id")
+
+        candidate = matches_by_track.get(
+            track_id
+        )
+
+        if candidate is None:
+            track.setdefault(
+                "acquisition",
+                {},
+            )["status"] = "needs_review"
+
+            all_matched = False
+            continue
+
+        track_matching = track.setdefault(
+            "matching",
+            {},
+        )
+
+        track_matching["llm"] = result
+
+        acquisition = track.setdefault(
+            "acquisition",
+            {},
+        )
+
+        acquisition["status"] = "matched"
+
+        acquisition["match"] = {
+            "release_id": selected_release[
+                "release_id"
+            ],
+            "release": selected_release,
+            "candidates": [
+                candidate
+            ],
+        }
+
+    return all_matched
 
 
 def main():
-    if not TRACKS_FILE.exists():
-        raise FileNotFoundError(
-            f"Missing {TRACKS_FILE}"
-        )
-
     api_key = os.environ.get(
         "OPENAI_API_KEY"
     )
 
     if not api_key:
-        raise RuntimeError(
+        raise SystemExit(
             "OPENAI_API_KEY is not set."
         )
-
-    client = OpenAI(
-        api_key=api_key
-    )
 
     state = load_state()
 
@@ -298,22 +612,14 @@ def main():
         [],
     )
 
-    screened = 0
-    skipped = 0
-
-    print(
-        f"Loaded {len(tracks)} tracks."
+    client = OpenAI(
+        api_key=api_key
     )
 
-    for index, track in enumerate(
-        tracks,
-        start=1,
-    ):
-        spotify = track[
-            "spotify"
-        ]
+    processed_album_groups = set()
 
-        matching = track.setdefault(
+    for track in tracks:
+        matching = track.get(
             "matching",
             {},
         )
@@ -323,315 +629,148 @@ def main():
             {},
         )
 
-        llm_candidates = (
-            deterministic.get(
-                "llm_candidates",
-                [],
-            )
+        if deterministic.get(
+            "decision"
+        ) != "llm":
+            continue
+
+        mode = deterministic.get(
+            "mode"
         )
 
-        # If deterministic matching already found an
-        # unambiguous candidate, there is no reason to call
-        # the LLM.
-        if not llm_candidates:
-            if deterministic.get(
-                "accepted"
-            ):
-                skipped += 1
+        if mode == "album":
+            spotify_data = spotify(track)
 
-                print(
-                    f"[{index}/{len(tracks)}] "
-                    f"Skipping LLM: "
-                    f"{spotify['artist']} - "
-                    f"{spotify['title']} "
-                    f"(deterministic match)"
+            key = (
+                spotify_data.get(
+                    "album_artist"
                 )
+                or spotify_data.get(
+                    "artist"
+                ),
+                spotify_data.get(
+                    "album"
+                ),
+            )
 
+            if key in processed_album_groups:
                 continue
 
-            skipped += 1
+            group = [
+                candidate_track
+                for candidate_track in tracks
+                if (
+                    spotify(
+                        candidate_track
+                    ).get(
+                        "album_artist"
+                    )
+                    or spotify(
+                        candidate_track
+                    ).get(
+                        "artist"
+                    ),
+                    spotify(
+                        candidate_track
+                    ).get(
+                        "album"
+                    ),
+                ) == key
+            ]
+
+            releases = deterministic.get(
+                "candidates",
+                [],
+            )
+
+            print()
+            print(
+                "LLM album screening:"
+            )
+            print(
+                f"  {key[0]} - {key[1]}"
+            )
+            print(
+                f"  Candidates: "
+                f"{len(releases)}"
+            )
+
+            result = call_llm_for_album(
+                client,
+                group,
+                releases,
+            )
 
             print(
-                f"[{index}/{len(tracks)}] "
-                f"Skipping LLM: "
-                f"{spotify['artist']} - "
-                f"{spotify['title']} "
-                f"(no candidates)"
+                f"  Decision: "
+                f"{result.get('decision')}"
             )
-
-            continue
-
-        # Don't pay for the same decision twice.
-        existing_llm = matching.get(
-            "llm"
-        )
-
-        if (
-            existing_llm
-            and existing_llm.get(
-                "status"
-            )
-            == "complete"
-        ):
-            skipped += 1
-
             print(
-                f"[{index}/{len(tracks)}] "
-                f"Skipping LLM: "
-                f"{spotify['artist']} - "
-                f"{spotify['title']} "
-                f"(already screened)"
+                f"  Confidence: "
+                f"{result.get('confidence')}"
+            )
+            print(
+                f"  Release: "
+                f"{result.get('release_id')}"
             )
 
-            continue
+            apply_album_result(
+                group,
+                result,
+            )
 
-        # Only send the strongest ambiguous candidates.
-        candidates = sorted(
-            llm_candidates,
-            key=lambda candidate: (
-                candidate.get(
-                    "score",
-                    0,
-                ),
-            ),
-            reverse=True,
-        )[:10]
+            processed_album_groups.add(
+                key
+            )
 
-        print()
-        print(
-            f"[{index}/{len(tracks)}] "
-            f"LLM screening: "
-            f"{spotify['artist']} - "
-            f"{spotify['title']}"
-        )
+        elif mode == "track":
+            candidates = deterministic.get(
+                "candidates",
+                [],
+            )
 
-        print(
-            f"  Candidates sent: "
-            f"{len(candidates)}"
-        )
-
-        try:
-            result = screen_candidates(
+            result = call_llm_for_track(
                 client,
                 track,
                 candidates,
             )
 
-            candidate_map = {
-                candidate[
-                    "candidate_id"
-                ]: candidate
-                for candidate in candidates
-            }
+            data = spotify(track)
 
-            selected_id = result.get(
-                "candidate_id"
-            )
-
-            selected = (
-                candidate_map.get(
-                    selected_id
-                )
-                if selected_id
-                else None
-            )
-
-            confidence = int(
-                result.get(
-                    "confidence",
-                    0,
-                )
-            )
-
-            decision = result.get(
-                "decision"
-            )
-
-            # Never accept a low-confidence LLM answer.
-            if (
-                decision == "accept"
-                and selected
-                and confidence
-                >= AUTO_ACCEPT_CONFIDENCE
-            ):
-                final_status = "accepted"
-            elif (
-                decision == "reject"
-                or not selected
-            ):
-                final_status = "rejected"
-            else:
-                final_status = "needs_review"
-
-            matching[
-                "llm"
-            ] = {
-                "status": "complete",
-                "version":
-                    LLM_VERSION,
-                "model": MODEL,
-                "screened_at": now(),
-                "decision":
-                    final_status,
-                "candidate_id":
-                    selected_id,
-                "confidence":
-                    confidence,
-                "version_classification":
-                    result.get(
-                        "version_classification"
-                    ),
-                "reason":
-                    result.get(
-                        "reason"
-                    ),
-                "candidates_considered":
-                    [
-                        candidate[
-                            "candidate_id"
-                        ]
-                        for candidate in candidates
-                    ],
-            }
-
-            acquisition = track.setdefault(
-                "acquisition",
-                {},
-            )
-
-            if (
-                final_status
-                == "accepted"
-            ):
-                # Put the selected candidate first so the existing
-                # downloader can consume it.
-                ordered = [
-                    selected
-                ]
-
-                ordered.extend(
-                    candidate
-                    for candidate in candidates
-                    if candidate[
-                        "candidate_id"
-                    ]
-                    != selected_id
-                )
-
-                acquisition[
-                    "status"
-                ] = "matched"
-
-                acquisition[
-                    "match"
-                ] = {
-                    "query":
-                        track.get(
-                            "search",
-                            {},
-                        ).get(
-                            "queries",
-                            [{}],
-                        )[-1].get(
-                            "query",
-                            "",
-                        ),
-                    "candidate_count":
-                        len(
-                            candidates
-                        ),
-                    "candidates":
-                        ordered,
-                    "selection_source":
-                        "llm",
-                    "selected_candidate_id":
-                        selected_id,
-                }
-
-                print(
-                    f"  ACCEPT: "
-                    f"{selected.get('filename')} "
-                    f"(confidence="
-                    f"{confidence})"
-                )
-
-            elif (
-                final_status
-                == "needs_review"
-            ):
-                acquisition[
-                    "status"
-                ] = "needs_review"
-
-                acquisition[
-                    "match"
-                ] = {
-                    "candidates":
-                        candidates,
-                    "selection_source":
-                        "llm_review",
-                    "selected_candidate_id":
-                        selected_id,
-                }
-
-                print(
-                    f"  REVIEW: "
-                    f"{selected.get('filename') if selected else 'none'} "
-                    f"(confidence="
-                    f"{confidence})"
-                )
-
-            else:
-                acquisition[
-                    "status"
-                ] = "search_failed"
-
-                acquisition[
-                    "match"
-                ] = {
-                    "candidates": [],
-                    "selection_source":
-                        "llm_rejected",
-                    "selected_candidate_id":
-                        selected_id,
-                }
-
-                print(
-                    f"  REJECT: "
-                    f"confidence="
-                    f"{confidence}"
-                )
-
-            screened += 1
-
-        except Exception as exc:
-            matching[
-                "llm"
-            ] = {
-                "status": "failed",
-                "version":
-                    LLM_VERSION,
-                "model": MODEL,
-                "error": str(exc),
-                "failed_at": now(),
-            }
-
+            print()
             print(
-                f"  LLM ERROR: {exc}",
-                file=sys.stderr,
+                "LLM track screening:"
+            )
+            print(
+                f"  {data.get('artist')} - "
+                f"{data.get('title')}"
+            )
+            print(
+                f"  Decision: "
+                f"{result.get('decision')}"
+            )
+            print(
+                f"  Confidence: "
+                f"{result.get('confidence')}"
+            )
+            print(
+                f"  Candidate: "
+                f"{result.get('candidate_id')}"
+            )
+
+            apply_track_result(
+                track,
+                result,
             )
 
         save_state(state)
 
+    save_state(state)
+
     print()
     print(
-        f"LLM screened: {screened}"
+        "LLM screening complete."
     )
-    print(
-        f"LLM skipped: {skipped}"
-    )
-
-    save_state(state)
 
 
 if __name__ == "__main__":

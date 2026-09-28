@@ -1,11 +1,10 @@
 import hashlib
 import os
 import re
-import unicodedata
 from difflib import SequenceMatcher
+from pathlib import PurePosixPath, PureWindowsPath
 
-
-MATCHER_VERSION = 3
+MATCHER_VERSION = 4
 
 AUDIO_EXTENSIONS = {
     ".mp3",
@@ -16,99 +15,43 @@ AUDIO_EXTENSIONS = {
     ".ogg",
     ".opus",
     ".wav",
+    ".alac",
+    ".ape",
+    ".wv",
     ".aiff",
     ".aif",
-    ".wma",
-    ".alac",
 }
 
 ALTERNATE_TERMS = {
     "live",
-    "live session",
-    "live sessions",
     "acoustic",
-    "acoustic version",
+    "demo",
+    "remix",
     "instrumental",
     "karaoke",
-    "remix",
-    "demo",
-    "piano demo",
-    "radio edit",
     "edit",
-    "sped up",
-    "slowed",
-    "slowed reverb",
-    "slowed and reverb",
-    "8d",
-    "nightcore",
+    "radio edit",
+    "piano",
+    "rehearsal",
+    "session",
+    "sessions",
     "cover",
     "tribute",
-    "re recorded",
-    "re-recorded",
-    "remaster",
-    "remastered",
-    "anniversary edition",
+    "bootleg",
 }
-
-COMMON_SHORT_TITLES = {
-    "body",
-    "life",
-    "inside",
-    "two",
-    "seven",
-    "one",
-    "home",
-    "love",
-    "time",
-    "fire",
-    "mother",
-    "girl",
-    "boy",
-    "stay",
-    "dream",
-    "breathe",
-    "weep",
-}
-
 
 def normalize(value):
-    value = value or ""
-
-    value = unicodedata.normalize(
-        "NFKD",
-        value,
-    )
-
-    value = "".join(
-        char
-        for char in value
-        if not unicodedata.combining(char)
-    )
-
-    value = value.lower()
-
+    value = str(value or "").lower()
     value = value.replace("&", " and ")
-    value = value.replace("’", "'")
-    value = value.replace("–", "-")
-    value = value.replace("—", "-")
+    value = re.sub(r"[\[\]{}()]", " ", value)
+    value = re.sub(r"[_\-]+", " ", value)
+    value = re.sub(r"[^\w\s]", " ", value)
+    value = re.sub(r"\s+", " ", value)
+    return value.strip()
 
-    value = re.sub(
-        r"[_]+",
-        " ",
-        value,
-    )
 
-    value = re.sub(
-        r"[^a-z0-9]+",
-        " ",
-        value,
-    )
-
-    return re.sub(
-        r"\s+",
-        " ",
-        value,
-    ).strip()
+def tokens(value):
+    return set(normalize(value).split())
 
 
 def similarity(a, b):
@@ -121,15 +64,141 @@ def similarity(a, b):
     if a == b:
         return 1.0
 
-    return SequenceMatcher(
-        None,
-        a,
-        b,
-    ).ratio()
+    return SequenceMatcher(None, a, b).ratio()
+
+
+def token_similarity(a, b):
+    ta = tokens(a)
+    tb = tokens(b)
+
+    if not ta or not tb:
+        return 0.0
+
+    return len(ta & tb) / max(len(ta | tb), 1)
+
+
+def has_audio_extension(filename):
+    _, extension = os.path.splitext(str(filename or ""))
+    return extension.lower() in AUDIO_EXTENSIONS
+
+
+def split_path(filename):
+    filename = str(filename or "")
+
+    normalized = filename.replace("\\", "/")
+
+    parts = [
+        part
+        for part in PurePosixPath(normalized).parts
+        if part not in {"", "."}
+    ]
+
+    return parts
+
+
+def parent_path(filename):
+    parts = split_path(filename)
+
+    if len(parts) <= 1:
+        return ""
+
+    return "/".join(parts[:-1])
+
+
+def path_parts_without_filename(filename):
+    return split_path(filename)[:-1]
+
+
+def filename_without_extension(filename):
+    name = split_path(filename)[-1] if split_path(filename) else str(filename or "")
+    return os.path.splitext(name)[0]
+
+
+def extract_track_number(filename):
+    name = filename_without_extension(filename)
+
+    patterns = [
+        r"^\s*(\d{1,3})\s*[-._ ]",
+        r"^\s*(\d{1,3})\s+",
+        r"\btrack\s*(\d{1,3})\b",
+        r"\bdisc\s*\d+\s*[-._ ]\s*(\d{1,3})\b",
+        r"\b\d{1,2}[-_.](\d{1,3})\b",
+    ]
+
+    for pattern in patterns:
+        match = re.search(pattern, name, re.IGNORECASE)
+
+        if match:
+            try:
+                return int(match.group(1))
+            except ValueError:
+                pass
+
+    return None
+
+
+def extract_candidate_title(filename, artist=None):
+    title = filename_without_extension(filename)
+
+    # Remove a leading track number.
+    title = re.sub(
+        r"^\s*(?:disc\s*\d+\s*[-._ ]\s*)?\d{1,3}\s*[-._ ]\s*",
+        "",
+        title,
+        flags=re.IGNORECASE,
+    )
+
+    # Remove common "Artist - Title" formatting.
+    if artist:
+        normalized_artist = normalize(artist)
+        normalized_title = normalize(title)
+
+        if normalized_title.startswith(normalized_artist + " "):
+            raw_artist = title[: len(title) - len(
+                normalized_title[len(normalized_artist) + 1 :]
+            )]
+
+            # More reliable fallback for normal "Artist - Title" paths.
+            separator_match = re.match(
+                r"^\s*(.*?)\s*[-–—]\s*(.+)$",
+                title,
+            )
+
+            if separator_match:
+                left = normalize(separator_match.group(1))
+
+                if similarity(left, artist) >= 0.75:
+                    title = separator_match.group(2)
+
+    # General artist-title separator.
+    separator_match = re.match(
+        r"^\s*(.*?)\s*[-–—]\s*(.+)$",
+        title,
+    )
+
+    if separator_match and artist:
+        left = separator_match.group(1)
+        right = separator_match.group(2)
+
+        if similarity(left, artist) >= 0.80:
+            title = right
+
+    return title.strip()
+
+
+def alternate_terms_in(value):
+    normalized = normalize(value)
+    found = []
+
+    for term in ALTERNATE_TERMS:
+        if term in normalized:
+            found.append(term)
+
+    return sorted(found)
 
 
 def candidate_id(candidate):
-    value = "|".join(
+    identity = "\x1f".join(
         [
             str(candidate.get("username") or ""),
             str(candidate.get("filename") or ""),
@@ -138,511 +207,138 @@ def candidate_id(candidate):
         ]
     )
 
-    digest = hashlib.sha256(
-        value.encode("utf-8")
-    ).hexdigest()
-
-    return f"c_{digest[:16]}"
+    return hashlib.sha1(identity.encode("utf-8")).hexdigest()[:16]
 
 
-def is_audio_file(filename):
-    extension = os.path.splitext(
-        filename or ""
-    )[1].lower()
+def release_id(username, folder):
+    identity = f"{username}\x1f{folder}"
 
-    return extension in AUDIO_EXTENSIONS
+    return hashlib.sha1(identity.encode("utf-8")).hexdigest()[:16]
 
 
-def filename_stem(filename):
-    name = os.path.basename(
-        filename or ""
-    )
+def score_candidate(track, candidate):
+    spotify = track.get("spotify", track)
 
-    stem, _ = os.path.splitext(name)
+    artist = spotify.get("artist", "")
+    album = spotify.get("album", "")
+    title = spotify.get("title", "")
+    track_number = spotify.get("track_number")
 
-    return stem.strip()
+    filename = candidate.get("filename", "")
+    username = candidate.get("username", "")
 
-
-def extract_track_number(filename):
-    name = os.path.basename(
-        filename or ""
-    )
-
-    patterns = [
-        r"^\s*(\d{1,3})\s*[-._ ]",
-        r"^\s*(\d{1,2})\s*of\s*\d{1,3}\s*[-._ ]",
-    ]
-
-    for pattern in patterns:
-        match = re.match(
-            pattern,
-            name,
-            flags=re.IGNORECASE,
-        )
-
-        if match:
-            return int(
-                match.group(1)
-            )
-
-    return None
-
-
-def extract_candidate_title(
-    filename,
-    artist=None,
-):
-    title = filename_stem(filename)
-
-    # Remove a leading track number.
-    title = re.sub(
-        r"^\s*\d{1,3}\s*(?:[-._]|of\s+\d{1,3}\s*[-._])\s*",
-        "",
-        title,
-        flags=re.IGNORECASE,
-    )
-
-    # Remove a leading artist name when it is clearly
-    # separated from the title.
-    if artist:
-        normalized_artist = normalize(
-            artist
-        )
-
-        normalized_title = normalize(
-            title
-        )
-
-        if normalized_title.startswith(
-            normalized_artist + " "
-        ):
-            title = title[
-                len(artist):
-            ].strip()
-
-            title = re.sub(
-                r"^\s*[-–—:|]\s*",
-                "",
-                title,
-            )
-
-    return title.strip()
-
-
-def detect_alternate_terms(value):
-    normalized = normalize(value)
-
-    found = []
-
-    for term in ALTERNATE_TERMS:
-        normalized_term = normalize(term)
-
-        if re.search(
-            rf"\b{re.escape(normalized_term)}\b",
-            normalized,
-        ):
-            found.append(term)
-
-    return sorted(
-        set(found)
-    )
-
-
-def title_classification(
-    target_title,
-    candidate_filename,
-    artist=None,
-):
-    candidate_title = extract_candidate_title(
-        candidate_filename,
-        artist=artist,
-    )
-
-    target_normalized = normalize(
-        target_title
-    )
-
-    candidate_normalized = normalize(
-        candidate_title
-    )
-
-    if (
-        not target_normalized
-        or not candidate_normalized
-    ):
-        return {
-            "classification": "unknown",
-            "similarity": 0.0,
-            "candidate_title": candidate_title,
-            "alternate_terms": [],
-        }
-
-    alternate_terms = detect_alternate_terms(
-        candidate_title
-    )
-
-    # Remove alternate/version terms for comparison.
-    candidate_without_alternate = (
-        candidate_normalized
-    )
-
-    for term in alternate_terms:
-        normalized_term = normalize(term)
-
-        candidate_without_alternate = re.sub(
-            rf"\b{re.escape(normalized_term)}\b",
-            "",
-            candidate_without_alternate,
-        )
-
-    candidate_without_alternate = re.sub(
-        r"\s+",
-        " ",
-        candidate_without_alternate,
-    ).strip()
-
-    if candidate_normalized == target_normalized:
-        classification = "exact"
-        score = 1.0
-
-    elif (
-        candidate_without_alternate
-        == target_normalized
-        and alternate_terms
-    ):
-        classification = "alternate"
-        score = 1.0
-
-    else:
-        score = SequenceMatcher(
-            None,
-            target_normalized,
-            candidate_normalized,
-        ).ratio()
-
-        if score >= 0.92:
-            classification = "near_exact"
-        elif score >= 0.72:
-            classification = "similar"
-        else:
-            classification = "mismatch"
-
-        if (
-            alternate_terms
-            and classification != "exact"
-        ):
-            classification = "alternate"
-
-    return {
-        "classification": classification,
-        "similarity": round(score, 4),
-        "candidate_title": candidate_title,
-        "alternate_terms": alternate_terms,
-    }
-
-
-def path_similarity(
-    target,
-    filename,
-):
-    parts = re.split(
-        r"[\\/]+",
-        filename or "",
-    )
-
-    best = 0.0
-
-    for part in parts:
-        score = similarity(
-            target,
-            part,
-        )
-
-        best = max(
-            best,
-            score,
-        )
-
-    return best
-
-
-def path_contains(
-    value,
-    filename,
-):
-    normalized_value = normalize(
-        value
-    )
-
-    normalized_filename = normalize(
-        filename
-    )
-
-    if not normalized_value:
-        return False
-
-    return normalized_value in normalized_filename
-
-
-def score_candidate(
-    track,
-    candidate,
-):
-    spotify = track["spotify"]
-
-    filename = candidate.get(
-        "filename"
-    ) or ""
-
-    artist = spotify.get(
-        "artist"
-    ) or ""
-
-    album = spotify.get(
-        "album"
-    ) or ""
-
-    title = spotify.get(
-        "title"
-    ) or ""
-
-    track_number = spotify.get(
-        "track_number"
-    )
-
-    if not is_audio_file(filename):
+    if not has_audio_extension(filename):
         return None
 
-    title_info = title_classification(
-        title,
-        filename,
-        artist=artist,
-    )
+    candidate_title = extract_candidate_title(filename, artist)
 
-    title_class = title_info[
-        "classification"
-    ]
+    title_exact = normalize(candidate_title) == normalize(title)
+    title_similarity = similarity(candidate_title, title)
 
-    title_similarity = title_info[
-        "similarity"
-    ]
+    artist_path_similarity = 0.0
+    album_path_similarity = 0.0
 
-    # A clear title mismatch is never a valid candidate.
-    if title_class in {
-        "mismatch",
-        "unknown",
-    }:
-        return None
+    path_parts = path_parts_without_filename(filename)
 
-    artist_similarity = path_similarity(
-        artist,
-        filename,
-    )
+    for part in path_parts:
+        artist_path_similarity = max(
+            artist_path_similarity,
+            similarity(part, artist),
+            token_similarity(part, artist),
+        )
 
-    album_similarity = path_similarity(
-        album,
-        filename,
-    )
+        album_path_similarity = max(
+            album_path_similarity,
+            similarity(part, album),
+            token_similarity(part, album),
+        )
 
-    artist_exact = path_contains(
-        artist,
-        filename,
-    )
-
-    album_exact = path_contains(
-        album,
-        filename,
-    )
-
-    candidate_track_number = (
-        extract_track_number(filename)
-    )
+    candidate_track_number = extract_track_number(filename)
 
     score = 0.0
 
-    # Title: 50 points.
-    if title_class == "exact":
-        score += 50.0
+    if title_exact:
+        score += 55.0
+    else:
+        score += 45.0 * title_similarity
 
-    elif title_class == "near_exact":
-        score += 43.0
+    score += 18.0 * artist_path_similarity
+    score += 17.0 * album_path_similarity
 
-    elif title_class == "similar":
-        score += 30.0
-
-    elif title_class == "alternate":
-        score += 45.0
-
-    score += title_similarity * 5.0
-
-    # Artist: 25 points.
-    if artist_exact:
-        score += 25.0
-
-    elif artist_similarity >= 0.90:
-        score += 20.0
-
-    elif artist_similarity >= 0.75:
-        score += 12.0
-
-    # Album: 15 points.
-    if album_exact:
-        score += 15.0
-
-    elif album_similarity >= 0.90:
-        score += 12.0
-
-    elif album_similarity >= 0.75:
-        score += 7.0
-
-    # Track number: 10 points.
-    if (
-        track_number is not None
-        and candidate_track_number is not None
-    ):
-        if candidate_track_number == track_number:
+    if track_number is not None and candidate_track_number is not None:
+        if int(track_number) == candidate_track_number:
             score += 10.0
-        else:
-            score -= 5.0
+        elif abs(int(track_number) - candidate_track_number) == 1:
+            score += 3.0
 
-    alternate_terms = title_info[
-        "alternate_terms"
+    alternate_terms = alternate_terms_in(
+        f"{filename} {' '.join(path_parts)}"
+    )
+
+    # These are only penalized when the Spotify target itself does not
+    # contain the corresponding version terminology.
+    target_terms = alternate_terms_in(
+        f"{title} {album}"
+    )
+
+    unexpected_alternates = [
+        term
+        for term in alternate_terms
+        if term not in target_terms
     ]
 
-    # Explicit alternate versions should not be
-    # automatically accepted.
-    if alternate_terms:
-        score -= 15.0
+    score -= min(30.0, len(unexpected_alternates) * 12.0)
 
-    score = max(
-        0.0,
-        min(
-            100.0,
-            score,
-        ),
-    )
+    score = max(0.0, min(100.0, score))
 
-    normalized_title = normalize(
-        title
-    )
-
-    is_short_common_title = (
-        normalized_title
-        in COMMON_SHORT_TITLES
-    )
-
-    # Short/common titles require stronger evidence.
-    strong_identity = (
-        title_class in {
-            "exact",
-            "near_exact",
-        }
-        and artist_exact
-        and (
-            album_exact
-            or album_similarity >= 0.90
-        )
-    )
-
-    if is_short_common_title:
-        if not strong_identity:
-            decision = "llm"
-        elif alternate_terms:
-            decision = "llm"
-        elif score >= 90:
+    if title_exact and artist_path_similarity >= 0.75:
+        if not unexpected_alternates:
             decision = "accept"
         else:
             decision = "llm"
-
-    elif title_class == "alternate":
-        decision = "llm"
-
-    elif score >= 90:
+    elif score >= 75.0:
         decision = "accept"
-
-    elif score >= 60:
+    elif score >= 25.0:
         decision = "llm"
-
     else:
         decision = "reject"
 
-    result = {
-        **candidate,
-        "candidate_id": candidate_id(
-            candidate
-        ),
-        "score": round(score, 2),
-        "decision": decision,
-        "match": {
-            "matcher_version": MATCHER_VERSION,
-            "title": title_info,
-            "artist_similarity": round(
-                artist_similarity,
-                4,
-            ),
-            "artist_exact": artist_exact,
-            "album_similarity": round(
-                album_similarity,
-                4,
-            ),
-            "album_exact": album_exact,
-            "track_number":
-                candidate_track_number,
-            "target_track_number":
-                track_number,
-            "alternate_terms":
-                alternate_terms,
-            "short_common_title":
-                is_short_common_title,
-            "strong_identity":
-                strong_identity,
-        },
-    }
+    result = dict(candidate)
+
+    result["candidate_id"] = candidate_id(candidate)
+    result["score"] = round(score, 2)
+    result["decision"] = decision
+    result["candidate_title"] = candidate_title
+    result["candidate_track_number"] = candidate_track_number
+    result["alternate_terms"] = unexpected_alternates
+    result["title_similarity"] = round(title_similarity, 4)
+    result["artist_path_similarity"] = round(
+        artist_path_similarity,
+        4,
+    )
+    result["album_path_similarity"] = round(
+        album_path_similarity,
+        4,
+    )
 
     return result
 
 
-def rank_candidates(
-    track,
-    candidates,
-):
+def rank_candidates(track, candidates):
     scored = []
 
     for candidate in candidates:
-        result = score_candidate(
-            track,
-            candidate,
-        )
+        result = score_candidate(track, candidate)
 
         if result is not None:
             scored.append(result)
 
     scored.sort(
-        key=lambda candidate: (
-            candidate["score"],
-            candidate["match"][
-                "artist_exact"
-            ],
-            candidate["match"][
-                "album_exact"
-            ],
-            bool(
-                candidate.get(
-                    "peer",
-                    {},
-                ).get(
-                    "has_free_upload_slot"
-                )
-            ),
-            -(
-                candidate.get(
-                    "peer",
-                    {},
-                ).get(
-                    "queue_length"
-                )
-                or 0
-            ),
+        key=lambda item: (
+            item["score"],
+            item.get("title_similarity", 0),
+            item.get("artist_path_similarity", 0),
+            item.get("album_path_similarity", 0),
         ),
         reverse=True,
     )
@@ -650,40 +346,238 @@ def rank_candidates(
     return scored
 
 
-def classify_candidates(
-    track,
-    candidates,
-):
-    ranked = rank_candidates(
-        track,
-        candidates,
+def group_release_candidates(candidates):
+    groups = {}
+
+    for candidate in candidates:
+        filename = candidate.get("filename", "")
+
+        if not has_audio_extension(filename):
+            continue
+
+        username = str(candidate.get("username") or "")
+        folder = parent_path(filename)
+
+        key = (username, folder)
+
+        if key not in groups:
+            groups[key] = {
+                "username": username,
+                "folder": folder,
+                "files": [],
+            }
+
+        groups[key]["files"].append(candidate)
+
+    releases = []
+
+    for group in groups.values():
+        group["release_id"] = release_id(
+            group["username"],
+            group["folder"],
+        )
+
+        releases.append(group)
+
+    return releases
+
+
+def score_release(album_tracks, release):
+    files = release["files"]
+
+    if not files:
+        return None
+
+    artist = album_tracks[0]["spotify"].get("artist", "")
+    album = album_tracks[0]["spotify"].get("album", "")
+
+    folder = release.get("folder", "")
+
+    artist_similarity = similarity(folder, artist)
+    album_similarity = similarity(folder, album)
+
+    normalized_files = []
+
+    for file_info in files:
+        filename = file_info.get("filename", "")
+
+        if not has_audio_extension(filename):
+            continue
+
+        normalized_files.append(file_info)
+
+    if not normalized_files:
+        return None
+
+    matches = []
+    used_ids = set()
+
+    for track in album_tracks:
+        ranked = rank_candidates(track, normalized_files)
+
+        best = None
+
+        for candidate in ranked:
+            cid = candidate["candidate_id"]
+
+            if cid in used_ids:
+                continue
+
+            best = candidate
+            break
+
+        if best is not None:
+            used_ids.add(best["candidate_id"])
+            matches.append(
+                {
+                    "track_id": track["spotify"].get("id"),
+                    "title": track["spotify"].get("title"),
+                    "track_number": track["spotify"].get(
+                        "track_number"
+                    ),
+                    "candidate": best,
+                }
+            )
+
+    expected = len(album_tracks)
+    matched = len(matches)
+
+    coverage = matched / expected if expected else 0.0
+
+    exact_titles = sum(
+        1
+        for match in matches
+        if normalize(
+            match["candidate"].get("candidate_title", "")
+        )
+        == normalize(match.get("title", ""))
     )
+
+    exact_track_numbers = sum(
+        1
+        for match in matches
+        if (
+            match["candidate"].get("candidate_track_number")
+            is not None
+            and match.get("track_number") is not None
+            and int(
+                match["candidate"]["candidate_track_number"]
+            )
+            == int(match["track_number"])
+        )
+    )
+
+    average_track_score = (
+        sum(
+            match["candidate"]["score"]
+            for match in matches
+        )
+        / matched
+        if matched
+        else 0.0
+    )
+
+    alternate_count = sum(
+        bool(match["candidate"].get("alternate_terms"))
+        for match in matches
+    )
+
+    score = (
+        coverage * 55.0
+        + (exact_titles / expected if expected else 0.0) * 20.0
+        + (exact_track_numbers / expected if expected else 0.0) * 10.0
+        + (average_track_score / 100.0) * 10.0
+        + album_similarity * 3.0
+        + artist_similarity * 2.0
+    )
+
+    score -= min(15.0, alternate_count * 2.0)
+
+    score = max(0.0, min(100.0, score))
+
+    if coverage >= 0.90 and score >= 80.0:
+        decision = "accept"
+    elif coverage >= 0.50 and score >= 35.0:
+        decision = "llm"
+    else:
+        decision = "reject"
+
+    return {
+        "release_id": release["release_id"],
+        "username": release["username"],
+        "folder": release["folder"],
+        "file_count": len(normalized_files),
+        "expected_tracks": expected,
+        "matched_tracks": matched,
+        "coverage": round(coverage, 4),
+        "exact_titles": exact_titles,
+        "exact_track_numbers": exact_track_numbers,
+        "average_track_score": round(average_track_score, 2),
+        "album_similarity": round(album_similarity, 4),
+        "artist_similarity": round(artist_similarity, 4),
+        "alternate_count": alternate_count,
+        "score": round(score, 2),
+        "decision": decision,
+        "matches": matches,
+    }
+
+
+def rank_releases(album_tracks, candidates):
+    releases = group_release_candidates(candidates)
+
+    scored = []
+
+    for release in releases:
+        result = score_release(album_tracks, release)
+
+        if result is not None:
+            scored.append(result)
+
+    scored.sort(
+        key=lambda item: (
+            item["score"],
+            item["coverage"],
+            item["matched_tracks"],
+            item["exact_titles"],
+        ),
+        reverse=True,
+    )
+
+    return scored
+
+
+def classify_candidates(scored):
+    if not scored:
+        return {
+            "decision": "reject",
+            "candidates": [],
+        }
 
     accepted = [
         candidate
-        for candidate in ranked
-        if candidate["decision"]
-        == "accept"
+        for candidate in scored
+        if candidate.get("decision") == "accept"
     ]
 
-    llm_candidates = [
+    ambiguous = [
         candidate
-        for candidate in ranked
-        if candidate["decision"]
-        == "llm"
+        for candidate in scored
+        if candidate.get("decision") == "llm"
     ]
 
-    rejected = [
-        candidate
-        for candidate in ranked
-        if candidate["decision"]
-        == "reject"
-    ]
+    if accepted:
+        return {
+            "decision": "accept",
+            "candidates": scored,
+        }
+
+    if ambiguous:
+        return {
+            "decision": "llm",
+            "candidates": scored,
+        }
 
     return {
-        "matcher_version": MATCHER_VERSION,
-        "all_ranked": ranked,
-        "accepted": accepted,
-        "llm_candidates": llm_candidates,
-        "rejected": rejected,
+        "decision": "reject",
+        "candidates": scored,
     }
