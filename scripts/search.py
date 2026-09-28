@@ -12,6 +12,7 @@ from matcher import (
 )
 from soulseek import SoulseekClient, flatten_responses
 
+
 STATE_PATH = Path("state/tracks.json")
 
 SEARCH_TIMEOUT_MS = int(
@@ -64,9 +65,9 @@ def track_key(track):
     data = spotify(track)
 
     return data.get("id") or (
-        f"{data.get('artist','')}\x1f"
-        f"{data.get('album','')}\x1f"
-        f"{data.get('title','')}"
+        f"{data.get('artist', '')}\x1f"
+        f"{data.get('album', '')}\x1f"
+        f"{data.get('title', '')}"
     )
 
 
@@ -183,7 +184,9 @@ def set_acquisition_match(
 def process_album_group(client, tracks, index, total):
     first = spotify(tracks[0])
 
-    artist = first.get("album_artist") or first.get(
+    artist = first.get(
+        "album_artist"
+    ) or first.get(
         "artist",
         "",
     )

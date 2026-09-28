@@ -4,10 +4,12 @@ import sys
 import time
 from pathlib import Path
 
+
 from soulseek import SoulseekClient
 
 
 STATE_FILE = Path("state/tracks.json")
+
 DOWNLOAD_ROOT = Path(
     os.environ.get(
         "SOULSEEK_DOWNLOAD_DIR",
@@ -18,6 +20,17 @@ DOWNLOAD_ROOT = Path(
 POLL_SECONDS = 5
 TIMEOUT_SECONDS = 60 * 60
 
+ZERO_SPEED_SECONDS = 30
+
+FAILURE_STATES = (
+    "rejected",
+    "timedout",
+    "errored",
+    "failed",
+    "cancelled",
+    "canceled",
+)
+
 
 def log(message=""):
     print(message, flush=True)
@@ -25,7 +38,11 @@ def log(message=""):
 
 def load_state():
     log("Loading acquisition state...")
-    with STATE_FILE.open("r", encoding="utf-8") as handle:
+
+    with STATE_FILE.open(
+        "r",
+        encoding="utf-8",
+    ) as handle:
         state = json.load(handle)
 
     log(
@@ -36,10 +53,19 @@ def load_state():
 
 
 def save_state(state):
-    STATE_FILE.parent.mkdir(parents=True, exist_ok=True)
-    temporary = STATE_FILE.with_suffix(".tmp")
+    STATE_FILE.parent.mkdir(
+        parents=True,
+        exist_ok=True,
+    )
 
-    with temporary.open("w", encoding="utf-8") as handle:
+    temporary = STATE_FILE.with_suffix(
+        ".tmp"
+    )
+
+    with temporary.open(
+        "w",
+        encoding="utf-8",
+    ) as handle:
         json.dump(
             state,
             handle,
@@ -51,11 +77,21 @@ def save_state(state):
     temporary.replace(STATE_FILE)
 
 
+def transfer_key(username, filename):
+    return (
+        str(username or "").lower(),
+        str(filename or "").lower(),
+    )
+
+
 def selected_matches(state):
     matches = []
 
     for track in state.get("tracks", []):
-        acquisition = track.get("acquisition", {})
+        acquisition = track.get(
+            "acquisition",
+            {},
+        )
 
         if acquisition.get("status") != "matched":
             continue
@@ -65,9 +101,14 @@ def selected_matches(state):
         if not isinstance(match, dict):
             continue
 
-        candidates = match.get("candidates")
+        candidates = match.get(
+            "candidates"
+        )
 
-        if not isinstance(candidates, list) or not candidates:
+        if (
+            not isinstance(candidates, list)
+            or not candidates
+        ):
             continue
 
         selected = candidates[0]
@@ -75,22 +116,140 @@ def selected_matches(state):
         if not isinstance(selected, dict):
             continue
 
-        username = selected.get("username")
-        filename = selected.get("filename")
+        username = selected.get(
+            "username"
+        )
+
+        filename = selected.get(
+            "filename"
+        )
 
         if not username or not filename:
             continue
 
-        matches.append((track, selected))
+        matches.append(
+            (
+                track,
+                selected,
+            )
+        )
 
     return matches
 
 
-def transfer_key(username, filename):
-    return (
-        str(username or "").lower(),
-        str(filename or "").lower(),
+def album_release_candidates(tracks):
+    """
+    Return release candidates for an album group.
+
+    The search stage stores the same ranked release list
+    on every track in the album group. We only need the
+    first track because each release contains its complete
+    track mapping.
+    """
+
+    if not tracks:
+        return []
+
+    search = tracks[0].get(
+        "search",
+        {},
     )
+
+    releases = search.get(
+        "release_candidates",
+        [],
+    )
+
+    if not isinstance(releases, list):
+        return []
+
+    return [
+        release
+        for release in releases
+        if isinstance(release, dict)
+    ]
+
+
+def release_key(release):
+    return (
+        str(
+            release.get("username")
+            or ""
+        ).lower(),
+        str(
+            release.get("folder")
+            or ""
+        ).lower(),
+    )
+
+
+def release_matches(release, tracks):
+    """
+    Convert a ranked release's match list into:
+
+        [(track, candidate), ...]
+
+    Only tracks actually mapped by the release are returned.
+    """
+
+    by_track_id = {
+        str(
+            track.get("spotify", {}).get(
+                "id"
+            )
+        ): track
+        for track in tracks
+    }
+
+    matches = []
+
+    for item in release.get(
+        "matches",
+        [],
+    ):
+        if not isinstance(item, dict):
+            continue
+
+        track_id = str(
+            item.get("track_id")
+        )
+
+        track = by_track_id.get(
+            track_id
+        )
+
+        candidate = item.get(
+            "candidate"
+        )
+
+        if track is None:
+            continue
+
+        if not isinstance(
+            candidate,
+            dict,
+        ):
+            continue
+
+        username = candidate.get(
+            "username"
+        )
+
+        filename = candidate.get(
+            "filename"
+        )
+
+        if not username or not filename:
+            continue
+
+        matches.append(
+            (
+                track,
+                candidate,
+            )
+        )
+
+    return matches
 
 
 def extract_transfers(data):
@@ -100,21 +259,32 @@ def extract_transfers(data):
         return transfers
 
     for user_entry in data:
-        if not isinstance(user_entry, dict):
+        if not isinstance(
+            user_entry,
+            dict,
+        ):
             continue
 
-        username = user_entry.get("username")
+        username = user_entry.get(
+            "username"
+        )
 
         directories = user_entry.get(
             "directories",
             [],
         )
 
-        if not isinstance(directories, list):
+        if not isinstance(
+            directories,
+            list,
+        ):
             continue
 
         for directory in directories:
-            if not isinstance(directory, dict):
+            if not isinstance(
+                directory,
+                dict,
+            ):
                 continue
 
             files = directory.get(
@@ -122,7 +292,10 @@ def extract_transfers(data):
                 [],
             )
 
-            if not isinstance(files, list):
+            if not isinstance(
+                files,
+                list,
+            ):
                 continue
 
             for transfer in files:
@@ -144,7 +317,6 @@ def extract_transfers(data):
     return transfers
 
 
-
 def transfer_filename(transfer):
     return (
         transfer.get("filename")
@@ -160,6 +332,14 @@ def transfer_username(transfer):
     )
 
 
+def transfer_id(transfer):
+    return (
+        transfer.get("id")
+        or transfer.get("transferId")
+        or transfer.get("transferID")
+    )
+
+
 def transfer_state(transfer):
     state = transfer.get("state")
 
@@ -171,7 +351,9 @@ def transfer_state(transfer):
             or ""
         )
 
-    return str(state or "")
+    return str(
+        state or ""
+    )
 
 
 def transfer_progress(transfer):
@@ -198,27 +380,49 @@ def transfer_progress(transfer):
     )
 
     try:
-        total = int(total or 0)
-    except (TypeError, ValueError):
+        total = int(
+            total or 0
+        )
+    except (
+        TypeError,
+        ValueError,
+    ):
         total = 0
 
     try:
-        downloaded = int(downloaded or 0)
-    except (TypeError, ValueError):
+        downloaded = int(
+            downloaded or 0
+        )
+    except (
+        TypeError,
+        ValueError,
+    ):
         downloaded = 0
 
     try:
-        speed = float(speed or 0)
-    except (TypeError, ValueError):
+        speed = float(
+            speed or 0
+        )
+    except (
+        TypeError,
+        ValueError,
+    ):
         speed = 0
 
-    return total, downloaded, speed
+    return (
+        total,
+        downloaded,
+        speed,
+    )
 
 
 def format_bytes(value):
     try:
         value = float(value)
-    except (TypeError, ValueError):
+    except (
+        TypeError,
+        ValueError,
+    ):
         return "?"
 
     units = (
@@ -242,114 +446,465 @@ def format_speed(value):
     if not value:
         return "?"
 
-    return f"{format_bytes(value)}/s"
+    return (
+        f"{format_bytes(value)}/s"
+    )
 
-def find_downloaded_file(
-    download_dir,
-    remote_filename,
+
+def normalize_remote_filename(
+    filename,
 ):
-    """
-    Find a completed download anywhere under the
-    configured slskd download directory.
-
-    slskd normally places completed files under the
-    source file's immediate parent directory, so the
-    remote path cannot safely be reconstructed from
-    the transfer filename.
-    """
-
-    root = Path(download_dir)
-
-    if not root.exists():
-        return None
-
-    # Soulseek paths use backslashes even though slskd
-    # is running inside a Linux container.
-    normalized = remote_filename.replace(
+    return str(
+        filename or ""
+    ).replace(
         "\\",
         "/",
     )
 
-    basename = Path(normalized).name
+
+def remote_basename(filename):
+    normalized = normalize_remote_filename(
+        filename
+    )
+
+    if not normalized:
+        return ""
+
+    return Path(
+        normalized
+    ).name
+
+
+def find_downloaded_file(
+    download_dir,
+    remote_filename,
+    expected_size=None,
+    known_files=None,
+):
+    """
+    Find a completed download under the configured
+    slskd download directory.
+
+    Soulseek remote paths are not valid local Linux
+    paths, so the remote path is never reconstructed
+    directly.
+
+    Preference order:
+
+    1. A newly-created file with the exact basename
+       and expected size.
+    2. Any exact-basename file with expected size.
+    3. Any exact-basename file.
+
+    known_files is an optional set of paths that existed
+    before the transfer was queued. This prevents an
+    unrelated pre-existing file with the same basename
+    from being selected when a newer file is available.
+    """
+
+    root = Path(
+        download_dir
+    )
+
+    if not root.exists():
+        return None
+
+    basename = remote_basename(
+        remote_filename
+    )
 
     if not basename:
         return None
 
-    # First try an exact basename match.
-    matches = []
+    if known_files is None:
+        known_files = set()
+
+    exact = []
 
     for path in root.rglob("*"):
         if not path.is_file():
             continue
 
-        if path.name == basename:
-            matches.append(path)
+        if path.name != basename:
+            continue
 
-    if not matches:
+        exact.append(path)
+
+    if not exact:
         return None
 
-    # Prefer an exact filename match. If multiple files
-    # somehow exist, return the first deterministic result.
-    matches.sort(
-        key=lambda path: str(path)
+    new_files = [
+        path
+        for path in exact
+        if path not in known_files
+    ]
+
+    size_matches = []
+
+    if expected_size is not None:
+        try:
+            expected_size = int(
+                expected_size
+            )
+        except (
+            TypeError,
+            ValueError,
+        ):
+            expected_size = None
+
+    if expected_size is not None:
+        for path in new_files:
+            try:
+                if (
+                    path.stat().st_size
+                    == expected_size
+                ):
+                    size_matches.append(
+                        path
+                    )
+            except OSError:
+                pass
+
+        if size_matches:
+            return sorted(
+                size_matches,
+                key=lambda path: str(path),
+            )[0]
+
+        for path in exact:
+            try:
+                if (
+                    path.stat().st_size
+                    == expected_size
+                ):
+                    size_matches.append(
+                        path
+                    )
+            except OSError:
+                pass
+
+        if size_matches:
+            return sorted(
+                size_matches,
+                key=lambda path: str(path),
+            )[0]
+
+    if new_files:
+        return sorted(
+            new_files,
+            key=lambda path: str(path),
+        )[0]
+
+    return sorted(
+        exact,
+        key=lambda path: str(path),
+    )[0]
+
+
+def snapshot_download_files():
+    if not DOWNLOAD_ROOT.exists():
+        return set()
+
+    return {
+        path
+        for path in DOWNLOAD_ROOT.rglob("*")
+        if path.is_file()
+    }
+
+
+def cancel_transfer(
+    client,
+    transfer,
+):
+    """
+    Best-effort cancellation of one slskd download.
+
+    slskd exposes DELETE /api/v0/transfers/downloads/{username}/{id}.
+    The existing SoulseekClient owns the requests session, so use
+    that session when available rather than requiring another dependency.
+    """
+
+    username = transfer_username(
+        transfer
     )
 
-    return matches[0]
-
-def main():
-    log("Starting download stage.")
-
-    state = load_state()
-
-    log("Connecting to slskd...")
-
-    client = SoulseekClient(
-        base_url=os.environ.get(
-            "SLSKD_URL",
-            "http://127.0.0.1:5030",
-        ),
-        api_key=os.environ.get("SLSKD_API_KEY"),
+    identifier = transfer_id(
+        transfer
     )
 
-    log("Selecting matched tracks...")
+    if not username or identifier is None:
+        return False
 
-    matches = selected_matches(state)
+    session = getattr(
+        client,
+        "session",
+        None,
+    )
+
+    base_url = getattr(
+        client,
+        "base_url",
+        None,
+    )
+
+    if session is None or not base_url:
+        return False
+
+    url = (
+        f"{base_url.rstrip('/')}"
+        f"/api/v0/transfers/downloads/"
+        f"{username}/{identifier}"
+    )
+
+    try:
+        response = session.delete(
+            url,
+            timeout=30,
+        )
+
+        if response.status_code in {
+            200,
+            202,
+            204,
+            404,
+        }:
+            return True
+
+        log(
+            f"  Cancel returned HTTP "
+            f"{response.status_code}: "
+            f"{response.text[:300]}"
+        )
+
+    except Exception as exc:
+        log(
+            f"  Unable to cancel transfer: "
+            f"{exc}"
+        )
+
+    return False
+
+
+def cancel_release_transfers(
+    client,
+    transfer_map,
+):
+    if not transfer_map:
+        return
 
     log(
-        f"Found {len(matches)} matched track(s) "
-        "ready for download."
+        f"  Cancelling {len(transfer_map)} "
+        "remaining transfer(s)..."
     )
 
-    if not matches:
-        log("No matched tracks need downloading.")
-        return 0
+    for transfer in transfer_map.values():
+        cancel_transfer(
+            client,
+            transfer,
+        )
 
-    log("")
-    log(f"Queueing {len(matches)} downloads...")
-    log("")
+
+def mark_release_attempt(
+    tracks,
+    release,
+    attempt_number,
+    status,
+):
+    for track in tracks:
+        acquisition = track.setdefault(
+            "acquisition",
+            {},
+        )
+
+        attempts = acquisition.setdefault(
+            "download_attempts",
+            [],
+        )
+
+        attempts.append(
+            {
+                "attempt": attempt_number,
+                "release_id": release.get(
+                    "release_id"
+                ),
+                "username": release.get(
+                    "username"
+                ),
+                "folder": release.get(
+                    "folder"
+                ),
+                "score": release.get(
+                    "score"
+                ),
+                "status": status,
+                "timestamp": int(
+                    time.time()
+                ),
+            }
+        )
+
+
+def set_release_match(
+    tracks,
+    release,
+):
+    matches = release_matches(
+        release,
+        tracks,
+    )
+
+    by_track_id = {
+        str(
+            track.get("spotify", {}).get(
+                "id"
+            )
+        ): candidate
+        for track, candidate in matches
+    }
+
+    for track in tracks:
+        track_id = str(
+            track.get("spotify", {}).get(
+                "id"
+            )
+        )
+
+        candidate = by_track_id.get(
+            track_id
+        )
+
+        if candidate is None:
+            continue
+
+        track.setdefault(
+            "acquisition",
+            {},
+        )["match"] = {
+            "candidates": [
+                candidate
+            ],
+        }
+
+
+def album_groups_from_state(
+    state,
+):
+    groups = {}
+
+    for track in state.get(
+        "tracks",
+        [],
+    ):
+        spotify = track.get(
+            "spotify",
+            {},
+        )
+
+        artist = str(
+            spotify.get(
+                "album_artist"
+            )
+            or spotify.get(
+                "artist"
+            )
+            or ""
+        ).strip()
+
+        album = str(
+            spotify.get(
+                "album"
+            )
+            or ""
+        ).strip()
+
+        if not artist or not album:
+            continue
+
+        key = (
+            artist.casefold(),
+            album.casefold(),
+        )
+
+        groups.setdefault(
+            key,
+            [],
+        ).append(track)
+
+    return groups
+
+
+def queue_release(
+    client,
+    release,
+    tracks,
+):
+    """
+    Queue every file belonging to one selected release.
+
+    Returns:
+        queued list of (track, candidate)
+    """
+
+    matches = release_matches(
+        release,
+        tracks,
+    )
+
+    if len(matches) != len(tracks):
+        log(
+            f"  Release only maps "
+            f"{len(matches)}/{len(tracks)} "
+            "requested tracks."
+        )
+
+        return []
 
     queued = []
 
-    for index, (track, match) in enumerate(
+    for index, (
+        track,
+        candidate,
+    ) in enumerate(
         matches,
         start=1,
     ):
-        username = match["username"]
-        filename = match["filename"]
-        size = match.get("size")
+        title = track.get(
+            "spotify",
+            {},
+        ).get(
+            "title",
+            "?",
+        )
 
-        title = track["spotify"]["title"]
+        username = candidate.get(
+            "username"
+        )
+
+        filename = candidate.get(
+            "filename"
+        )
+
+        size = candidate.get(
+            "size"
+        )
 
         log(
-            f"[{index}/{len(matches)}] "
+            f"  [{index}/{len(matches)}] "
             f"Queueing: {title}"
         )
-        log(f"  User: {username}")
-        log(f"  File: {filename}")
+
+        log(
+            f"    User: {username}"
+        )
+
+        log(
+            f"    File: {filename}"
+        )
 
         if size is not None:
             log(
-                f"  Size: {format_bytes(size)}"
+                f"    Size: "
+                f"{format_bytes(size)}"
             )
 
         try:
@@ -359,54 +914,130 @@ def main():
                 size=size,
             )
 
-            track["acquisition"]["status"] = (
-                "downloading"
+            queued.append(
+                (
+                    track,
+                    candidate,
+                )
             )
-
-            queued.append((track, match))
-
-            log("  Queued.")
 
         except Exception as exc:
-            log(f"  FAILED: {exc}")
-
-            track["acquisition"]["status"] = (
-                "download_failed"
+            log(
+                f"    FAILED: {exc}"
             )
 
-            track["acquisition"][
-                "download_error"
-            ] = str(exc)
+            return []
 
-    save_state(state)
+    return queued
 
-    if not queued:
-        log("No downloads were successfully queued.")
-        return 1
+
+def release_download(
+    client,
+    state,
+    tracks,
+    release,
+    attempt_number,
+):
+    """
+    Attempt one complete album release.
+
+    The release succeeds only when every requested track
+    has a completed local file.
+
+    A release is abandoned when:
+      - any transfer enters a failure state;
+      - the release has had zero aggregate transfer speed
+        for ZERO_SPEED_SECONDS;
+      - the overall transfer timeout expires.
+    """
+
+    username = release.get(
+        "username"
+    )
+
+    folder = release.get(
+        "folder"
+    )
+
+    release_id = release.get(
+        "release_id"
+    )
 
     log("")
     log(
-        f"Queued {len(queued)} downloads."
+        f"Trying release "
+        f"{attempt_number}:"
     )
-    log("Waiting for Soulseek transfers...")
-    log("")
+    log(
+        f"  User: {username}"
+    )
+    log(
+        f"  Folder: {folder}"
+    )
+    log(
+        f"  Release ID: {release_id}"
+    )
+    log(
+        f"  Score: "
+        f"{release.get('score')}"
+    )
+    log(
+        f"  Coverage: "
+        f"{release.get('matched_tracks')}/"
+        f"{release.get('expected_tracks')}"
+    )
 
-    deadline = (
-        time.monotonic()
-        + TIMEOUT_SECONDS
+    matches = release_matches(
+        release,
+        tracks,
     )
+
+    if len(matches) != len(tracks):
+        log(
+            "  Release does not contain "
+            "a candidate for every requested track."
+        )
+
+        return False
+
+    known_files = snapshot_download_files()
+
+    queued = queue_release(
+        client,
+        release,
+        tracks,
+    )
+
+    if len(queued) != len(matches):
+        log(
+            "  Release could not be "
+            "fully queued."
+        )
+
+        return False
 
     wanted = {
         transfer_key(
-            match["username"],
-            match["filename"],
-        ): (track, match)
-        for track, match in queued
+            candidate.get("username"),
+            candidate.get("filename"),
+        ): (
+            track,
+            candidate,
+        )
+        for track, candidate in queued
     }
 
     completed = set()
     failed = set()
-    last_progress = {}
+    transfers_seen = {}
+
+    release_started = time.monotonic()
+    last_nonzero_speed = release_started
+
+    deadline = (
+        release_started
+        + TIMEOUT_SECONDS
+    )
 
     while time.monotonic() < deadline:
         try:
@@ -414,210 +1045,920 @@ def main():
 
         except Exception as exc:
             log(
-                f"Unable to read download status: "
-                f"{exc}"
+                f"  Unable to read download "
+                f"status: {exc}"
             )
-            time.sleep(POLL_SECONDS)
+
+            time.sleep(
+                POLL_SECONDS
+            )
+
             continue
 
-        transfers = extract_transfers(data)
-
-        active_keys = set()
+        transfers = extract_transfers(
+            data
+        )
 
         for transfer in transfers:
-            username = transfer_username(transfer)
-            filename = transfer_filename(transfer)
+            username_now = transfer_username(
+                transfer
+            )
 
-            if not username or not filename:
+            filename_now = transfer_filename(
+                transfer
+            )
+
+            if (
+                not username_now
+                or not filename_now
+            ):
                 continue
 
             key = transfer_key(
-                username,
-                filename,
+                username_now,
+                filename_now,
             )
 
             if key not in wanted:
                 continue
 
-            if key in completed or key in failed:
+            if key in completed:
                 continue
 
-            active_keys.add(key)
+            if key in failed:
+                continue
 
-            current_state = transfer_state(
-                transfer
-            ).lower()
+            transfers_seen[key] = transfer
+
+            current_state = (
+                transfer_state(
+                    transfer
+                ).lower()
+            )
 
             total, downloaded, speed = (
-                transfer_progress(transfer)
+                transfer_progress(
+                    transfer
+                )
             )
 
-            progress_key = (
-                current_state,
-                total,
-                downloaded,
-                int(speed),
-            )
+            if total:
+                percent = (
+                    downloaded
+                    / total
+                    * 100
+                )
 
-            if (
-                last_progress.get(key)
-                != progress_key
-            ):
-                if total:
-                    percent = (
-                        downloaded / total * 100
-                        if total
-                        else 0
-                    )
+                log(
+                    f"  Transfer: "
+                    f"{filename_now}"
+                )
 
-                    log(
-                        f"Transfer: {filename}"
-                    )
-                    log(
-                        f"  State: "
-                        f"{current_state or 'unknown'}"
-                    )
-                    log(
-                        f"  Progress: "
-                        f"{format_bytes(downloaded)} / "
-                        f"{format_bytes(total)} "
-                        f"({percent:.1f}%)"
-                    )
-                    log(
-                        f"  Speed: "
-                        f"{format_speed(speed)}"
-                    )
+                log(
+                    f"    State: "
+                    f"{current_state or 'unknown'}"
+                )
 
-                else:
-                    log(
-                        f"Transfer: {filename}"
-                    )
-                    log(
-                        f"  State: "
-                        f"{current_state or 'unknown'}"
-                    )
-                    log(
-                        f"  Progress: "
-                        f"{format_bytes(downloaded)}"
-                    )
-                    log(
-                        f"  Speed: "
-                        f"{format_speed(speed)}"
-                    )
+                log(
+                    f"    Progress: "
+                    f"{format_bytes(downloaded)} / "
+                    f"{format_bytes(total)} "
+                    f"({percent:.1f}%)"
+                )
 
-                last_progress[key] = progress_key
+                log(
+                    f"    Speed: "
+                    f"{format_speed(speed)}"
+                )
 
-            track, match = wanted[key]
+            else:
+                log(
+                    f"  Transfer: "
+                    f"{filename_now}"
+                )
+
+                log(
+                    f"    State: "
+                    f"{current_state or 'unknown'}"
+                )
+
+                log(
+                    f"    Progress: "
+                    f"{format_bytes(downloaded)}"
+                )
+
+                log(
+                    f"    Speed: "
+                    f"{format_speed(speed)}"
+                )
+
+            if speed > 0:
+                last_nonzero_speed = (
+                    time.monotonic()
+                )
 
             if "succeeded" in current_state:
+                track, candidate = (
+                    wanted[key]
+                )
+
+                expected_size = (
+                    candidate.get(
+                        "size"
+                    )
+                )
+
                 path = find_downloaded_file(
-                    username,
-                    filename,
+                    DOWNLOAD_ROOT,
+                    filename_now,
+                    expected_size=expected_size,
+                    known_files=known_files,
                 )
 
                 if path is None:
                     log(
-                        "  Transfer succeeded, "
+                        "    Transfer succeeded, "
                         "but the downloaded file "
                         "was not found yet."
                     )
+
                     continue
 
-                track["acquisition"]["status"] = (
-                    "downloaded"
-                )
+                actual_size = path.stat().st_size
 
-                track["acquisition"]["file"] = {
+                if (
+                    expected_size is not None
+                    and actual_size
+                    != int(expected_size)
+                ):
+                    log(
+                        f"    File exists but size "
+                        f"does not match expected "
+                        f"size: "
+                        f"{format_bytes(actual_size)} "
+                        f"vs "
+                        f"{format_bytes(expected_size)}"
+                    )
+
+                    continue
+
+                track.setdefault(
+                    "acquisition",
+                    {},
+                )["file"] = {
                     "path": str(path),
                     "filename": path.name,
-                    "size": path.stat().st_size,
+                    "size": actual_size,
                 }
 
-                completed.add(key)
-                save_state(state)
+                completed.add(
+                    key
+                )
 
                 log(
-                    f"  Downloaded: {path}"
+                    f"    Downloaded: "
+                    f"{path}"
                 )
 
             elif any(
                 failure in current_state
-                for failure in (
-                    "rejected",
-                    "timedout",
-                    "errored",
-                    "failed",
-                )
+                for failure in FAILURE_STATES
             ):
-                track["acquisition"]["status"] = (
-                    "download_failed"
-                )
-
-                track["acquisition"][
-                    "download_error"
-                ] = current_state
-
-                failed.add(key)
-                save_state(state)
-
                 log(
-                    f"  Download failed: "
+                    f"    Download failed: "
                     f"{current_state}"
                 )
 
-        finished = (
-            len(completed)
-            + len(failed)
-        )
-
-        log(
-            f"Overall progress: "
-            f"{finished}/{len(wanted)} finished "
-            f"({len(completed)} downloaded, "
-            f"{len(failed)} failed)"
-        )
-
-        if finished == len(wanted):
-            break
-
-        time.sleep(POLL_SECONDS)
-
-    unresolved = (
-        len(wanted)
-        - len(completed)
-        - len(failed)
-    )
-
-    if unresolved:
-        log("")
-        log(
-            f"{unresolved} download(s) did not "
-            "finish before timeout."
-        )
-
-        for track, match in queued:
-            key = transfer_key(
-                match["username"],
-                match["filename"],
-            )
-
-            if (
-                key not in completed
-                and key not in failed
-            ):
-                track["acquisition"]["status"] = (
-                    "download_timeout"
+                failed.add(
+                    key
                 )
 
-        save_state(state)
+        if (
+            len(completed)
+            == len(wanted)
+        ):
+            for track, candidate in queued:
+                track.setdefault(
+                    "acquisition",
+                    {},
+                )["status"] = "downloaded"
 
-        return 1
+            mark_release_attempt(
+                tracks,
+                release,
+                attempt_number,
+                "succeeded",
+            )
+
+            save_state(state)
+
+            log(
+                f"  Release succeeded: "
+                f"{len(completed)}/"
+                f"{len(wanted)} files"
+            )
+
+            return True
+
+        if failed:
+            log(
+                f"  Release failed: "
+                f"{len(failed)} transfer(s) failed."
+            )
+
+            cancel_release_transfers(
+                client,
+                transfers_seen,
+            )
+
+            mark_release_attempt(
+                tracks,
+                release,
+                attempt_number,
+                "failed",
+            )
+
+            save_state(state)
+
+            return False
+
+        now = time.monotonic()
+
+        if (
+            now - last_nonzero_speed
+            >= ZERO_SPEED_SECONDS
+        ):
+            log(
+                f"  Release has had zero "
+                f"transfer speed for "
+                f"{ZERO_SPEED_SECONDS} seconds."
+            )
+
+            cancel_release_transfers(
+                client,
+                transfers_seen,
+            )
+
+            mark_release_attempt(
+                tracks,
+                release,
+                attempt_number,
+                "zero_speed",
+            )
+
+            save_state(state)
+
+            return False
+
+        finished = (
+            len(completed)
+        )
+
+        log(
+            f"  Release progress: "
+            f"{finished}/"
+            f"{len(wanted)} downloaded"
+        )
+
+        time.sleep(
+            POLL_SECONDS
+        )
+
+    log(
+        "  Release timed out."
+    )
+
+    cancel_release_transfers(
+        client,
+        transfers_seen,
+    )
+
+    mark_release_attempt(
+        tracks,
+        release,
+        attempt_number,
+        "timeout",
+    )
+
+    save_state(state)
+
+    return False
+
+
+def process_album(
+    client,
+    state,
+    tracks,
+):
+    if not tracks:
+        return True
+
+    first = tracks[0].get(
+        "spotify",
+        {},
+    )
+
+    artist = (
+        first.get(
+            "album_artist"
+        )
+        or first.get(
+            "artist"
+        )
+        or ""
+    )
+
+    album = first.get(
+        "album",
+        "",
+    )
+
+    releases = (
+        album_release_candidates(
+            tracks
+        )
+    )
+
+    if not releases:
+        log(
+            f"No release candidates stored "
+            f"for {artist} - {album}"
+        )
+
+        return False
+
+    # The release candidates are already ranked by matcher.py.
+    # We preserve that ordering, but skip releases that have
+    # already been successfully attempted.
+    attempted_ids = set()
+
+    for track in tracks:
+        attempts = track.get(
+            "acquisition",
+            {},
+        ).get(
+            "download_attempts",
+            [],
+        )
+
+        if not isinstance(
+            attempts,
+            list,
+        ):
+            continue
+
+        for attempt in attempts:
+            if (
+                isinstance(
+                    attempt,
+                    dict,
+                )
+                and attempt.get(
+                    "status"
+                )
+                == "succeeded"
+            ):
+                attempted_ids.add(
+                    attempt.get(
+                        "release_id"
+                    )
+                )
 
     log("")
     log(
-        f"Download stage finished: "
-        f"{len(completed)} downloaded, "
-        f"{len(failed)} failed."
+        f"Album: {artist} - {album}"
+    )
+
+    log(
+        f"  Stored release candidates: "
+        f"{len(releases)}"
+    )
+
+    attempt_number = 0
+
+    for release in releases:
+        release_id = release.get(
+            "release_id"
+        )
+
+        if release_id in attempted_ids:
+            continue
+
+        attempt_number += 1
+
+        success = release_download(
+            client,
+            state,
+            tracks,
+            release,
+            attempt_number,
+        )
+
+        if success:
+            return True
+
+        log(
+            "  Release did not complete. "
+            "Trying next release candidate."
+        )
+
+    log(
+        f"  No complete release succeeded "
+        f"for {artist} - {album}"
+    )
+
+    for track in tracks:
+        acquisition = track.setdefault(
+            "acquisition",
+            {},
+        )
+
+        if acquisition.get(
+            "status"
+        ) != "downloaded":
+            acquisition["status"] = (
+                "download_failed"
+            )
+
+    save_state(state)
+
+    return False
+
+
+def process_individual_track(
+    client,
+    state,
+    track,
+):
+    acquisition = track.setdefault(
+        "acquisition",
+        {},
+    )
+
+    match = acquisition.get(
+        "match"
+    )
+
+    if not isinstance(
+        match,
+        dict,
+    ):
+        return False
+
+    candidates = match.get(
+        "candidates"
+    )
+
+    if (
+        not isinstance(
+            candidates,
+            list,
+        )
+        or not candidates
+    ):
+        return False
+
+    candidate = candidates[0]
+
+    username = candidate.get(
+        "username"
+    )
+
+    filename = candidate.get(
+        "filename"
+    )
+
+    size = candidate.get(
+        "size"
+    )
+
+    if not username or not filename:
+        acquisition["status"] = (
+            "download_failed"
+        )
+
+        acquisition[
+            "download_error"
+        ] = "Missing username or filename."
+
+        return False
+
+    title = track.get(
+        "spotify",
+        {},
+    ).get(
+        "title",
+        "?",
+    )
+
+    log("")
+    log(
+        f"Track: {title}"
+    )
+    log(
+        f"  User: {username}"
+    )
+    log(
+        f"  File: {filename}"
+    )
+
+    known_files = (
+        snapshot_download_files()
+    )
+
+    try:
+        client.enqueue_download(
+            username=username,
+            filename=filename,
+            size=size,
+        )
+
+    except Exception as exc:
+        log(
+            f"  Queue failed: {exc}"
+        )
+
+        acquisition["status"] = (
+            "download_failed"
+        )
+
+        acquisition[
+            "download_error"
+        ] = str(exc)
+
+        save_state(state)
+
+        return False
+
+    acquisition["status"] = (
+        "downloading"
+    )
+
+    save_state(state)
+
+    wanted_key = transfer_key(
+        username,
+        filename,
+    )
+
+    deadline = (
+        time.monotonic()
+        + TIMEOUT_SECONDS
+    )
+
+    last_nonzero_speed = (
+        time.monotonic()
+    )
+
+    while time.monotonic() < deadline:
+        try:
+            data = client.get_downloads()
+
+        except Exception as exc:
+            log(
+                f"  Unable to read download "
+                f"status: {exc}"
+            )
+
+            time.sleep(
+                POLL_SECONDS
+            )
+
+            continue
+
+        transfers = extract_transfers(
+            data
+        )
+
+        matching_transfer = None
+
+        for transfer in transfers:
+            key = transfer_key(
+                transfer_username(
+                    transfer
+                ),
+                transfer_filename(
+                    transfer
+                ),
+            )
+
+            if key == wanted_key:
+                matching_transfer = (
+                    transfer
+                )
+                break
+
+        if matching_transfer is None:
+            time.sleep(
+                POLL_SECONDS
+            )
+            continue
+
+        current_state = (
+            transfer_state(
+                matching_transfer
+            ).lower()
+        )
+
+        total, downloaded, speed = (
+            transfer_progress(
+                matching_transfer
+            )
+        )
+
+        if speed > 0:
+            last_nonzero_speed = (
+                time.monotonic()
+            )
+
+        if total:
+            percent = (
+                downloaded
+                / total
+                * 100
+            )
+
+            log(
+                f"  State: "
+                f"{current_state}"
+            )
+
+            log(
+                f"  Progress: "
+                f"{format_bytes(downloaded)} / "
+                f"{format_bytes(total)} "
+                f"({percent:.1f}%)"
+            )
+
+            log(
+                f"  Speed: "
+                f"{format_speed(speed)}"
+            )
+
+        if "succeeded" in current_state:
+            path = find_downloaded_file(
+                DOWNLOAD_ROOT,
+                filename,
+                expected_size=size,
+                known_files=known_files,
+            )
+
+            if path is None:
+                log(
+                    "  Transfer succeeded, "
+                    "but the downloaded file "
+                    "was not found yet."
+                )
+
+                time.sleep(
+                    POLL_SECONDS
+                )
+
+                continue
+
+            actual_size = path.stat().st_size
+
+            acquisition["status"] = (
+                "downloaded"
+            )
+
+            acquisition["file"] = {
+                "path": str(path),
+                "filename": path.name,
+                "size": actual_size,
+            }
+
+            save_state(state)
+
+            log(
+                f"  Downloaded: {path}"
+            )
+
+            return True
+
+        if any(
+            failure in current_state
+            for failure in FAILURE_STATES
+        ):
+            acquisition["status"] = (
+                "download_failed"
+            )
+
+            acquisition[
+                "download_error"
+            ] = current_state
+
+            save_state(state)
+
+            log(
+                f"  Download failed: "
+                f"{current_state}"
+            )
+
+            return False
+
+        if (
+            time.monotonic()
+            - last_nonzero_speed
+            >= ZERO_SPEED_SECONDS
+        ):
+            log(
+                f"  Transfer has had zero "
+                f"speed for "
+                f"{ZERO_SPEED_SECONDS} seconds."
+            )
+
+            cancel_transfer(
+                client,
+                matching_transfer,
+            )
+
+            acquisition["status"] = (
+                "download_failed"
+            )
+
+            acquisition[
+                "download_error"
+            ] = "zero_speed"
+
+            save_state(state)
+
+            return False
+
+        time.sleep(
+            POLL_SECONDS
+        )
+
+    acquisition["status"] = (
+        "download_timeout"
+    )
+
+    save_state(state)
+
+    return False
+
+
+def main():
+    log(
+        "Starting download stage."
+    )
+
+    state = load_state()
+
+    log(
+        "Connecting to slskd..."
+    )
+
+    client = SoulseekClient(
+        base_url=os.environ.get(
+            "SLSKD_URL",
+            "http://127.0.0.1:5030",
+        ),
+        api_key=os.environ.get(
+            "SLSKD_API_KEY"
+        ),
+    )
+
+    groups = album_groups_from_state(
+        state
+    )
+
+    album_groups = {
+        key: tracks
+        for key, tracks in groups.items()
+        if len(tracks) >= 2
+        and any(
+            track.get(
+                "acquisition",
+                {},
+            ).get(
+                "status"
+            )
+            == "matched"
+            for track in tracks
+        )
+    }
+
+    album_track_ids = {
+        str(
+            track.get(
+                "spotify",
+                {},
+            ).get(
+                "id"
+            )
+        )
+        for tracks in album_groups.values()
+        for track in tracks
+    }
+
+    log(
+        f"Found {len(album_groups)} album group(s) "
+        "with matched tracks."
+    )
+
+    album_successes = 0
+    album_failures = 0
+
+    for index, (
+        key,
+        tracks,
+    ) in enumerate(
+        album_groups.items(),
+        start=1,
+    ):
+        log("")
+        log(
+            f"=== Album "
+            f"{index}/{len(album_groups)} ==="
+        )
+
+        if process_album(
+            client,
+            state,
+            tracks,
+        ):
+            album_successes += 1
+        else:
+            album_failures += 1
+
+        save_state(state)
+
+    pending_individual = []
+
+    for track in state.get(
+        "tracks",
+        [],
+    ):
+        track_id = str(
+            track.get(
+                "spotify",
+                {},
+            ).get(
+                "id"
+            )
+        )
+
+        acquisition = track.get(
+            "acquisition",
+            {},
+        )
+
+        status = acquisition.get(
+            "status"
+        )
+
+        if (
+            status == "matched"
+            and track_id
+            not in album_track_ids
+        ):
+            pending_individual.append(
+                track
+            )
+
+    individual_successes = 0
+    individual_failures = 0
+
+    if pending_individual:
+        log("")
+        log(
+            f"Processing "
+            f"{len(pending_individual)} "
+            "individual track(s)."
+        )
+
+    for track in pending_individual:
+        if process_individual_track(
+            client,
+            state,
+            track,
+        ):
+            individual_successes += 1
+        else:
+            individual_failures += 1
+
+        save_state(state)
+
+    log("")
+    log(
+        "Download stage finished."
+    )
+    log(
+        f"Albums succeeded: "
+        f"{album_successes}"
+    )
+    log(
+        f"Albums failed: "
+        f"{album_failures}"
+    )
+    log(
+        f"Individual tracks succeeded: "
+        f"{individual_successes}"
+    )
+    log(
+        f"Individual tracks failed: "
+        f"{individual_failures}"
     )
 
     return 0
