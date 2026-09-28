@@ -50,6 +50,8 @@ jobs:
             --env "SLSKD_NO_AUTH=true" \
             --env "SLSKD_REMOTE_CONFIGURATION=false" \
             --env "SLSKD_DOWNLOAD_SLOTS=8" \
+            --env "SLSKD_DOWNLOADS_DIR=/downloads" \
+            --env "SLSKD_INCOMPLETE_DIR=/incomplete" \
             --volume "$RUNNER_TEMP/slskd:/app" \
             --volume "$RUNNER_TEMP/music-downloads:/downloads" \
             --volume "$RUNNER_TEMP/music-downloads-incomplete:/incomplete" \
