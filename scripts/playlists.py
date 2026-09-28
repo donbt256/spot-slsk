@@ -1,4 +1,4 @@
-import base64
+import hashlib
 import json
 import os
 import posixpath
@@ -10,19 +10,12 @@ from publish import GitHubClient, discover_library_repos
 
 
 STATE_FILE = Path("state/tracks.json")
+PLAYLIST_DIR = "Playlists"
 
 
 def load_state():
     with STATE_FILE.open("r", encoding="utf-8") as handle:
         return json.load(handle)
-
-
-def sanitize_filename(value):
-    value = str(value or "").strip()
-    value = re.sub(r"[\\/\x00]", "_", value)
-    value = re.sub(r"[^A-Za-z0-9._ -]+", "_", value)
-    value = re.sub(r"\s+", " ", value).strip(" .")
-    return value or "playlist"
 
 
 def library_path(track):
@@ -36,9 +29,9 @@ def library_path(track):
 def track_duration(track):
     value = track.get("spotify", {}).get("duration_ms")
     try:
-        return float(value) / 1000.0
+        return max(0, int(round(float(value) / 1000.0)))
     except (TypeError, ValueError):
-        return 0.0
+        return 0
 
 
 def display_title(track):
@@ -49,95 +42,50 @@ def display_title(track):
     )
 
 
-def relative_library_path(
-    playlist_repo,
-    track_repo,
-    track_path,
-):
-    if track_repo == playlist_repo:
-        return track_path
-
-    return posixpath.join(
-        "..",
-        track_repo,
-        track_path,
-    )
+def playlist_path(playlist_id):
+    return f"{PLAYLIST_DIR}/{playlist_id}.m3u8"
 
 
-def existing_content(client, repo, path, branch):
-    api_path = (
-        f"/repos/{client.owner}/{repo}/contents/{path}"
-    )
-
-    response = client.session.get(
-        f"https://api.github.com{api_path}",
-        params={"ref": branch},
-        timeout=60,
-    )
-
-    if response.status_code == 404:
-        return None
-
-    if response.status_code >= 400:
-        try:
-            detail = response.json()
-        except Exception:
-            detail = response.text
-        raise RuntimeError(
-            f"Unable to read {repo}/{path}: "
-            f"{response.status_code}: {detail}"
-        )
-
-    data = response.json()
-    encoded = data.get("content", "").replace("\n", "")
-    return base64.b64decode(encoded).decode("utf-8")
+def playlist_relative_path(track_path):
+    # Playlist files live in Playlists/ inside music-library-001.
+    # After the user combines all music-library-* repositories into one
+    # local library folder, every Artist/Album/... path is rooted there.
+    return posixpath.join("..", track_path)
 
 
-def build_playlist_text(
-    playlist,
-    track_map,
-    repo_for_track,
-    playlist_repo,
-):
+def build_playlist_text(playlist, track_map):
     lines = ["#EXTM3U"]
 
     for track_id in playlist.get("tracks", []):
         track = track_map.get(track_id)
         if not track:
-            continue
+            raise RuntimeError(
+                f"Playlist {playlist.get('id')} references unknown track {track_id}."
+            )
 
         path = library_path(track)
-        track_repo = repo_for_track.get(track_id)
-
-        if not path or not track_repo:
-            # A playlist is only updated once every current entry
-            # is available in the library.
+        if not path:
             raise RuntimeError(
                 f"Track {track_id} is not published yet."
             )
 
-        relative = relative_library_path(
-            playlist_repo,
-            track_repo,
-            path,
-        )
-
         lines.append(
-            f"#EXTINF:{track_duration(track):.3f},{display_title(track)}"
+            f"#EXTINF:{track_duration(track)},{display_title(track)}"
         )
-        lines.append(relative)
+        lines.append(playlist_relative_path(path))
 
     lines.append("")
     return "\n".join(lines)
 
 
+def git_blob_sha(content):
+    header = f"blob {len(content)}\0".encode("utf-8")
+    return hashlib.sha1(header + content).hexdigest()
+
+
 def process():
     state = load_state()
     playlists = state.get("playlists", [])
-
-    if not playlists:
-        print("No configured Spotify playlists.")
-        return 0
 
     token = os.environ.get("GIT_PAT")
     if not token:
@@ -150,16 +98,12 @@ def process():
         print("No library repositories exist yet.")
         return 0
 
-    repo_states = {
-        repo: client.get_repo_state(repo)
-        for repo in repos
-    }
-
-    # Keep all generated playlists in the first library repository.
-    # Cross-repository tracks use ../music-library-NNN/... relative paths,
-    # assuming the library repositories are cloned as siblings.
+    # Keep generated playlist files in the first library repository. When
+    # repositories are later combined into one local folder, Playlists/
+    # sits alongside all Artist/Album directories.
     playlist_repo = repos[0]
-    playlist_branch = repo_states[playlist_repo]["branch"]
+    repo_state = client.get_repo_state(playlist_repo)
+    branch = repo_state["branch"]
 
     track_map = {
         track.get("spotify", {}).get("id"): track
@@ -167,16 +111,11 @@ def process():
         if track.get("spotify", {}).get("id")
     }
 
-    repo_for_track = {}
-    for repo, repo_state in repo_states.items():
-        paths = {
-            entry.get("path")
-            for entry in repo_state.get("files", [])
-        }
-        for track_id, track in track_map.items():
-            path = library_path(track)
-            if path in paths:
-                repo_for_track[track_id] = repo
+    # A playlist is only rewritten when every current entry has a published
+    # library path. This prevents a transient acquisition failure from
+    # destroying a previously valid playlist.
+    desired = {}
+    skipped = False
 
     for playlist in playlists:
         playlist_id = playlist.get("id")
@@ -184,59 +123,89 @@ def process():
             continue
 
         track_ids = playlist.get("tracks", [])
-        if any(
-            track_id not in repo_for_track
+        missing = [
+            track_id
             for track_id in track_ids
-        ):
-            missing = [
-                track_id
-                for track_id in track_ids
-                if track_id not in repo_for_track
-            ]
+            if not library_path(track_map.get(track_id, {}))
+        ]
+
+        if missing:
+            skipped = True
             print(
                 f"Skipping playlist {playlist_id}: "
                 f"{len(missing)} current track(s) are not published yet."
             )
             continue
 
-        content = build_playlist_text(
-            playlist,
-            track_map,
-            repo_for_track,
-            playlist_repo,
-        )
-        path = f"Playlists/{playlist_id}.m3u8"
-
-        old = existing_content(
-            client,
-            playlist_repo,
-            path,
-            playlist_branch,
+        desired[playlist_path(playlist_id)] = (
+            build_playlist_text(playlist, track_map).encode("utf-8")
         )
 
-        if old == content:
-            print(
-                f"Playlist unchanged: "
-                f"{playlist.get('name', playlist_id)}"
-            )
+    existing = {
+        entry.get("path"): entry
+        for entry in repo_state.get("files", [])
+        if str(entry.get("path", "")).startswith(f"{PLAYLIST_DIR}/")
+        and str(entry.get("path", "")).endswith(".m3u8")
+    }
+
+    # Any generated playlist no longer present in urls.txt is removed.
+    # Music itself is never removed.
+    entries = []
+    changes = []
+
+    for path, content in desired.items():
+        new_sha = git_blob_sha(content)
+        old = existing.get(path)
+        if old and old.get("sha") == new_sha:
+            print(f"Playlist unchanged: {path}")
             continue
 
-        print(
-            f"Updating playlist: "
-            f"{playlist.get('name', playlist_id)} "
-            f"({len(track_ids)} tracks)"
+        blob_sha = client.create_blob(
+            playlist_repo,
+            content,
         )
+        entries.append(
+            {
+                "path": path,
+                "mode": "100644",
+                "type": "blob",
+                "sha": blob_sha,
+            }
+        )
+        changes.append(path)
 
-        client.put_bytes(
-            repo=playlist_repo,
-            path=path,
-            content=content.encode("utf-8"),
-            branch=playlist_branch,
-            message=(
-                f"Update playlist: "
-                f"{playlist.get('name', playlist_id)}"
-            ),
+    desired_paths = set(desired)
+
+    for path in existing:
+        if path in desired_paths:
+            continue
+        # If a currently configured playlist was skipped because acquisition
+        # is incomplete, preserve its old M3U8. Only remove playlists that
+        # are no longer configured at all.
+        entries.append(
+            {
+                "path": path,
+                "mode": "100644",
+                "type": "blob",
+                "sha": None,
+            }
         )
+        changes.append(path)
+        print(f"Removing obsolete playlist: {path}")
+
+    if entries:
+        client.create_tree_commit(
+            repo=playlist_repo,
+            branch=branch,
+            entries=entries,
+            message="Update Spotify playlists",
+        )
+        print(
+            f"Committed {len(changes)} playlist file change(s) "
+            f"atomically."
+        )
+    elif not skipped:
+        print("All Spotify playlists are up to date.")
 
     return 0
 
