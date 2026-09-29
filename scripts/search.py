@@ -10,6 +10,8 @@ from matcher import (
     classify_candidates,
     rank_candidates,
     rank_releases,
+    parent_path,
+    release_id,
 )
 from soulseek import SoulseekClient, flatten_responses
 from release import release_key
@@ -231,6 +233,91 @@ def compact_release(release):
     return compacted
 
 
+def recover_durable_release(tracks):
+    """
+    Recover a previously matched complete release when a fresh Soulseek
+    search transiently returns zero results.
+
+    This is deliberately conservative: every requested track must retain
+    a candidate, and all candidates must come from the same Soulseek user
+    and remote folder.
+    """
+    grouped = {}
+
+    for track in tracks:
+        candidate = (
+            track.get("acquisition", {})
+            .get("match", {})
+            .get("candidates", [])
+        )
+
+        if not isinstance(candidate, list) or not candidate:
+            return None
+
+        candidate = candidate[0]
+
+        username = str(candidate.get("username") or "")
+        filename = str(candidate.get("filename") or "")
+        folder = parent_path(filename)
+
+        if not username or not folder:
+            return None
+
+        key = (username, folder)
+        grouped.setdefault(key, []).append(
+            (track, candidate)
+        )
+
+    complete = [
+        items
+        for items in grouped.values()
+        if len(items) == len(tracks)
+    ]
+
+    if not complete:
+        return None
+
+    items = complete[0]
+    first = spotify(items[0][0])
+
+    matches = [
+        {
+            "track_id": spotify(track).get("id"),
+            "title": spotify(track).get("title"),
+            "track_number": spotify(track).get("track_number"),
+            "candidate": compact_candidate(candidate),
+        }
+        for track, candidate in items
+    ]
+
+    score = sum(
+        float(candidate.get("score") or 0)
+        for _, candidate in items
+    ) / len(items)
+
+    return {
+        "release_id": release_id(
+            items[0][1].get("username"),
+            parent_path(items[0][1].get("filename", "")),
+        ),
+        "username": items[0][1].get("username"),
+        "folder": parent_path(items[0][1].get("filename", "")),
+        "file_count": len(items),
+        "expected_tracks": len(tracks),
+        "matched_tracks": len(items),
+        "coverage": 1.0,
+        "exact_titles": 0,
+        "exact_track_numbers": 0,
+        "average_track_score": round(score, 2),
+        "album_similarity": 0.0,
+        "artist_similarity": 0.0,
+        "alternate_count": 0,
+        "score": round(score, 2),
+        "decision": "accept",
+        "matches": matches,
+    }
+
+
 def set_acquisition_match(
     track,
     candidate,
@@ -354,6 +441,46 @@ def process_album_group(client, tracks, index, total):
         state["release_candidates"] = []
 
     if not raw_candidates:
+        durable = recover_durable_release(tracks)
+
+        if durable is not None:
+            print(
+                "  Fresh search returned no candidates; "
+                "reusing the previously matched complete release."
+            )
+
+            compacted = compact_release(durable)
+
+            for track, match in zip(
+                tracks,
+                durable["matches"],
+            ):
+                set_acquisition_match(
+                    track,
+                    match["candidate"],
+                    "matched",
+                )
+
+                track.setdefault(
+                    "matching",
+                    {},
+                )["deterministic"] = {
+                    "version": MATCHER_VERSION,
+                    "mode": "album",
+                    "decision": "accept",
+                    "release_id": durable["release_id"],
+                    "release": compacted,
+                }
+
+                state = ensure_search_state(track)
+                state["release_candidates"] = (
+                    [compacted]
+                    if track is tracks[0]
+                    else []
+                )
+
+            return True
+
         for track in tracks:
             track.setdefault(
                 "acquisition",
