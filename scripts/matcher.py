@@ -5,7 +5,10 @@ from difflib import SequenceMatcher
 from pathlib import PurePosixPath, PureWindowsPath
 
 
-MATCHER_VERSION = 4
+MATCHER_VERSION = 5
+
+
+MAX_LIBRARY_FILE_BYTES = 100 * 1024 * 1024
 
 
 AUDIO_EXTENSIONS = {
@@ -266,6 +269,14 @@ def score_candidate(track, candidate):
     if not has_audio_extension(filename):
         return None
 
+    size = candidate.get("size")
+    if size is not None:
+        try:
+            if int(size) > MAX_LIBRARY_FILE_BYTES:
+                return None
+        except (TypeError, ValueError):
+            pass
+
     candidate_title = extract_candidate_title(
         filename,
         artist,
@@ -434,6 +445,14 @@ def group_release_candidates(candidates):
 
         if not has_audio_extension(filename):
             continue
+
+        size = candidate.get("size")
+        if size is not None:
+            try:
+                if int(size) > MAX_LIBRARY_FILE_BYTES:
+                    continue
+            except (TypeError, ValueError):
+                pass
 
         username = str(
             candidate.get("username") or ""
