@@ -349,6 +349,14 @@ def transfer_filename(transfer):
     )
 
 
+def transfer_local_filename(transfer):
+    return (
+        transfer.get("localFilename")
+        or transfer.get("localFileName")
+        or transfer.get("local_filename")
+    )
+
+
 def transfer_username(transfer):
     return (
         transfer.get("username")
@@ -1149,12 +1157,32 @@ def release_download(
                 track, candidate = wanted[key]
                 expected_size = candidate.get("size")
 
-                path = find_downloaded_file(
-                    DOWNLOAD_ROOT,
-                    filename_now,
-                    expected_size=expected_size,
-                    known_files=known_files,
+                local_filename = transfer_local_filename(
+                    transfer
                 )
+
+                path = None
+
+                if local_filename:
+                    local_path = Path(local_filename)
+
+                    if (
+                        local_path.is_file()
+                        and (
+                            expected_size is None
+                            or local_path.stat().st_size
+                            == int(expected_size)
+                        )
+                    ):
+                        path = local_path
+
+                if path is None:
+                    path = find_downloaded_file(
+                        DOWNLOAD_ROOT,
+                        filename_now,
+                        expected_size=expected_size,
+                        known_files=known_files,
+                    )
 
                 if path is None:
                     log(
