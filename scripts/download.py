@@ -1630,12 +1630,32 @@ def process_individual_track(
             )
 
         if "succeeded" in current_state:
-            path = find_downloaded_file(
-                DOWNLOAD_ROOT,
-                filename,
-                expected_size=size,
-                known_files=known_files,
+            local_filename = transfer_local_filename(
+                matching_transfer
             )
+
+            path = None
+
+            if local_filename:
+                local_path = Path(local_filename)
+
+                if (
+                    local_path.is_file()
+                    and (
+                        size is None
+                        or local_path.stat().st_size
+                        == int(size)
+                    )
+                ):
+                    path = local_path
+
+            if path is None:
+                path = find_downloaded_file(
+                    DOWNLOAD_ROOT,
+                    filename,
+                    expected_size=size,
+                    known_files=known_files,
+                )
 
             if path is None:
                 log(
