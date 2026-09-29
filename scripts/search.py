@@ -12,6 +12,7 @@ from matcher import (
     rank_releases,
     parent_path,
     release_id,
+    has_audio_extension,
 )
 from soulseek import SoulseekClient, flatten_responses
 from release import release_key
@@ -276,7 +277,7 @@ def recover_durable_release(tracks):
         filename = str(candidate.get("filename") or "")
         folder = parent_path(filename)
 
-        if not username or not folder:
+        if not username or not folder or not has_audio_extension(filename):
             return None
 
         key = (username, folder)
