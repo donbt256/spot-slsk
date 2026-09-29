@@ -161,6 +161,16 @@ def extract_candidate_title(filename, artist=None):
         flags=re.IGNORECASE,
     )
 
+    # Soulseek users sometimes prefix tracks with elapsed-time-style
+    # numbers, e.g. "01:01 - I Am Trying to Break Your Heart.flac".
+    # These are not track numbers; strip them before title matching.
+    title = re.sub(
+        r"^\s*\d{1,3}:\d{2}(?::\d{2})?\s*[-._ ]\s*",
+        "",
+        title,
+        flags=re.IGNORECASE,
+    )
+
     # Remove common "Artist - Title" formatting.
     if artist:
         normalized_artist = normalize(artist)
