@@ -1354,43 +1354,13 @@ def process_album(
 
         return False
 
-    # The release candidates are already ranked by matcher.py.
-    # We preserve that ordering, but skip releases that have
-    # already been successfully attempted.
-    attempted_ids = set()
-
-    for track in tracks:
-        attempts = track.get(
-            "acquisition",
-            {},
-        ).get(
-            "download_attempts",
-            [],
-        )
-
-        if not isinstance(
-            attempts,
-            list,
-        ):
-            continue
-
-        for attempt in attempts:
-            if (
-                isinstance(
-                    attempt,
-                    dict,
-                )
-                and attempt.get(
-                    "status"
-                )
-                == "succeeded"
-            ):
-                attempted_ids.add(
-                    attempt.get(
-                        "release_id"
-                    )
-                )
-
+    # The release candidates are ranked by matcher.py.
+    #
+    # Do not skip a release merely because a previous runner recorded a
+    # successful transfer. GitHub Actions runners are ephemeral, so the
+    # downloaded files may no longer exist even though the checkpointed
+    # attempt says "succeeded". A fresh run must be allowed to reacquire
+    # the release.
     log("")
     log(
         f"Album: {artist} - {album}"
@@ -1407,9 +1377,6 @@ def process_album(
         release_id = release.get(
             "release_id"
         )
-
-        if release_id in attempted_ids:
-            continue
 
         attempt_number += 1
 
