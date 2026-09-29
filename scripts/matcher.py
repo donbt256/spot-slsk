@@ -5,7 +5,7 @@ from difflib import SequenceMatcher
 from pathlib import PurePosixPath, PureWindowsPath
 
 
-MATCHER_VERSION = 5
+MATCHER_VERSION = 6
 
 
 MAX_LIBRARY_FILE_BYTES = 100 * 1024 * 1024
@@ -15,7 +15,6 @@ AUDIO_EXTENSIONS = {
     ".mp3",
     ".flac",
     ".m4a",
-    ".mp4",
     ".aac",
     ".ogg",
     ".opus",
