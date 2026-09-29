@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import sys
 import time
 from pathlib import Path
@@ -148,11 +149,11 @@ def search_one(client, query):
         timeout_seconds=SEARCH_WAIT_SECONDS,
     )
 
-    try:
-        client.delete_search(search_id)
-    except Exception:
-        pass
-
+    # Do not delete the search immediately after completion.
+    # slskd can still be finalizing/persisting the search in its
+    # background worker. Deleting it here can race that finalization
+    # and produce DbUpdateConcurrencyException, which can break the
+    # next search. slskd can retain completed searches safely.
     return search_id, data
 
 
