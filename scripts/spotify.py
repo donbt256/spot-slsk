@@ -29,11 +29,15 @@ class SpotifyClient:
         )
         response.raise_for_status()
         self.token = response.json()["access_token"]
+        self._next_request_at = 0.0
 
-    @staticmethod
-    def _request_with_retry(method, url, **kwargs):
+    def _request_with_retry(self, method, url, **kwargs):
         last_response = None
         for attempt in range(1, 6):
+            wait = self._next_request_at - time.monotonic()
+            if wait > 0:
+                time.sleep(wait)
+
             try:
                 response = requests.request(
                     method,
@@ -57,9 +61,14 @@ class SpotifyClient:
 
             retry_after = response.headers.get("Retry-After")
             try:
-                delay = max(1, min(60, int(float(retry_after))))
+                delay = max(1, int(float(retry_after)))
             except (TypeError, ValueError):
                 delay = 2 ** (attempt - 1)
+
+            self._next_request_at = max(
+                self._next_request_at,
+                time.monotonic() + delay,
+            )
 
             print(
                 f"Spotify returned HTTP {response.status_code}; "
@@ -215,29 +224,55 @@ class SpotifyClient:
         }
 
 
-def resolve_urls(urls):
+def resolve_urls(urls, cache=None):
     client = SpotifyClient()
     tracks = {}
     track_sources = {}
     playlists = {}
+    cache = cache if isinstance(cache, dict) else {}
+    cache.setdefault("tracks", {})
+    cache.setdefault("albums", {})
+    cache.setdefault("playlists", {})
 
     for raw_url in urls:
         url = raw_url.strip()
         if not url or url.startswith("#"):
             continue
-
         url = url.split("?", 1)[0]
         kind, spotify_id = client.parse_url(url)
         print(f"Resolving {kind}: {spotify_id}", flush=True)
 
         if kind == "track":
-            resolved = [client.get_track(spotify_id)]
+            cached = cache["tracks"].get(spotify_id)
+            if cached:
+                print("  Using cached Spotify track.", flush=True)
+                resolved = [cached]
+            else:
+                resolved = [client.get_track(spotify_id)]
+                cache["tracks"][spotify_id] = resolved[0]
             source = {"track_ids": [spotify_id]}
         elif kind == "album":
-            resolved = client.get_album(spotify_id)
+            cached = cache["albums"].get(spotify_id)
+            if cached:
+                print(f"  Using cached Spotify album ({len(cached)} tracks).", flush=True)
+                resolved = cached
+            else:
+                resolved = client.get_album(spotify_id)
+                cache["albums"][spotify_id] = resolved
+                for track in resolved:
+                    cache["tracks"][track["id"]] = track
             source = {"album_ids": [spotify_id]}
         elif kind == "playlist":
-            playlist, resolved = client.get_playlist(spotify_id)
+            cached = cache["playlists"].get(spotify_id)
+            if cached:
+                print("  Using cached Spotify playlist.", flush=True)
+                playlist = cached["playlist"]
+                resolved = cached["tracks"]
+            else:
+                playlist, resolved = client.get_playlist(spotify_id)
+                cache["playlists"][spotify_id] = {"playlist": playlist, "tracks": resolved}
+                for track in resolved:
+                    cache["tracks"][track["id"]] = track
             playlists[spotify_id] = playlist
             source = {"playlist_ids": [spotify_id]}
         else:
@@ -246,22 +281,10 @@ def resolve_urls(urls):
         for track in resolved:
             track_id = track["id"]
             tracks[track_id] = track
-
-            entry = track_sources.setdefault(
-                track_id,
-                {
-                    "album_ids": [],
-                    "playlist_ids": [],
-                    "track_ids": [],
-                },
-            )
+            entry = track_sources.setdefault(track_id, {"album_ids": [], "playlist_ids": [], "track_ids": []})
             for key, values in source.items():
                 for value in values:
                     if value not in entry[key]:
                         entry[key].append(value)
 
-    return {
-        "tracks": list(tracks.values()),
-        "track_sources": track_sources,
-        "playlists": list(playlists.values()),
-    }
+    return {"tracks": list(tracks.values()), "track_sources": track_sources, "playlists": list(playlists.values()), "cache": cache}
