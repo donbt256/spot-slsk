@@ -917,36 +917,18 @@ def album_groups_from_state(
 
 def queue_release(
     client,
-    release,
-    tracks,
+    matches,
 ):
     """
-    Queue every file belonging to one selected release.
+    Queue a bounded number of files from one selected release.
 
-    Returns:
-        queued list of (track, candidate)
+    slskd waits for the remote peer to acknowledge each enqueue.
+    Keeping only a small number of transfers active prevents a single
+    Soulseek peer from being flooded with a whole album at once.
     """
-
-    matches = release_matches(
-        release,
-        tracks,
-    )
-
-    if len(matches) != len(tracks):
-        log(
-            f"  Release only maps "
-            f"{len(matches)}/{len(tracks)} "
-            "requested tracks."
-        )
-
-        return []
-
     queued = []
 
-    for index, (
-        track,
-        candidate,
-    ) in enumerate(
+    for index, (track, candidate) in enumerate(
         matches,
         start=1,
     ):
@@ -958,35 +940,20 @@ def queue_release(
             "?",
         )
 
-        username = candidate.get(
-            "username"
-        )
-
-        filename = candidate.get(
-            "filename"
-        )
-
-        size = candidate.get(
-            "size"
-        )
+        username = candidate.get("username")
+        filename = candidate.get("filename")
+        size = candidate.get("size")
 
         log(
             f"  [{index}/{len(matches)}] "
             f"Queueing: {title}"
         )
-
-        log(
-            f"    User: {username}"
-        )
-
-        log(
-            f"    File: {filename}"
-        )
+        log(f"    User: {username}")
+        log(f"    File: {filename}")
 
         if size is not None:
             log(
-                f"    Size: "
-                f"{format_bytes(size)}"
+                f"    Size: {format_bytes(size)}"
             )
 
         try:
@@ -995,20 +962,10 @@ def queue_release(
                 filename=filename,
                 size=size,
             )
-
-            queued.append(
-                (
-                    track,
-                    candidate,
-                )
-            )
-
+            queued.append((track, candidate))
         except Exception as exc:
-            log(
-                f"    FAILED: {exc}"
-            )
-
-            return []
+            log(f"    FAILED: {exc}")
+            break
 
     return queued
 
@@ -1023,137 +980,136 @@ def release_download(
     """
     Attempt one complete album release.
 
-    The release succeeds only when every requested track
-    has a completed local file.
+    Only a bounded number of transfers are remotely queued at once.
+    New files are enqueued as earlier files finish. This avoids
+    saturating a Soulseek peer's request/queue handling while retaining
+    concurrent downloads.
 
-    A release is abandoned when:
-      - any transfer enters a failure state;
-      - the release has had zero aggregate transfer speed
-        for ZERO_SPEED_SECONDS;
-      - the overall transfer timeout expires.
+    The release succeeds only when every requested track has a
+    completed local file.
     """
 
-    username = release.get(
-        "username"
-    )
-
-    folder = release.get(
-        "folder"
-    )
-
-    release_id = release.get(
-        "release_id"
-    )
+    username = release.get("username")
+    folder = release.get("folder")
+    release_id = release.get("release_id")
 
     log("")
+    log(f"Trying release {attempt_number}:")
+    log(f"  User: {username}")
+    log(f"  Folder: {folder}")
+    log(f"  Release ID: {release_id}")
+    log(f"  Score: {release.get('score')}")
     log(
-        f"Trying release "
-        f"{attempt_number}:"
-    )
-    log(
-        f"  User: {username}"
-    )
-    log(
-        f"  Folder: {folder}"
-    )
-    log(
-        f"  Release ID: {release_id}"
-    )
-    log(
-        f"  Score: "
-        f"{release.get('score')}"
-    )
-    log(
-        f"  Coverage: "
-        f"{release.get('matched_tracks')}/"
+        f"  Coverage: {release.get('matched_tracks')}/"
         f"{release.get('expected_tracks')}"
     )
 
-    matches = release_matches(
-        release,
-        tracks,
-    )
+    matches = release_matches(release, tracks)
 
     if len(matches) != len(tracks):
         log(
             "  Release does not contain "
             "a candidate for every requested track."
         )
-
         return False
 
     known_files = snapshot_download_files()
 
-    queued = queue_release(
-        client,
-        release,
-        tracks,
+    max_active = max(
+        1,
+        int(
+            os.environ.get(
+                "SLSKD_MAX_ACTIVE_RELEASE_DOWNLOADS",
+                "4",
+            )
+        ),
     )
 
-    if len(queued) != len(matches):
-        log(
-            "  Release could not be "
-            "fully queued."
-        )
-
-        return False
-
-    wanted = {
-        transfer_key(
-            candidate.get("username"),
-            candidate.get("filename"),
-        ): (
-            track,
-            candidate,
-        )
-        for track, candidate in queued
-    }
-
+    pending = list(matches)
+    wanted = {}
     completed = set()
     failed = set()
     transfers_seen = {}
 
     release_started = time.monotonic()
     last_nonzero_speed = release_started
-
-    deadline = (
-        release_started
-        + TIMEOUT_SECONDS
-    )
+    deadline = release_started + TIMEOUT_SECONDS
 
     while time.monotonic() < deadline:
+        # Fill the bounded active queue. A transfer remains active until
+        # slskd reports it completed or failed.
+        while (
+            pending
+            and len(wanted) - len(completed) - len(failed)
+            < max_active
+        ):
+            track, candidate = pending.pop(0)
+
+            queued = queue_release(
+                client,
+                [(track, candidate)],
+            )
+
+            if not queued:
+                log(
+                    "  Could not queue the next release file."
+                )
+                failed.add(
+                    transfer_key(
+                        candidate.get("username"),
+                        candidate.get("filename"),
+                    )
+                )
+                break
+
+            queued_track, queued_candidate = queued[0]
+            key = transfer_key(
+                queued_candidate.get("username"),
+                queued_candidate.get("filename"),
+            )
+            wanted[key] = (
+                queued_track,
+                queued_candidate,
+            )
+
+        if failed:
+            log(
+                f"  Release failed: "
+                f"{len(failed)} transfer(s) failed."
+            )
+            cancel_release_transfers(
+                client,
+                transfers_seen,
+            )
+            mark_release_attempt(
+                tracks,
+                release,
+                attempt_number,
+                "failed",
+            )
+            save_state(state)
+            return False
+
+        if not wanted and not pending:
+            log("  Release has no files to download.")
+            return False
+
         try:
             data = client.get_downloads()
-
         except Exception as exc:
             log(
-                f"  Unable to read download "
-                f"status: {exc}"
+                f"  Unable to read download status: {exc}"
             )
-
-            time.sleep(
-                POLL_SECONDS
-            )
-
+            time.sleep(POLL_SECONDS)
             continue
 
-        transfers = extract_transfers(
-            data
-        )
+        transfers = extract_transfers(data)
 
         for transfer in transfers:
-            username_now = transfer_username(
-                transfer
-            )
+            username_now = transfer_username(transfer)
+            filename_now = transfer_filename(transfer)
 
-            filename_now = transfer_filename(
-                transfer
-            )
-
-            if (
-                not username_now
-                or not filename_now
-            ):
+            if not username_now or not filename_now:
                 continue
 
             key = transfer_key(
@@ -1164,91 +1120,34 @@ def release_download(
             if key not in wanted:
                 continue
 
-            if key in completed:
-                continue
-
-            if key in failed:
+            if key in completed or key in failed:
                 continue
 
             transfers_seen[key] = transfer
-
-            current_state = (
-                transfer_state(
-                    transfer
-                ).lower()
-            )
-
-            total, downloaded, speed = (
-                transfer_progress(
-                    transfer
-                )
-            )
+            current_state = transfer_state(transfer).lower()
+            total, downloaded, speed = transfer_progress(transfer)
 
             if total:
-                percent = (
-                    downloaded
-                    / total
-                    * 100
-                )
-
+                percent = downloaded / total * 100
+                log(f"  Transfer: {filename_now}")
+                log(f"    State: {current_state or 'unknown'}")
                 log(
-                    f"  Transfer: "
-                    f"{filename_now}"
+                    f"    Progress: {format_bytes(downloaded)} / "
+                    f"{format_bytes(total)} ({percent:.1f}%)"
                 )
-
-                log(
-                    f"    State: "
-                    f"{current_state or 'unknown'}"
-                )
-
-                log(
-                    f"    Progress: "
-                    f"{format_bytes(downloaded)} / "
-                    f"{format_bytes(total)} "
-                    f"({percent:.1f}%)"
-                )
-
-                log(
-                    f"    Speed: "
-                    f"{format_speed(speed)}"
-                )
-
+                log(f"    Speed: {format_speed(speed)}")
             else:
-                log(
-                    f"  Transfer: "
-                    f"{filename_now}"
-                )
-
-                log(
-                    f"    State: "
-                    f"{current_state or 'unknown'}"
-                )
-
-                log(
-                    f"    Progress: "
-                    f"{format_bytes(downloaded)}"
-                )
-
-                log(
-                    f"    Speed: "
-                    f"{format_speed(speed)}"
-                )
+                log(f"  Transfer: {filename_now}")
+                log(f"    State: {current_state or 'unknown'}")
+                log(f"    Progress: {format_bytes(downloaded)}")
+                log(f"    Speed: {format_speed(speed)}")
 
             if speed > 0:
-                last_nonzero_speed = (
-                    time.monotonic()
-                )
+                last_nonzero_speed = time.monotonic()
 
             if "succeeded" in current_state:
-                track, candidate = (
-                    wanted[key]
-                )
-
-                expected_size = (
-                    candidate.get(
-                        "size"
-                    )
-                )
+                track, candidate = wanted[key]
+                expected_size = candidate.get("size")
 
                 path = find_downloaded_file(
                     DOWNLOAD_ROOT,
@@ -1260,28 +1159,21 @@ def release_download(
                 if path is None:
                     log(
                         "    Transfer succeeded, "
-                        "but the downloaded file "
-                        "was not found yet."
+                        "but the downloaded file was not found yet."
                     )
-
                     continue
 
                 actual_size = path.stat().st_size
 
                 if (
                     expected_size is not None
-                    and actual_size
-                    != int(expected_size)
+                    and actual_size != int(expected_size)
                 ):
                     log(
-                        f"    File exists but size "
-                        f"does not match expected "
-                        f"size: "
-                        f"{format_bytes(actual_size)} "
-                        f"vs "
-                        f"{format_bytes(expected_size)}"
+                        f"    File exists but size does not match "
+                        f"expected size: {format_bytes(actual_size)} "
+                        f"vs {format_bytes(expected_size)}"
                     )
-
                     continue
 
                 track.setdefault(
@@ -1293,33 +1185,39 @@ def release_download(
                     "size": actual_size,
                 }
 
-                completed.add(
-                    key
-                )
-
-                log(
-                    f"    Downloaded: "
-                    f"{path}"
-                )
+                completed.add(key)
+                log(f"    Downloaded: {path}")
 
             elif any(
                 failure in current_state
                 for failure in FAILURE_STATES
             ):
-                log(
-                    f"    Download failed: "
-                    f"{current_state}"
-                )
+                log(f"    Download failed: {current_state}")
+                failed.add(key)
 
-                failed.add(
-                    key
-                )
+        if failed:
+            log(
+                f"  Release failed: "
+                f"{len(failed)} transfer(s) failed."
+            )
+            cancel_release_transfers(
+                client,
+                transfers_seen,
+            )
+            mark_release_attempt(
+                tracks,
+                release,
+                attempt_number,
+                "failed",
+            )
+            save_state(state)
+            return False
 
         if (
-            len(completed)
-            == len(wanted)
+            len(completed) == len(matches)
+            and not pending
         ):
-            for track, candidate in queued:
+            for track, candidate in matches:
                 track.setdefault(
                     "acquisition",
                     {},
@@ -1331,38 +1229,13 @@ def release_download(
                 attempt_number,
                 "succeeded",
             )
-
             save_state(state)
 
             log(
                 f"  Release succeeded: "
-                f"{len(completed)}/"
-                f"{len(wanted)} files"
+                f"{len(completed)}/{len(matches)} files"
             )
-
             return True
-
-        if failed:
-            log(
-                f"  Release failed: "
-                f"{len(failed)} transfer(s) failed."
-            )
-
-            cancel_release_transfers(
-                client,
-                transfers_seen,
-            )
-
-            mark_release_attempt(
-                tracks,
-                release,
-                attempt_number,
-                "failed",
-            )
-
-            save_state(state)
-
-            return False
 
         now = time.monotonic()
 
@@ -1371,59 +1244,43 @@ def release_download(
             >= ZERO_SPEED_SECONDS
         ):
             log(
-                f"  Release has had zero "
-                f"transfer speed for "
+                f"  Release has had zero transfer speed for "
                 f"{ZERO_SPEED_SECONDS} seconds."
             )
-
             cancel_release_transfers(
                 client,
                 transfers_seen,
             )
-
             mark_release_attempt(
                 tracks,
                 release,
                 attempt_number,
                 "zero_speed",
             )
-
             save_state(state)
-
             return False
-
-        finished = (
-            len(completed)
-        )
 
         log(
             f"  Release progress: "
-            f"{finished}/"
-            f"{len(wanted)} downloaded"
+            f"{len(completed)}/{len(matches)} downloaded; "
+            f"{len(pending)} pending; "
+            f"{len(wanted) - len(completed) - len(failed)} active"
         )
 
-        time.sleep(
-            POLL_SECONDS
-        )
+        time.sleep(POLL_SECONDS)
 
-    log(
-        "  Release timed out."
-    )
-
+    log("  Release timed out.")
     cancel_release_transfers(
         client,
         transfers_seen,
     )
-
     mark_release_attempt(
         tracks,
         release,
         attempt_number,
         "timeout",
     )
-
     save_state(state)
-
     return False
 
 
