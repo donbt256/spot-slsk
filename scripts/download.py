@@ -7,6 +7,7 @@ from pathlib import Path
 
 from soulseek import SoulseekClient
 from release import release_key as spotify_release_key
+from matcher import has_audio_extension
 
 
 RELEASE_FILTER = os.environ.get("RELEASE_KEY")
@@ -128,7 +129,7 @@ def selected_matches(state):
             "filename"
         )
 
-        if not username or not filename:
+        if not username or not filename or not has_audio_extension(filename):
             continue
 
         matches.append(
