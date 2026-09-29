@@ -605,6 +605,64 @@ def find_downloaded_file(
     )[0]
 
 
+def repair_stale_download_states(state, tracks):
+    """
+    Runner-local downloads do not survive a new GitHub Actions runner.
+
+    A checkpoint can legitimately contain a 'downloaded' state from a
+    previous runner, but its local file will no longer exist. Reset those
+    tracks to 'matched' so the current run reacquires them instead of
+    sending a stale path to the publisher.
+    """
+    changed = False
+
+    for track in tracks:
+        acquisition = track.setdefault("acquisition", {})
+        status = acquisition.get("status")
+
+        if status not in {"downloaded", "ready_to_publish"}:
+            continue
+
+        file_info = acquisition.get("file")
+        path = None
+        if isinstance(file_info, dict):
+            path = (
+                file_info.get("path")
+                or file_info.get("local_path")
+                or file_info.get("localPath")
+            )
+
+        if path and Path(path).is_file():
+            continue
+
+        if isinstance(acquisition.get("match"), dict) and acquisition["match"].get("candidates"):
+            acquisition["status"] = "matched"
+            acquisition.pop("file", None)
+            acquisition.pop("download_error", None)
+            changed = True
+            log(
+                f"  Stale download reset: "
+                f"{track.get('spotify', {}).get('title', '?')} "
+                "will be reacquired on this runner."
+            )
+        else:
+            acquisition["status"] = "download_failed"
+            acquisition["download_error"] = (
+                "Downloaded state exists but the local file is missing "
+                "and no retained match is available for reacquisition."
+            )
+            changed = True
+            log(
+                f"  Missing downloaded file with no match: "
+                f"{track.get('spotify', {}).get('title', '?')}"
+            )
+
+    if changed:
+        save_state(state)
+
+    return changed
+
+
 def snapshot_download_files():
     if not DOWNLOAD_ROOT.exists():
         return set()
@@ -1829,6 +1887,10 @@ def main():
         processing_tracks = [track for track in processing_tracks if spotify_release_key(track) == RELEASE_FILTER]
 
     processing_state = {"tracks": processing_tracks}
+
+    # Download files live on the ephemeral Actions runner. Repair any
+    # checkpointed download states whose local files disappeared between runs.
+    repair_stale_download_states(state, processing_tracks)
 
     groups = album_groups_from_state(
         processing_state
