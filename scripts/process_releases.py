@@ -284,6 +284,20 @@ def run_stage(script, env):
         )
 
 
+def local_file_exists(track):
+    file_info = track.get("acquisition", {}).get("file")
+    if not isinstance(file_info, dict):
+        return False
+
+    path = (
+        file_info.get("path")
+        or file_info.get("local_path")
+        or file_info.get("localPath")
+    )
+
+    return bool(path) and Path(path).is_file()
+
+
 def track_id(track):
     return str(
         track.get("spotify", {}).get("id")
@@ -366,8 +380,15 @@ def main():
             incomplete = [
                 track
                 for track in current_tracks
-                if track.get("acquisition", {}).get("status")
-                not in SUCCESS_STATUSES
+                if (
+                    track.get("acquisition", {}).get("status")
+                    not in SUCCESS_STATUSES
+                    or (
+                        track.get("acquisition", {}).get("status")
+                        in {"downloaded", "ready_to_publish"}
+                        and not local_file_exists(track)
+                    )
+                )
             ]
 
             if incomplete:
@@ -376,7 +397,7 @@ def main():
                     for track in incomplete
                 ]
                 raise RuntimeError(
-                    "Release is not fully downloaded: "
+                    "Release is not fully downloaded or its local files are missing: "
                     + ", ".join(names)
                 )
 
