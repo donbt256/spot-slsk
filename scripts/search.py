@@ -292,6 +292,40 @@ def process_album_group(client, tracks, index, total):
         f"  Raw candidates: {len(raw_candidates)}"
     )
 
+    # Album metadata often contains edition labels such as
+    # "(2007 Remaster)" or "(Deluxe)". Soulseek shares frequently
+    # omit those labels. If the exact Spotify album query returns
+    # nothing, retry once with parenthesized edition labels removed.
+    simplified_album = re.sub(
+        r"\\s*\\([^)]*\\)",
+        "",
+        album,
+    ).strip()
+    fallback_query = f"{artist} {simplified_album}".strip()
+
+    if not raw_candidates and fallback_query.casefold() != query.casefold():
+        print(
+            f"  Exact album search returned no results; "
+            f"retrying: {fallback_query}"
+        )
+        fallback_search_id, fallback_data = search_one(
+            client,
+            fallback_query,
+        )
+        fallback_candidates = flatten_responses(fallback_data)
+
+        print(
+            f"  Fallback search ID: {fallback_search_id}"
+        )
+        print(
+            f"  Fallback raw candidates: {len(fallback_candidates)}"
+        )
+
+        if fallback_candidates:
+            search_id = fallback_search_id
+            raw_candidates = fallback_candidates
+            query = fallback_query
+
     for track in tracks:
         state = ensure_search_state(track)
 
