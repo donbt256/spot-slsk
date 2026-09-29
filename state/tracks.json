@@ -42041,7 +42041,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42085,7 +42085,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42122,7 +42135,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42166,7 +42179,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42203,7 +42229,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42247,7 +42273,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42284,7 +42323,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42328,7 +42367,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42365,7 +42417,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42409,7 +42461,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42446,7 +42511,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42490,7 +42555,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42527,7 +42605,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42571,7 +42649,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42608,7 +42699,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42652,7 +42743,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42689,7 +42793,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42733,7 +42837,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42770,7 +42887,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42814,7 +42931,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42851,7 +42981,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42895,7 +43025,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
@@ -42932,7 +43075,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "matched",
+        "status": "unmatched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -42976,7 +43119,20 @@
         "lyrics": null
       },
       "playlist_sources": {},
-      "active_source": true
+      "active_source": true,
+      "search": {
+        "mode": "album",
+        "queries": [
+          {
+            "search_id": "5748a3ee-3485-4ede-822f-8c18aa2c5c25",
+            "query": "Pixies Head Carrier",
+            "candidate_count": 0,
+            "timestamp": 1790689850
+          }
+        ],
+        "release_candidates": [],
+        "query": "Pixies Head Carrier"
+      }
     },
     {
       "spotify": {
