@@ -297,7 +297,7 @@ def process_album_group(client, tracks, index, total):
     # omit those labels. If the exact Spotify album query returns
     # nothing, retry once with parenthesized edition labels removed.
     simplified_album = re.sub(
-        r"\\s*\\([^)]*\\)",
+        r"\s*\([^)]*\)",
         "",
         album,
     ).strip()
