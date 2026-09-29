@@ -1545,13 +1545,17 @@ def mark_existing_library_duplicates(tracks, repo_states):
             changed += 1
             continue
 
-        # A path occupied by a file with no matching state record is also
-        # unsafe to overwrite. The caller must resolve the collision rather
-        # than silently destroying an unrelated recording.
-        raise RuntimeError(
-            "Library path collision: "
-            f"{path} already exists but does not match the "
-            "current Spotify track metadata."
+        # The canonical library path is the library identity:
+        # Artist/Album/track number + title. Spotify can expose different
+        # duration/ISRC metadata for the same canonical recording across
+        # releases, so those fields must not make a valid replacement fail.
+        #
+        # Leave the track pending here. publish_item() will atomically write
+        # the new blob at this exact path, replacing the existing file in the
+        # tree. If the existing file is represented in state, the normal
+        # duplicate logic above already handles exact metadata matches.
+        log(
+            f"  Existing library path will be replaced: {path}"
         )
 
     if changed:
