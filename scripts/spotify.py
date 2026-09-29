@@ -12,6 +12,7 @@ SPOTIFY_API_URL = "https://api.spotify.com/v1"
 
 class SpotifyClient:
     def __init__(self):
+        self._next_request_at = 0.0
         client_id = os.environ["SPOTIFY_CLIENT_ID"]
         client_secret = os.environ["SPOTIFY_CLIENT_SECRET"]
 
@@ -29,7 +30,6 @@ class SpotifyClient:
         )
         response.raise_for_status()
         self.token = response.json()["access_token"]
-        self._next_request_at = 0.0
 
     def _request_with_retry(self, method, url, **kwargs):
         last_response = None
