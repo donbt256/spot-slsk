@@ -69196,7 +69196,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69212,11 +69212,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/01 Intro.flac",
-          "filename": "01 Intro.flac",
-          "size": 63420053
         },
         "library": null,
         "download_attempts": [
@@ -69291,7 +69286,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69307,11 +69302,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/02 Sad.flac",
-          "filename": "02 Sad.flac",
-          "size": 29818324
         },
         "library": null,
         "download_attempts": [
@@ -69386,7 +69376,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69402,11 +69392,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/03 I F--k Sl--ts.flac",
-          "filename": "03 I F--k Sl--ts.flac",
-          "size": 19812965
         },
         "library": null,
         "download_attempts": [
@@ -69481,7 +69466,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69497,11 +69482,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/04 WDIDLN_.flac",
-          "filename": "04 WDIDLN_.flac",
-          "size": 12023706
         },
         "library": null,
         "download_attempts": [
@@ -69576,7 +69556,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69592,11 +69572,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/05 Left Brain, Right Brain.flac",
-          "filename": "05 Left Brain, Right Brain.flac",
-          "size": 43818822
         },
         "library": null,
         "download_attempts": [
@@ -69671,7 +69646,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69687,11 +69662,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/06 #Deep.flac",
-          "filename": "06 #Deep.flac",
-          "size": 28041169
         },
         "library": null,
         "download_attempts": [
@@ -69766,7 +69736,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69782,11 +69752,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/07 Beating Off in A Minor.flac",
-          "filename": "07 Beating Off in A Minor.flac",
-          "size": 17382033
         },
         "library": null,
         "download_attempts": [
@@ -69861,7 +69826,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69877,11 +69842,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/08 Poems.flac",
-          "filename": "08 Poems.flac",
-          "size": 22885269
         },
         "library": null,
         "download_attempts": [
@@ -69956,7 +69916,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -69972,11 +69932,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/09 From God's Perspective.flac",
-          "filename": "09 From God's Perspective.flac",
-          "size": 29397203
         },
         "library": null,
         "download_attempts": [
@@ -70051,7 +70006,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70067,11 +70022,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/10 Andy the Frog.flac",
-          "filename": "10 Andy the Frog.flac",
-          "size": 21270834
         },
         "library": null,
         "download_attempts": [
@@ -70146,7 +70096,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70162,11 +70112,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/11 Out of the Abyss.flac",
-          "filename": "11 Out of the Abyss.flac",
-          "size": 24235283
         },
         "library": null,
         "download_attempts": [
@@ -70241,7 +70186,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70257,11 +70202,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/12 Repeat Stuff.flac",
-          "filename": "12 Repeat Stuff.flac",
-          "size": 36379025
         },
         "library": null,
         "download_attempts": [
@@ -70336,7 +70276,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70352,11 +70292,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/13 We Think We Know You.flac",
-          "filename": "13 We Think We Know You.flac",
-          "size": 42019824
         },
         "library": null,
         "download_attempts": [
@@ -70431,7 +70366,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70447,11 +70382,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/14 Repeat Stuff (Studio).flac",
-          "filename": "14 Repeat Stuff (Studio).flac",
-          "size": 35800794
         },
         "library": null,
         "download_attempts": [
@@ -70526,7 +70456,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70542,11 +70472,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/15 Eff (Studio).flac",
-          "filename": "15 Eff (Studio).flac",
-          "size": 20200125
         },
         "library": null,
         "download_attempts": [
@@ -70621,7 +70546,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70637,11 +70562,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/16 Nerds (Studio).flac",
-          "filename": "16 Nerds (Studio).flac",
-          "size": 21285959
         },
         "library": null,
         "download_attempts": [
@@ -70716,7 +70636,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70732,11 +70652,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/17 Channel 5 the Musical (Studio).flac",
-          "filename": "17 Channel 5 the Musical (Studio).flac",
-          "size": 32507164
         },
         "library": null,
         "download_attempts": [
@@ -70811,7 +70726,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -70827,11 +70742,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/what_/18 Hell of a Ride (Studio).flac",
-          "filename": "18 Hell of a Ride (Studio).flac",
-          "size": 32121284
         },
         "library": null,
         "download_attempts": [
@@ -77461,7 +77371,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -77477,11 +77387,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/01 - Everything In Its Right Place.flac",
-          "filename": "01 - Everything In Its Right Place.flac",
-          "size": 26892326
         },
         "library": null,
         "download_attempts": [
@@ -77547,7 +77452,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -77563,11 +77468,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/02 - Kid A.flac",
-          "filename": "02 - Kid A.flac",
-          "size": 28609050
         },
         "library": null,
         "download_attempts": [
@@ -77633,7 +77533,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -77649,11 +77549,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/03 - The National Anthem.flac",
-          "filename": "03 - The National Anthem.flac",
-          "size": 40665272
         },
         "library": null,
         "download_attempts": [
@@ -77719,7 +77614,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -77735,11 +77630,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/04 - How to Disappear Completely.flac",
-          "filename": "04 - How to Disappear Completely.flac",
-          "size": 39740583
         },
         "library": null,
         "download_attempts": [
@@ -77805,7 +77695,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -77821,11 +77711,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/05 - Treefingers.flac",
-          "filename": "05 - Treefingers.flac",
-          "size": 16986374
         },
         "library": null,
         "download_attempts": [
@@ -77891,7 +77776,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -77907,11 +77792,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/06 - Optimistic.flac",
-          "filename": "06 - Optimistic.flac",
-          "size": 35887046
         },
         "library": null,
         "download_attempts": [
@@ -77977,7 +77857,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -77993,11 +77873,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/07 - In Limbo.flac",
-          "filename": "07 - In Limbo.flac",
-          "size": 24577469
         },
         "library": null,
         "download_attempts": [
@@ -78063,7 +77938,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -78079,11 +77954,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/08 - Idioteque.flac",
-          "filename": "08 - Idioteque.flac",
-          "size": 39243831
         },
         "library": null,
         "download_attempts": [
@@ -78149,7 +78019,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -78165,11 +78035,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/09 - Morning Bell.flac",
-          "filename": "09 - Morning Bell.flac",
-          "size": 30121076
         },
         "library": null,
         "download_attempts": [
@@ -78235,7 +78100,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -78251,11 +78116,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/10 - Motion Picture Soundtrack.flac",
-          "filename": "10 - Motion Picture Soundtrack.flac",
-          "size": 19487645
         },
         "library": null,
         "download_attempts": [
@@ -78321,7 +78181,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -78337,11 +78197,6 @@
               "alternate_terms": []
             }
           ]
-        },
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Radiohead - Kid A/11 - Untitled.flac",
-          "filename": "11 - Untitled.flac",
-          "size": 4415880
         },
         "library": null,
         "download_attempts": [
