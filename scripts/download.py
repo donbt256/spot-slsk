@@ -164,6 +164,26 @@ def album_release_candidates(tracks):
         [],
     )
 
+    # The release candidates are also retained in the deterministic
+    # matcher state. This matters across checkpoints: search.py may have
+    # skipped a track because it was previously downloaded, while
+    # compaction can retain the matcher candidates as the durable source.
+    if not isinstance(releases, list) or not releases:
+        matching = tracks[0].get(
+            "matching",
+            {},
+        )
+
+        deterministic = matching.get(
+            "deterministic",
+            {},
+        )
+
+        releases = deterministic.get(
+            "candidates",
+            [],
+        )
+
     if not isinstance(releases, list):
         return []
 
