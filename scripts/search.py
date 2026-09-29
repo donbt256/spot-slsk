@@ -139,23 +139,39 @@ def build_album_groups(tracks):
 
 
 def search_one(client, query):
-    search_id = client.search(
-        query,
-        timeout_ms=SEARCH_TIMEOUT_MS,
-        file_limit=FILE_LIMIT,
-        response_limit=RESPONSE_LIMIT,
-    )
+    # Soulseek/slskd can occasionally return an empty result snapshot while
+    # the peer responses are still being resolved. Retry empty searches
+    # before treating the release as genuinely unmatched.
+    for attempt in range(1, 4):
+        search_id = client.search(
+            query,
+            timeout_ms=SEARCH_TIMEOUT_MS,
+            file_limit=FILE_LIMIT,
+            response_limit=RESPONSE_LIMIT,
+        )
 
-    data = client.wait_for_search(
-        search_id,
-        timeout_seconds=SEARCH_WAIT_SECONDS,
-    )
+        data = client.wait_for_search(
+            search_id,
+            timeout_seconds=SEARCH_WAIT_SECONDS,
+        )
 
-    # Do not delete the search immediately after completion.
-    # slskd can still be finalizing/persisting the search in its
-    # background worker. Deleting it here can race that finalization
-    # and produce DbUpdateConcurrencyException, which can break the
-    # next search. slskd can retain completed searches safely.
+        if flatten_responses(data):
+            if attempt > 1:
+                print(
+                    f"  Search retry {attempt} produced results."
+                )
+            return search_id, data
+
+        if attempt < 3:
+            print(
+                f"  Search returned no candidates; "
+                f"retrying ({attempt + 1}/3)..."
+            )
+            time.sleep(1)
+
+    # Do not delete completed searches immediately. slskd can still be
+    # finalizing/persisting a search in its background worker, and deleting
+    # it here can race that finalization.
     return search_id, data
 
 
