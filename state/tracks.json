@@ -13288,7 +13288,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13334,12 +13334,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/01 Cecilia Ann.flac",
-          "filename": "01 Cecilia Ann.flac",
-          "size": 15216149
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -13383,7 +13378,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13429,12 +13424,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/02 Rock Music.flac",
-          "filename": "02 Rock Music.flac",
-          "size": 13920288
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -13478,7 +13468,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13524,12 +13514,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/03 Velouria.flac",
-          "filename": "03 Velouria.flac",
-          "size": 25964187
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -13573,7 +13558,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13619,12 +13604,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/04 Allison.flac",
-          "filename": "04 Allison.flac",
-          "size": 9580684
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -13668,7 +13648,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13714,12 +13694,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/05 Is She Weird.flac",
-          "filename": "05 Is She Weird.flac",
-          "size": 20458848
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -13763,7 +13738,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13809,12 +13784,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/06 Ana.flac",
-          "filename": "06 Ana.flac",
-          "size": 13731220
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -13858,7 +13828,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13904,12 +13874,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/07 All Over the World.flac",
-          "filename": "07 All Over the World.flac",
-          "size": 37816168
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -13953,7 +13918,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -13999,12 +13964,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/08 Dig for Fire.flac",
-          "filename": "08 Dig for Fire.flac",
-          "size": 21547320
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14048,7 +14008,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14094,12 +14054,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/09 Down to the Well.flac",
-          "filename": "09 Down to the Well.flac",
-          "size": 18059263
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14143,7 +14098,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14189,12 +14144,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/10 The Happening.flac",
-          "filename": "10 The Happening.flac",
-          "size": 32134365
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14238,7 +14188,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14284,12 +14234,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/11 Blown Away.flac",
-          "filename": "11 Blown Away.flac",
-          "size": 16654748
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14333,7 +14278,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14379,12 +14324,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/12 Hang Wire.flac",
-          "filename": "12 Hang Wire.flac",
-          "size": 14849463
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14428,7 +14368,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14474,12 +14414,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/13 Stormy Weather.flac",
-          "filename": "13 Stormy Weather.flac",
-          "size": 25825202
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14523,7 +14458,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14569,12 +14504,7 @@
             "status": "succeeded",
             "timestamp": 1790688157
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Bossanova/14 Havalina.flac",
-          "filename": "14 Havalina.flac",
-          "size": 17543891
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14618,7 +14548,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14655,12 +14585,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/01 Head Carrier.flac",
-          "filename": "01 Head Carrier.flac",
-          "size": 25615852
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14704,7 +14629,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14741,12 +14666,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/02 Classic Masher.flac",
-          "filename": "02 Classic Masher.flac",
-          "size": 19807323
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14790,7 +14710,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14827,12 +14747,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/03 Baal’s Back.flac",
-          "filename": "03 Baal’s Back.flac",
-          "size": 13885405
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14876,7 +14791,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14913,12 +14828,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/04 Might as Well Be Gone.flac",
-          "filename": "04 Might as Well Be Gone.flac",
-          "size": 19642216
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -14962,7 +14872,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -14999,12 +14909,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/05 Oona.flac",
-          "filename": "05 Oona.flac",
-          "size": 25807170
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -15048,7 +14953,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -15085,12 +14990,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/06 Talent.flac",
-          "filename": "06 Talent.flac",
-          "size": 16040949
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -15134,7 +15034,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -15171,12 +15071,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/07 Tenement Song.flac",
-          "filename": "07 Tenement Song.flac",
-          "size": 20925759
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -15220,7 +15115,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -15257,12 +15152,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/08 Bel Esprit.flac",
-          "filename": "08 Bel Esprit.flac",
-          "size": 23830673
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -15306,7 +15196,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -15343,12 +15233,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/09 All I Think About Now.flac",
-          "filename": "09 All I Think About Now.flac",
-          "size": 21627830
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -15392,7 +15277,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -15429,12 +15314,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/10 Um Chagga Lagga.flac",
-          "filename": "10 Um Chagga Lagga.flac",
-          "size": 20174393
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -15478,7 +15358,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -15515,12 +15395,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/11 Plaster of Paris.flac",
-          "filename": "11 Plaster of Paris.flac",
-          "size": 14131272
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
@@ -15564,7 +15439,7 @@
         "track_ids": []
       },
       "acquisition": {
-        "status": "downloaded",
+        "status": "matched",
         "attempts": 0,
         "match": {
           "candidates": [
@@ -15601,12 +15476,7 @@
             "status": "succeeded",
             "timestamp": 1790688197
           }
-        ],
-        "file": {
-          "path": "/home/runner/work/_temp/music-downloads/Head Carrier/12 All the Saints.flac",
-          "filename": "12 All the Saints.flac",
-          "size": 16626504
-        }
+        ]
       },
       "enrichment": {
         "artwork": null,
