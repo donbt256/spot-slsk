@@ -100,7 +100,9 @@ def main():
     print(f"Found {len(urls)} input lines.")
 
     existing_tracks = load_existing_state()
-    resolved = resolve_urls(urls)
+    existing_state = json.loads(TRACKS_FILE.read_text(encoding="utf-8")) if TRACKS_FILE.exists() else {}
+    spotify_cache = existing_state.get("spotify_cache", {})
+    resolved = resolve_urls(urls, cache=spotify_cache)
 
     current_tracks = resolved["tracks"]
     current_sources = resolved["track_sources"]
@@ -187,7 +189,8 @@ def main():
         merged_playlists.append(old_playlist)
 
     output = {
-        "version": 4,
+        "version": 5,
+        "spotify_cache": resolved.get("cache", spotify_cache),
         "playlists": merged_playlists,
         "tracks": tracks,
     }
