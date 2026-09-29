@@ -338,10 +338,12 @@ def build_items(tracks):
 
             if not all(
                 is_downloaded(member)
+                and get_local_file(member) is not None
                 for member in group_tracks
             ):
                 downloaded_count = sum(
                     is_downloaded(member)
+                    and get_local_file(member) is not None
                     for member in group_tracks
                 )
 
@@ -368,7 +370,7 @@ def build_items(tracks):
                 }
             )
 
-        elif is_downloaded(track):
+        elif is_downloaded(track) and get_local_file(track) is not None:
             consumed.add(id(track))
 
             items.append(
